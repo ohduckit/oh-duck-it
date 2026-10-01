@@ -99,3 +99,5 @@ Before advertising the recruitment form widely, add a bot/spam control such as C
 The public `structure.html` page is read-only. Assignment and mentor editing is intentionally available only inside `officers.html` after Discord sign-in and the `is_officer()` database check succeeds. The values are stored in the `guild_structure` Supabase table, which is public-read / officer-update under Row Level Security.
 
 If you previously ran an older copy of `supabase/schema.sql`, run the current file again in the Supabase SQL Editor. It is written to be re-runnable and will add the `guild_structure` table, trigger, grants and policies without deleting existing recruitment applications.
+
+ 
