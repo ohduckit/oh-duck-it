@@ -13,7 +13,12 @@
   const appList = document.getElementById('appList');
   const detail = document.getElementById('detail');
   const statusFilter = document.getElementById('statusFilter');
+  const structureMessage = document.getElementById('structureMessage');
+  const structureMentors = document.getElementById('structureMentors');
+  const addStructureMentorBtn = document.getElementById('addStructureMentor');
+  const saveGuildStructureBtn = document.getElementById('saveGuildStructure');
   let client, session, user, applications = [], selectedId = null;
+  let structureLoaded = false;
 
   const esc = (s='') => String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const show = (el, text, kind='info') => { el.hidden=false; el.className=`notice ${kind}`; el.textContent=text; };
@@ -39,6 +44,8 @@
   document.getElementById('copyUid').addEventListener('click', async () => { await navigator.clipboard.writeText(uidBox.textContent); show(authNotice,'User ID copied.','success'); });
   document.getElementById('refreshBtn').addEventListener('click', loadApplications);
   statusFilter.addEventListener('change', renderList);
+  addStructureMentorBtn?.addEventListener('click', () => addMentorRow());
+  saveGuildStructureBtn?.addEventListener('click', saveGuildStructure);
 
   async function boot() {
     const { data:{ session:s }, error } = await client.auth.getSession();
@@ -59,7 +66,7 @@
     authView.hidden = true;
     portalView.hidden = false;
     document.getElementById('officerIdentity').textContent = `Signed in as ${metaName(user)}.`;
-    await loadApplications();
+    await Promise.all([loadApplications(), loadGuildStructure()]);
   }
 
   async function loadApplications() {
@@ -136,6 +143,54 @@
     const el=document.getElementById('newNote'); const body=el.value.trim(); if(!body)return;
     const {error}=await client.from('application_notes').insert({application_id:selectedId,author_id:user.id,author_name:metaName(user),body});
     if(error){show(msg,error.message,'error');return;} el.value=''; await loadNotes();
+  }
+
+
+  const structureDefaults = {
+    'raid-leader':'Duckie','tank-lead':'Duckie','healer-lead':'Phae','dps-lead':'To be appointed',
+    'mplus-lead':'To be appointed','recruit-lead':'Council interim','community-lead':'Council interim'
+  };
+
+  function addMentorRow(spec='', mentor=''){
+    if(!structureMentors) return;
+    const row=document.createElement('div');
+    row.className='mentor-admin-row';
+    row.innerHTML=`<div class="field"><label>Class / spec</label><input class="mentor-spec" maxlength="80" value="${esc(spec)}" placeholder="e.g. Retribution Paladin"></div><div class="field"><label>Mentor</label><input class="mentor-name" maxlength="80" value="${esc(mentor)}" placeholder="Character / player name"></div><button class="btn danger remove-structure-mentor" type="button">Remove</button>`;
+    row.querySelector('.remove-structure-mentor').addEventListener('click',()=>row.remove());
+    structureMentors.appendChild(row);
+  }
+
+  async function loadGuildStructure(){
+    if(!structureMessage||!structureMentors) return;
+    hide(structureMessage);
+    const {data,error}=await client.from('guild_structure').select('assignments,mentors,updated_at').eq('id',1).maybeSingle();
+    if(error){ show(structureMessage,`Could not load guild structure: ${error.message}`,'error'); return; }
+    const assignments={...structureDefaults,...(data?.assignments||{})};
+    document.querySelectorAll('[data-structure-owner]').forEach(input=>{
+      input.value=assignments[input.dataset.structureOwner]||'';
+    });
+    structureMentors.innerHTML='';
+    const mentors=Array.isArray(data?.mentors)?data.mentors:[];
+    mentors.forEach(m=>addMentorRow(m?.spec||'',m?.mentor||''));
+    if(!mentors.length) addMentorRow('Retribution Paladin','Vacant');
+    structureLoaded=true;
+  }
+
+  async function saveGuildStructure(){
+    if(!structureLoaded) return;
+    const assignments={};
+    document.querySelectorAll('[data-structure-owner]').forEach(input=>{
+      assignments[input.dataset.structureOwner]=input.value.trim()||'To be appointed';
+    });
+    const mentors=[...structureMentors.querySelectorAll('.mentor-admin-row')].map(row=>({
+      spec:row.querySelector('.mentor-spec').value.trim(),
+      mentor:row.querySelector('.mentor-name').value.trim()
+    })).filter(m=>m.spec||m.mentor).map(m=>({spec:m.spec||'Class / spec',mentor:m.mentor||'Vacant'}));
+    saveGuildStructureBtn.disabled=true;
+    const {error}=await client.from('guild_structure').update({assignments,mentors}).eq('id',1);
+    saveGuildStructureBtn.disabled=false;
+    if(error){ show(structureMessage,error.message,'error'); return; }
+    show(structureMessage,'Guild structure saved. The public Guild Structure page will show these assignments on refresh.','success');
   }
 
   client.auth.onAuthStateChange((event) => { if(event==='SIGNED_OUT') location.reload(); });

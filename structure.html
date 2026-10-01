@@ -58,9 +58,7 @@ button,input{font:inherit}.wrap{width:min(1200px,calc(100% - 28px));margin:auto}
   <button data-go="decisions">Who Decides What?</button>
   <button data-go="play">Ways to Play</button>
   <button data-go="mentors">Spec Mentors</button>
-  <button class="action primary" id="editBtn">Edit assignments</button>
   <button class="action" id="expandBtn">Expand all</button>
-  <span class="edit-status" id="editStatus"></span>
 </div></nav>
 
 <main>
@@ -132,36 +130,20 @@ button,input{font:inherit}.wrap{width:min(1200px,calc(100% - 28px));margin:auto}
 <section class="section" id="mentors"><div class="wrap">
   <div class="section-head"><div class="kicker">Optional Support Network</div><h2>Class / Spec Mentors</h2><p class="lede">Mentors are experienced players who volunteer to help with a class or spec. They are not automatically officers and do not add another management layer.</p></div>
   <div class="mentorbox">
-    <div class="mentor-top"><div><h3>Appoint only where useful</h3><div class="summary">Use mentors when the guild actually has someone knowledgeable and willing to help. Leave the slot empty rather than creating a title for every class.</div></div><button class="action" id="addMentor">+ Add mentor</button></div>
+    <div class="mentor-top"><div><h3>Appoint only where useful</h3><div class="summary">Use mentors when the guild actually has someone knowledgeable and willing to help. Leave the slot empty rather than creating a title for every class.</div></div></div>
     <div class="mentor-list" id="mentorList">
-      <div class="mentor" data-mentor><strong contenteditable="false">Example: Retribution Paladin</strong><span contenteditable="false">Mentor: Vacant</span><button class="removeMentor">Remove</button></div>
-      <div class="mentor" data-mentor><strong contenteditable="false">Example: Frost Death Knight</strong><span contenteditable="false">Mentor: Vacant</span><button class="removeMentor">Remove</button></div>
-      <div class="mentor" data-mentor><strong contenteditable="false">Example: Restoration Shaman</strong><span contenteditable="false">Mentor: Vacant</span><button class="removeMentor">Remove</button></div>
+      <div class="mentor" data-mentor><strong contenteditable="false">Example: Retribution Paladin</strong><span contenteditable="false">Mentor: Vacant</span></div>
+      <div class="mentor" data-mentor><strong contenteditable="false">Example: Frost Death Knight</strong><span contenteditable="false">Mentor: Vacant</span></div>
+      <div class="mentor" data-mentor><strong contenteditable="false">Example: Restoration Shaman</strong><span contenteditable="false">Mentor: Vacant</span></div>
     </div>
   </div>
 </div></section>
 </main>
 
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • AoTC-focused • Social & progression-minded • For Azeroth, for beer, for ducks.</div></footer>
-<div class="toast" id="toast">Saved locally</div>
-<script>
-const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
-let editing=false;
-const toast=(m)=>{const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),1500)};
-$$('.role').forEach(card=>card.addEventListener('click',e=>{if(editing && e.target.closest('[contenteditable=true]'))return;card.classList.toggle('open')}));
-$$('[data-go]').forEach(b=>b.addEventListener('click',()=>{document.getElementById(b.dataset.go).scrollIntoView({behavior:'smooth'});$$('[data-go]').forEach(x=>x.classList.remove('active'));b.classList.add('active')}));
-$('#expandBtn').addEventListener('click',()=>{const roles=$$('.role'),all=roles.every(x=>x.classList.contains('open'));roles.forEach(x=>x.classList.toggle('open',!all));$('#expandBtn').textContent=all?'Expand all':'Collapse all'});
-function saveOwners(){const data={};$$('[data-owner]').forEach(x=>data[x.dataset.owner]=x.textContent.trim());localStorage.setItem('oditOwnersV2',JSON.stringify(data));saveMentors();toast('Assignments saved locally')}
-function loadOwners(){try{const data=JSON.parse(localStorage.getItem('oditOwnersV2')||'{}');$$('[data-owner]').forEach(x=>{if(data[x.dataset.owner])x.textContent=data[x.dataset.owner]});const ms=JSON.parse(localStorage.getItem('oditMentorsV2')||'null');if(ms){$('#mentorList').innerHTML='';ms.forEach(([spec,name])=>createMentor(spec,name))}}catch(e){}}
-function saveMentors(){const m=$$('[data-mentor]').map(x=>[$('strong',x).textContent.trim(),$('span',x).textContent.trim()]);localStorage.setItem('oditMentorsV2',JSON.stringify(m))}
-function setEdit(on){editing=on;$$('.editable').forEach(x=>x.contentEditable=on);$$('[data-mentor] strong,[data-mentor] span').forEach(x=>x.contentEditable=on);$('#editBtn').textContent=on?'Save assignments':'Edit assignments';$('#editStatus').textContent=on?'Editing names & mentor slots':' ';if(!on)saveOwners()}
-$('#editBtn').addEventListener('click',()=>setEdit(!editing));
-function createMentor(spec='New class / spec',name='Mentor: Vacant') {const d=document.createElement('div');d.className='mentor';d.dataset.mentor='';d.innerHTML=`<strong contenteditable="${editing}"></strong><span contenteditable="${editing}"></span><button class="removeMentor">Remove</button>`;$('strong',d).textContent=spec;$('span',d).textContent=name;$('#mentorList').appendChild(d);}
-$('#addMentor').addEventListener('click',()=>{createMentor();saveMentors();toast('Mentor slot added')});
-$('#mentorList').addEventListener('click',e=>{if(e.target.classList.contains('removeMentor')){e.target.closest('[data-mentor]').remove();saveMentors();toast('Mentor slot removed')}});
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&editing){e.preventDefault();setEdit(false)}});
-loadOwners();
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/structure-public.js"></script>
 <script src="assets/site.js"></script>
 </body>
 </html>

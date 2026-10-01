@@ -3,7 +3,24 @@
 <main class="portal-wrap">
 <section id="authView" class="card auth-card"><div class="eyebrow">Private area</div><h1 style="font-family:Georgia,serif">Officer Portal</h1><p id="authText">Sign in with Discord to access ODit recruitment applications.</p><div id="authNotice" class="notice info" style="margin:16px 0" hidden></div><div class="actions"><button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button><button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button></div><div id="unauthorisedBox" hidden><p class="help">You are signed in, but this account has not been authorised as an ODit officer. Add this user ID to the <code>officers</code> table in Supabase:</p><div id="userUid" class="uid-box"></div><div class="actions"><button id="copyUid" class="btn" type="button">Copy User ID</button></div></div></section>
 <section id="portalView" hidden><div class="portal-top"><div><div class="eyebrow">Recruitment</div><h1>Officer Portal</h1><p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p></div><div class="portal-tools"><select id="statusFilter" class="btn" aria-label="Filter status"><option value="">All statuses</option><option>New</option><option>Reviewing</option><option>Interview</option><option>Trial</option><option>Accepted</option><option>Declined</option><option>Archived</option></select><button id="refreshBtn" class="btn">Refresh</button><button id="logoutBtn" class="btn">Sign out</button></div></div><div id="portalMessage" class="notice" style="margin-top:14px" hidden></div><div class="stats"><div class="stat"><b id="statNew">0</b><span>New</span></div><div class="stat"><b id="statReviewing">0</b><span>Reviewing</span></div><div class="stat"><b id="statTrial">0</b><span>Trial</span></div><div class="stat"><b id="statTotal">0</b><span>Total</span></div></div>
-<div class="portal-grid"><aside class="app-list" id="appList"><div style="padding:18px;color:#8f8679">Loading applications…</div></aside><section class="detail" id="detail"><div style="color:#8f8679">Select an application to review it.</div></section></div></section>
+<div class="portal-grid"><aside class="app-list" id="appList"><div style="padding:18px;color:#8f8679">Loading applications…</div></aside><section class="detail" id="detail"><div style="color:#8f8679">Select an application to review it.</div></section></div>
+<section class="card structure-admin" id="structureAdmin">
+  <div class="portal-top"><div><div class="eyebrow">Guild management</div><h2>Guild Structure Assignments</h2><p class="help">This editor is visible only after an authorised officer signs in. Changes update the public Guild Structure page for everyone.</p></div><a class="btn" href="structure.html" target="_blank" rel="noopener">View public page ↗</a></div>
+  <div id="structureMessage" class="notice" style="margin:14px 0" hidden></div>
+  <div class="form-grid structure-fields">
+    <div class="field"><label for="ownerRaidLeader">Raid Leader</label><input id="ownerRaidLeader" data-structure-owner="raid-leader"></div>
+    <div class="field"><label for="ownerTankLead">Tank Lead</label><input id="ownerTankLead" data-structure-owner="tank-lead"></div>
+    <div class="field"><label for="ownerHealerLead">Healer Lead</label><input id="ownerHealerLead" data-structure-owner="healer-lead"></div>
+    <div class="field"><label for="ownerDpsLead">DPS Lead</label><input id="ownerDpsLead" data-structure-owner="dps-lead"></div>
+    <div class="field"><label for="ownerMplusLead">Mythic+ Lead</label><input id="ownerMplusLead" data-structure-owner="mplus-lead"></div>
+    <div class="field"><label for="ownerRecruitLead">Recruitment &amp; Roster Lead</label><input id="ownerRecruitLead" data-structure-owner="recruit-lead"></div>
+    <div class="field"><label for="ownerCommunityLead">Community Lead</label><input id="ownerCommunityLead" data-structure-owner="community-lead"></div>
+  </div>
+  <div class="mentor-admin-head"><div><h3>Class / Spec Mentors</h3><p class="help">Mentors are public on the Guild Structure page but can only be changed here.</p></div><button id="addStructureMentor" class="btn" type="button">+ Add mentor</button></div>
+  <div id="structureMentors" class="mentor-admin-list"></div>
+  <div class="actions" style="justify-content:flex-start"><button id="saveGuildStructure" class="btn primary" type="button">Save guild structure</button></div>
+</section>
+</section>
 </main>
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Officer access is enforced by Supabase authentication and Row Level Security.</div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/site.js"></script><script src="assets/officers.js"></script></body></html>

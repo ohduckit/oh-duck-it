@@ -48,6 +48,21 @@ create table if not exists public.application_notes (
   created_at timestamptz not null default now()
 );
 
+-- Public guild-structure content. Everyone may read it; only authorised officers may update it.
+create table if not exists public.guild_structure (
+  id smallint primary key check (id = 1),
+  assignments jsonb not null default '{}'::jsonb,
+  mentors jsonb not null default '[]'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+insert into public.guild_structure (id, assignments, mentors)
+values (
+  1,
+  '{"raid-leader":"Duckie","tank-lead":"Duckie","healer-lead":"Phae","dps-lead":"To be appointed","mplus-lead":"To be appointed","recruit-lead":"Council interim","community-lead":"Council interim"}'::jsonb,
+  '[{"spec":"Retribution Paladin","mentor":"Vacant"},{"spec":"Frost Death Knight","mentor":"Vacant"},{"spec":"Restoration Shaman","mentor":"Vacant"}]'::jsonb
+) on conflict (id) do nothing;
+
 create or replace function public.is_officer()
 returns boolean
 language sql
@@ -79,14 +94,21 @@ create trigger applications_touch_updated_at
 before update on public.applications
 for each row execute function public.touch_updated_at();
 
+drop trigger if exists guild_structure_touch_updated_at on public.guild_structure;
+create trigger guild_structure_touch_updated_at
+before update on public.guild_structure
+for each row execute function public.touch_updated_at();
+
 alter table public.officers enable row level security;
 alter table public.applications enable row level security;
 alter table public.application_notes enable row level security;
+alter table public.guild_structure enable row level security;
 
 -- Start from least privilege. The service_role remains administrative and bypasses RLS.
 revoke all on table public.officers from anon, authenticated;
 revoke all on table public.applications from anon, authenticated;
 revoke all on table public.application_notes from anon, authenticated;
+revoke all on table public.guild_structure from anon, authenticated;
 
 -- Anyone may submit, including an officer who is already signed into the same site.
 grant insert on table public.applications to anon, authenticated;
@@ -94,6 +116,9 @@ grant insert on table public.applications to anon, authenticated;
 grant select, update on table public.applications to authenticated;
 -- Officer notes are private and officer-only via RLS.
 grant select, insert on table public.application_notes to authenticated;
+-- Guild structure is public to read, but officer-only to modify.
+grant select on table public.guild_structure to anon, authenticated;
+grant update on table public.guild_structure to authenticated;
 -- The browser uses this RPC to determine whether the signed-in user is an officer.
 grant execute on function public.is_officer() to authenticated;
 
@@ -139,6 +164,20 @@ with check (
   (select public.is_officer())
   and author_id = (select auth.uid())
 );
+
+-- Guild structure assignments are intentionally public information.
+drop policy if exists "public may read guild structure" on public.guild_structure;
+create policy "public may read guild structure"
+on public.guild_structure for select
+to anon, authenticated
+using (true);
+
+drop policy if exists "officers may update guild structure" on public.guild_structure;
+create policy "officers may update guild structure"
+on public.guild_structure for update
+to authenticated
+using ((select public.is_officer()))
+with check ((select public.is_officer()));
 
 -- No client grants or policies are provided for public.officers. It is maintained in
 -- the Supabase SQL Editor / dashboard and read only inside the security-definer function.
