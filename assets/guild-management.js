@@ -21,9 +21,17 @@
   const addPriorityBtn = document.getElementById('addRecruitmentPriority');
   const savePrioritiesBtn = document.getElementById('saveRecruitmentPriorities');
 
+  const resourceRows = document.getElementById('resourceRows');
+  const resourceMessage = document.getElementById('resourceMessage');
+  const addResourceBtn = document.getElementById('addResourceItem');
+  const saveResourcesBtn = document.getElementById('saveResources');
+  const resourceSectionFilter = document.getElementById('resourceSectionFilter');
+
   let client, user;
   let structureLoaded = false;
   let prioritiesLoaded = false;
+  let resourcesLoaded = false;
+  let resourceSections = [];
 
   const esc = (s='') => String(s).replace(/[&<>'"]/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
@@ -61,6 +69,8 @@
 
   const priorityIcons = ['🛡','✚','⚔','★','🗝','👥','🏹','🔮'];
 
+  const defaultResourceSections = [{"id": "class", "title": "Class Guides", "layout": "cards", "items": [{"icon": "📖", "title": "Class Guides", "description": "Core class and spec references.", "url": "https://www.wowhead.com/guides/classes"}, {"icon": "📈", "title": "Raidbots", "description": "Character simulation tools.", "url": "https://www.raidbots.com/"}, {"icon": "👥", "title": "Spec Mentors", "description": "Guild help from appointed mentors.", "url": "structure.html#roles"}]}, {"id": "raid", "title": "Raid Guides", "layout": "cards", "items": [{"icon": "📊", "title": "Warcraft Logs", "description": "Raid reports, parses and progression.", "url": "https://www.warcraftlogs.com/"}, {"icon": "⚔", "title": "Encounter Guides", "description": "Boss mechanics and raid references.", "url": "https://www.wowhead.com/guides/raids"}, {"icon": "🏆", "title": "ODit Progression", "description": "Our goals, schedule and current progress.", "url": "progression.html"}]}, {"id": "mplus", "title": "Mythic+ Guides", "layout": "cards", "items": [{"icon": "🗝", "title": "Raider.IO", "description": "Guild profile and Mythic+ activity.", "url": "https://raider.io/"}, {"icon": "🗺", "title": "Routes & Profiles", "description": "External Mythic+ resources.", "url": "https://raider.io/"}, {"icon": "📅", "title": "Mythic Mondays", "description": "Our regular guild key night.", "url": "progression.html#mythic"}]}, {"id": "addons", "title": "Addons & UI", "layout": "cards", "items": []}, {"id": "external", "title": "External Links", "layout": "list", "items": [{"icon": "↗", "title": "Wowhead", "description": "Guides, items and game data.", "url": "https://www.wowhead.com/"}, {"icon": "↗", "title": "Raidbots", "description": "Character simulation tools.", "url": "https://www.raidbots.com/"}, {"icon": "↗", "title": "Warcraft Logs", "description": "Combat analysis.", "url": "https://www.warcraftlogs.com/"}]}, {"id": "community", "title": "Community Tools", "layout": "cards", "items": [{"icon": "💬", "title": "Discord", "description": "ODit community and recruitment contact.", "url": ""}, {"icon": "📆", "title": "Calendars", "description": "Raid and guild scheduling resources.", "url": ""}, {"icon": "🍻", "title": "Shared Resources", "description": "Guild documents, signups and tools.", "url": ""}]}];
+
   if (!configured) {
     loginBtn.disabled = true;
     show(authNotice,'Supabase is not configured.','error');
@@ -89,6 +99,9 @@
   saveGuildStructureBtn.addEventListener('click',saveGuildStructure);
   addPriorityBtn?.addEventListener('click',()=>addPriorityRow());
   savePrioritiesBtn?.addEventListener('click',saveRecruitmentPriorities);
+  addResourceBtn?.addEventListener('click',()=>addResourceRow());
+  saveResourcesBtn?.addEventListener('click',saveResources);
+  resourceSectionFilter?.addEventListener('change',renderResourceRows);
 
   function addMentorRow(spec='',mentor=''){
     const row = document.createElement('div');
@@ -283,6 +296,181 @@
     );
   }
 
+
+  function currentResourceSection(){
+    const id = resourceSectionFilter?.value || 'class';
+    return resourceSections.find(section=>section.id===id) || null;
+  }
+
+  function addResourceRow(item={icon:'🔗',title:'',description:'',url:''}){
+    const section = currentResourceSection();
+    if(!section) return;
+
+    section.items = Array.isArray(section.items) ? section.items : [];
+    section.items.push({...item});
+    renderResourceRows();
+  }
+
+  function renderResourceRows(){
+    if(!resourceRows) return;
+    resourceRows.innerHTML='';
+
+    const section=currentResourceSection();
+    if(!section) return;
+
+    const items=Array.isArray(section.items) ? section.items : [];
+
+    if(!items.length){
+      const empty=document.createElement('div');
+      empty.className='resource-admin-empty';
+      empty.textContent='No resources in this section yet. Use “+ Add resource” to add the first one.';
+      resourceRows.appendChild(empty);
+      return;
+    }
+
+    items.forEach((item,index)=>{
+      const row=document.createElement('div');
+      row.className='resource-admin-row';
+      row.dataset.index=String(index);
+
+      row.innerHTML=`
+        <div class="field resource-icon-field">
+          <label>Icon</label>
+          <input class="resource-icon" maxlength="12" value="${esc(item.icon||'🔗')}" placeholder="🔗">
+        </div>
+        <div class="field">
+          <label>Title</label>
+          <input class="resource-title" maxlength="80" value="${esc(item.title||'')}" placeholder="Resource name">
+        </div>
+        <div class="field">
+          <label>Description</label>
+          <input class="resource-description" maxlength="180" value="${esc(item.description||'')}" placeholder="Short public description">
+        </div>
+        <div class="field">
+          <label>URL</label>
+          <input class="resource-url" maxlength="500" value="${esc(item.url||'')}" placeholder="https://… or local page">
+        </div>
+        <div class="resource-row-controls">
+          <button class="btn resource-up" type="button" title="Move up">↑</button>
+          <button class="btn resource-down" type="button" title="Move down">↓</button>
+          <button class="btn danger resource-remove" type="button">Remove</button>
+        </div>`;
+
+      const update=()=>{
+        section.items[index]={
+          icon:row.querySelector('.resource-icon').value.trim()||'🔗',
+          title:row.querySelector('.resource-title').value.trim(),
+          description:row.querySelector('.resource-description').value.trim(),
+          url:row.querySelector('.resource-url').value.trim()
+        };
+      };
+
+      row.querySelectorAll('input').forEach(input=>input.addEventListener('input',update));
+
+      row.querySelector('.resource-remove').addEventListener('click',()=>{
+        section.items.splice(index,1);
+        renderResourceRows();
+      });
+
+      row.querySelector('.resource-up').addEventListener('click',()=>{
+        update();
+        if(index<=0)return;
+        [section.items[index-1],section.items[index]]=[section.items[index],section.items[index-1]];
+        renderResourceRows();
+      });
+
+      row.querySelector('.resource-down').addEventListener('click',()=>{
+        update();
+        if(index>=section.items.length-1)return;
+        [section.items[index+1],section.items[index]]=[section.items[index],section.items[index+1]];
+        renderResourceRows();
+      });
+
+      resourceRows.appendChild(row);
+    });
+  }
+
+  function syncResourceRows(){
+    const section=currentResourceSection();
+    if(!section || !resourceRows)return;
+
+    const rows=[...resourceRows.querySelectorAll('.resource-admin-row')];
+    if(!rows.length)return;
+
+    section.items=rows.map(row=>({
+      icon:row.querySelector('.resource-icon').value.trim()||'🔗',
+      title:row.querySelector('.resource-title').value.trim(),
+      description:row.querySelector('.resource-description').value.trim(),
+      url:row.querySelector('.resource-url').value.trim()
+    }));
+  }
+
+  async function loadResources(){
+    if(!resourceRows)return;
+    hide(resourceMessage);
+
+    const {data,error}=await client
+      .from('resource_settings')
+      .select('sections,updated_at')
+      .eq('id',1)
+      .maybeSingle();
+
+    if(error){
+      resourceSections=JSON.parse(JSON.stringify(defaultResourceSections));
+      renderResourceRows();
+      show(
+        resourceMessage,
+        'Resources are showing the built-in defaults because the resource_settings backend is not available yet. Run the supplied Supabase migration.',
+        'info'
+      );
+      resourcesLoaded=false;
+      return;
+    }
+
+    resourceSections=
+      Array.isArray(data?.sections) && data.sections.length
+        ? data.sections
+        : JSON.parse(JSON.stringify(defaultResourceSections));
+
+    resourcesLoaded=true;
+    renderResourceRows();
+  }
+
+  async function saveResources(){
+    if(!resourcesLoaded)return;
+
+    syncResourceRows();
+
+    const cleaned=resourceSections.map(section=>({
+      id:section.id,
+      title:section.title,
+      layout:section.layout==='list'?'list':'cards',
+      items:(Array.isArray(section.items)?section.items:[])
+        .map(item=>({
+          icon:String(item.icon||'🔗').trim()||'🔗',
+          title:String(item.title||'').trim(),
+          description:String(item.description||'').trim(),
+          url:String(item.url||'').trim()
+        }))
+        .filter(item=>item.title)
+    }));
+
+    saveResourcesBtn.disabled=true;
+    const {error}=await client
+      .from('resource_settings')
+      .update({sections:cleaned})
+      .eq('id',1);
+    saveResourcesBtn.disabled=false;
+
+    if(error){
+      show(resourceMessage,`Could not save Resources page: ${error.message}`,'error');
+      return;
+    }
+
+    resourceSections=cleaned;
+    show(resourceMessage,'Resources page saved. Public resources will use the new content immediately.','success');
+  }
+
   async function boot(){
     const {data:{session},error} = await client.auth.getSession();
     if(error){
@@ -316,6 +504,7 @@
 
     await loadGuildStructure();
     await loadRecruitmentPriorities();
+    await loadResources();
   }
 
   client.auth.onAuthStateChange(event=>{
