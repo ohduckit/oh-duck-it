@@ -1,4 +1,153 @@
 (() => {
+
+  // Split the former single DPS Lead into separate Melee and Ranged DPS Leads.
+  // This runs before the page-specific scripts so Guild Management and the
+  // public Guild Structure page both work with the new assignment keys.
+  function splitDpsLeadUi() {
+    // Guild Management: replace the old single field with two editable fields.
+    const legacyInput = document.querySelector(
+      'input[data-structure-owner="dps-lead"]'
+    );
+
+    if (legacyInput) {
+      const field = legacyInput.closest('.field');
+      if (field) {
+        const melee = document.createElement('div');
+        melee.className = 'field';
+        melee.innerHTML =
+          '<label>Melee DPS Lead</label>' +
+          '<input data-structure-owner="melee-dps-lead">';
+
+        const ranged = document.createElement('div');
+        ranged.className = 'field';
+        ranged.innerHTML =
+          '<label>Ranged DPS Lead</label>' +
+          '<input data-structure-owner="ranged-dps-lead">';
+
+        field.replaceWith(melee, ranged);
+      }
+    }
+
+    // Public Guild Structure: replace the old DPS role card with two cards.
+    const legacyOwner = document.querySelector('[data-owner="dps-lead"]');
+    const legacyCard = legacyOwner?.closest('.role');
+
+    if (legacyCard) {
+      const previousOwner =
+        (legacyOwner.textContent || '').trim() || 'To be appointed';
+
+      const meleeCard = document.createElement('article');
+      meleeCard.className = 'role';
+      meleeCard.innerHTML = `
+        <div class="role-head">
+          <div>
+            <div class="role-name">Melee DPS Lead</div>
+            <div class="owner" data-owner="melee-dps-lead">${previousOwner}</div>
+          </div>
+          <span>⚔</span>
+        </div>
+        <div class="summary">Melee DPS community, execution and development.</div>
+        <div class="details">
+          <ul>
+            <li>Supports melee DPS recruitment, readiness and improvement.</li>
+            <li>Helps with uptime, positioning, utility and class resources.</li>
+          </ul>
+        </div>`;
+
+      const rangedCard = document.createElement('article');
+      rangedCard.className = 'role';
+      rangedCard.innerHTML = `
+        <div class="role-head">
+          <div>
+            <div class="role-name">Ranged DPS Lead</div>
+            <div class="owner" data-owner="ranged-dps-lead">To be appointed</div>
+          </div>
+          <span>🏹</span>
+        </div>
+        <div class="summary">Ranged DPS community, execution and development.</div>
+        <div class="details">
+          <ul>
+            <li>Supports ranged DPS recruitment, readiness and improvement.</li>
+            <li>Helps with priority damage, positioning, utility and class resources.</li>
+          </ul>
+        </div>`;
+
+      legacyCard.replaceWith(meleeCard, rangedCard);
+    }
+  }
+
+  splitDpsLeadUi();
+
+  // Backward-compatible migration helper:
+  // Until the new fields are saved, carry the existing DPS Lead into Melee DPS
+  // Lead and leave Ranged DPS Lead as "To be appointed". Once the officer saves
+  // Guild Structure, the normal management script stores the two new keys.
+  async function hydrateSplitDpsLeads() {
+    const cfg = window.ODIT_SUPABASE || {};
+    if (!cfg.url || !cfg.key || !window.supabase?.createClient) return;
+
+    try {
+      const client = window.supabase.createClient(cfg.url, cfg.key);
+      const { data, error } = await client
+        .from('guild_structure')
+        .select('assignments')
+        .eq('id', 1)
+        .maybeSingle();
+
+      if (error || !data) return;
+
+      const assignments = data.assignments || {};
+      const legacy =
+        typeof assignments['dps-lead'] === 'string' &&
+        assignments['dps-lead'].trim()
+          ? assignments['dps-lead'].trim()
+          : 'To be appointed';
+
+      const melee =
+        typeof assignments['melee-dps-lead'] === 'string' &&
+        assignments['melee-dps-lead'].trim()
+          ? assignments['melee-dps-lead'].trim()
+          : legacy;
+
+      const ranged =
+        typeof assignments['ranged-dps-lead'] === 'string' &&
+        assignments['ranged-dps-lead'].trim()
+          ? assignments['ranged-dps-lead'].trim()
+          : 'To be appointed';
+
+      document.querySelectorAll(
+        'input[data-structure-owner="melee-dps-lead"]'
+      ).forEach(input => {
+        if (!input.value.trim() || !assignments['melee-dps-lead']) {
+          input.value = melee;
+        }
+      });
+
+      document.querySelectorAll(
+        'input[data-structure-owner="ranged-dps-lead"]'
+      ).forEach(input => {
+        if (!input.value.trim() || !assignments['ranged-dps-lead']) {
+          input.value = ranged;
+        }
+      });
+
+      document.querySelectorAll('[data-owner="melee-dps-lead"]')
+        .forEach(el => { el.textContent = melee; });
+
+      document.querySelectorAll('[data-owner="ranged-dps-lead"]')
+        .forEach(el => { el.textContent = ranged; });
+    } catch (error) {
+      console.warn('ODit DPS lead split could not hydrate:', error);
+    }
+  }
+
+  window.addEventListener('load', () => {
+    // Run twice so this stays reliable if the page-specific Supabase load
+    // completes shortly after the first pass.
+    window.setTimeout(hydrateSplitDpsLeads, 250);
+    window.setTimeout(hydrateSplitDpsLeads, 1200);
+  });
+
   // Officer access is intentionally not advertised to public visitors.
   // site-auth.js adds the private links back only after Supabase confirms
   // the current signed-in account is an active ODit officer.
