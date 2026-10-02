@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oh Duck It — Guild Management</title><meta name="robots" content="noindex,nofollow">
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/guild-management-v22.css"><link rel="stylesheet" href="assets/guild-management-v23.css"><link rel="stylesheet" href="assets/resources-management.css">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/guild-management-v22.css"><link rel="stylesheet" href="assets/guild-management-v23.css"><link rel="stylesheet" href="assets/resources-management.css"><link rel="stylesheet" href="assets/progression-v1.css">
 </head><body>
 
 <nav class="sitebar">
@@ -35,6 +35,7 @@
 <aside class="side-nav" aria-label="Guild Management navigation">
 <a href="#overview"><span class="ico">⌂</span><span>Overview</span></a>
 <a href="#roles"><span class="ico">♛</span><span>Role Assignments</span><span class="nav-status">Live</span></a>
+<a href="#progression"><span class="ico">⚔</span><span>Progression</span><span class="nav-status">Live</span></a>
 <a href="#recruitment"><span class="ico">✉</span><span>Recruitment Priorities</span><span class="nav-status">Live</span></a>
 <a href="#resources"><span class="ico">🛠</span><span>Resources</span><span class="nav-status">Live</span></a>
 <a href="#permissions"><span class="ico">⚙</span><span>Permissions</span><span class="nav-status">Planned</span></a>
@@ -45,7 +46,7 @@
 <div>
 <section class="panel anchor-section" id="overview">
 <div class="portal-top"><div><div class="eyebrow">Guild management</div><h1>Guild Management</h1><p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p></div><div class="portal-tools"><a class="btn" href="officers.html">← Officer Portal</a><a class="btn" href="structure.html" target="_blank" rel="noopener">View public page ↗</a><button id="logoutBtn" class="btn">Sign out</button></div></div>
-<p>Manage the live public-facing guild structure, recruitment settings and Resources page here. Planned administration modules are shown below so the management area has a clear, stable structure as the site grows.</p>
+<p>Manage the live public-facing guild structure, progression, recruitment settings and Resources page here. Planned administration modules are shown below so the management area has a clear, stable structure as the site grows.</p>
 </section>
 
 <section class="card structure-admin anchor-section" id="roles">
@@ -64,6 +65,90 @@
 <div class="mentor-admin-head"><div><h3>Class / Spec Mentors</h3><p class="help">Mentors appear on the public Guild Structure page.</p></div><button id="addStructureMentor" class="btn" type="button">+ Add mentor</button></div>
 <div id="structureMentors" class="mentor-admin-list"></div>
 <div class="actions" style="justify-content:flex-start"><button id="saveGuildStructure" class="btn primary" type="button">Save guild structure</button></div>
+</section>
+
+
+<section class="card structure-admin anchor-section" id="progression">
+  <div class="progression-admin-head">
+    <div>
+      <h2>Progression</h2>
+      <p class="help">
+        Control the current expansion and season, raid progression, AoTC status,
+        raid schedule, Mythic+ night and public progression links.
+      </p>
+    </div>
+    <div class="progression-admin-actions">
+      <button id="addProgressionRaid" class="btn" type="button">+ Add raid</button>
+      <a class="btn" href="progression.html" target="_blank" rel="noopener">View Progression page ↗</a>
+    </div>
+  </div>
+
+  <div id="progressionMessage" class="notice" style="margin:14px 0" hidden></div>
+
+  <div class="form-grid progression-settings-grid">
+    <div class="field">
+      <label for="progressionExpansion">Expansion</label>
+      <input id="progressionExpansion" maxlength="80" placeholder="e.g. Midnight">
+    </div>
+    <div class="field">
+      <label for="progressionSeason">Current season</label>
+      <input id="progressionSeason" maxlength="100" placeholder="e.g. Midnight Season 2">
+    </div>
+    <div class="field">
+      <label for="progressionRaidNights">Raid nights</label>
+      <input id="progressionRaidNights" maxlength="100" placeholder="Wednesday & Thursday">
+    </div>
+    <div class="field">
+      <label for="progressionRaidTime">Raid time</label>
+      <input id="progressionRaidTime" maxlength="100" placeholder="Time TBC">
+    </div>
+    <div class="field">
+      <label for="progressionMplusNight">Mythic+ night</label>
+      <input id="progressionMplusNight" maxlength="100" placeholder="Monday">
+    </div>
+    <div class="field progression-check-field">
+      <label>Ahead of the Curve</label>
+      <label class="progression-check">
+        <input id="progressionAotc" type="checkbox">
+        <span>AoTC achieved this season</span>
+      </label>
+    </div>
+    <div class="field">
+      <label for="progressionWcl">Warcraft Logs URL</label>
+      <input id="progressionWcl" type="url" maxlength="500" placeholder="https://www.warcraftlogs.com/guild/...">
+    </div>
+    <div class="field">
+      <label for="progressionRaiderIo">Raider.IO URL</label>
+      <input id="progressionRaiderIo" type="url" maxlength="500" placeholder="https://raider.io/guilds/...">
+    </div>
+  </div>
+
+  <div class="progression-raid-head">
+    <div>
+      <h3>Raids</h3>
+      <p class="help">
+        Add every raid that belongs to the season. Upcoming raids can be listed before they open.
+        Kill values are capped automatically at the raid's boss count.
+      </p>
+    </div>
+  </div>
+
+  <div class="progression-raid-labels" aria-hidden="true">
+    <span>Raid</span>
+    <span>Status</span>
+    <span>Bosses</span>
+    <span>Normal</span>
+    <span>Heroic</span>
+    <span>Mythic</span>
+    <span>Public note</span>
+    <span></span>
+  </div>
+
+  <div id="progressionRaidRows" class="progression-raid-list"></div>
+
+  <div class="actions" style="justify-content:flex-start">
+    <button id="saveProgression" class="btn primary" type="button">Save progression</button>
+  </div>
 </section>
 
 <section class="card structure-admin anchor-section" id="recruitment">
@@ -207,6 +292,5 @@
 </section>
 </main>
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Guild management is restricted to authorised officers.</div></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/site.js"></script><script src="assets/guild-management.js"></script>
-<script src="assets/officer-access-guard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/site.js"></script><script src="assets/guild-management.js"></script><script src="assets/progression-management.js"></script>
 </body></html>

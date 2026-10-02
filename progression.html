@@ -2,7 +2,10 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oh Duck It — Progression</title>
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css">
+<meta name="description" content="Oh Duck It raid progression, season goals, raid schedule and Mythic+ activity.">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/tavern-v21.css">
+<link rel="stylesheet" href="assets/progression-v1.css">
 </head><body>
 
 <nav class="sitebar">
@@ -10,78 +13,129 @@
     <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
     <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
     <div class="site-links">
-      <a  href="index.html">Home</a>
+      <a href="index.html">Home</a>
       <a class="active" href="progression.html">Progression</a>
-      <a  href="structure.html">Guild Structure</a>
-      <a  href="recruitment.html">Recruitment</a>
-      <a  href="resources.html">Resources</a>
-      <a class="officer-link " href="officers.html">Officer Portal</a>
+      <a href="structure.html">Guild Structure</a>
+      <a href="recruitment.html">Recruitment</a>
+      <a href="resources.html">Resources</a>
+      <a class="officer-link" href="officers.html">Officer Portal</a>
     </div>
   </div>
 </nav>
 
-<header class="page-head wrap"><div class="page-sign"><h1>PROGRESSION</h1><p>Our raiding journey</p></div></header>
+<header class="page-head wrap">
+  <div class="page-sign">
+    <h1>PROGRESSION</h1>
+    <p>Current season, raids & guild goals</p>
+  </div>
+</header>
+
 <main class="wrap tavern-shell">
 <aside class="side-nav">
-<a href="#overview"><span class="ico">⌂</span>Overview</a>
-<a href="#goals"><span class="ico">⚔</span>Raid Goals</a>
-<a href="#progress"><span class="ico">◉</span>Current Progress</a>
-<a href="#roster"><span class="ico">♙</span>Raid Roster</a>
-<a href="#schedule"><span class="ico">▣</span>Schedules</a>
-<a href="#mythic"><span class="ico">🗝</span>Mythic+</a>
+  <a href="#overview"><span class="ico">⌂</span>Overview</a>
+  <a href="#goals"><span class="ico">⚔</span>Raid Goals</a>
+  <a href="#progress"><span class="ico">◉</span>Current Progress</a>
+  <a href="#roster"><span class="ico">♙</span>Raid Roster</a>
+  <a href="#schedule"><span class="ico">▣</span>Schedules</a>
+  <a href="#mythic"><span class="ico">🗝</span>Mythic+</a>
 </aside>
+
 <div>
 <section class="panel anchor-section" id="overview">
-<div class="progress-banner"><div><h2>AoTC every season.</h2><p>Two dedicated progression nights, focused, prepared and enjoying the people we raid with.</p></div></div>
-<div class="stat-grid" style="margin-top:12px">
-<div class="stat-card"><label>Current Season</label><b>Season 3</b></div>
-<div class="stat-card"><label>Raid Progress</label><b>Planning</b></div>
-<div class="stat-card"><label>Mythic+ Night</label><b>Monday</b></div>
-</div>
+  <div class="progress-banner progression-season-banner">
+    <div>
+      <div class="eyebrow" id="progressionExpansion">Midnight</div>
+      <h2 id="progressionSeasonTitle">Midnight Season 2</h2>
+      <p id="progressionSeasonMeta">The Venomous Abyss • AoTC every season.</p>
+    </div>
+    <div id="aotcBanner" class="aotc-badge" hidden>🏆 Ahead of the Curve achieved</div>
+  </div>
+
+  <div class="stat-grid progression-stat-grid" style="margin-top:12px">
+    <div class="stat-card">
+      <label>Current Season</label>
+      <b id="statSeason">Midnight Season 2</b>
+    </div>
+    <div class="stat-card">
+      <label>Raid Progress</label>
+      <b id="statRaidProgress">Heroic 0 / 8</b>
+    </div>
+    <div class="stat-card">
+      <label>Mythic+ Night</label>
+      <b id="statMplusNight">Monday</b>
+    </div>
+  </div>
 </section>
 
 <section class="panel anchor-section" id="goals">
-<div class="section-title"><h2>Raid Goals</h2></div>
-<div class="two-col">
-<div><ul class="goals">
-<li>Achieve Ahead of the Curve every season.</li>
-<li>Two dedicated progression nights: Wednesday and Thursday.</li>
-<li>Optional reclears and fun runs outside progression.</li>
-<li>Continue into Mythic after AoTC if interest and roster allow.</li>
-<li>Regular Mythic+ activity, including Mythic Mondays.</li>
-</ul></div>
-<div class="notice">ODit is being built for Season 3. Progression values remain in planning until the raid opens.</div>
-</div>
+  <div class="section-title"><h2>Raid Goals</h2></div>
+  <div class="two-col">
+    <div>
+      <ul class="goals">
+        <li>Achieve Ahead of the Curve every season.</li>
+        <li>Two dedicated progression nights.</li>
+        <li>Optional reclears and fun runs outside progression.</li>
+        <li>Continue into Mythic after AoTC if interest and roster allow.</li>
+        <li>Regular Mythic+ activity, including Mythic Mondays.</li>
+      </ul>
+    </div>
+    <div class="notice">
+      Progression is team-first: prepare for the encounter, execute mechanics,
+      know your class and be receptive to improvement.
+    </div>
+  </div>
 </section>
 
 <section class="panel anchor-section" id="progress">
-<div class="section-title"><h2>Current Progress</h2></div>
-<div class="progress-line"><strong>Normal</strong><div class="bar"><i style="width:0%"></i></div><span>0 / ?</span></div>
-<div class="progress-line"><strong>Heroic</strong><div class="bar"><i style="width:0%"></i></div><span>0 / ?</span></div>
-<div class="progress-line"><strong>Mythic</strong><div class="bar"><i style="width:0%"></i></div><span>0 / ?</span></div>
-<div class="actions" style="justify-content:flex-start"><a class="btn" data-guild-link="warcraftLogs" href="#">Warcraft Logs</a><a class="btn" data-guild-link="raiderIO" href="#">Raider.IO</a></div>
+  <div class="section-title">
+    <h2>Current Progress</h2>
+    <span id="progressUpdated" class="progression-updated"></span>
+  </div>
+
+  <div id="raidProgressList" class="raid-progress-list">
+    <div class="progression-loading">Loading current raid progression…</div>
+  </div>
+
+  <div class="actions progression-links" style="justify-content:flex-start">
+    <a class="btn" id="warcraftLogsLink" href="#" target="_blank" rel="noopener">Warcraft Logs</a>
+    <a class="btn" id="raiderIoLink" href="#" target="_blank" rel="noopener">Raider.IO</a>
+  </div>
 </section>
 
 <section class="panel anchor-section" id="roster">
-<div class="section-title"><h2>Raid Roster</h2><span class="badge-planned">Council build-out</span></div>
-<p>The progression roster will be published here as recruitment settles. The aim is a reliable, role-balanced team rather than a bench built around favourites.</p>
+  <div class="section-title">
+    <h2>Raid Roster</h2>
+    <span class="badge-planned">Council build-out</span>
+  </div>
+  <p>
+    The progression roster will be published here as recruitment settles.
+    The aim is a reliable, role-balanced team rather than a bench built around favourites.
+  </p>
 </section>
 
 <section class="panel anchor-section" id="schedule">
-<div class="section-title"><h2>Raid Schedule</h2></div>
-<div class="schedule-list">
-<div class="schedule-row"><strong>WED</strong><div><b>Progression Raid</b><br><small>Primary progression night</small></div></div>
-<div class="schedule-row"><strong>THU</strong><div><b>Progression Raid</b><br><small>Primary progression night</small></div></div>
-<div class="schedule-row"><strong>OPTIONAL</strong><div><b>Reclear / Fun Run</b><br><small>Outside progression nights</small></div></div>
-</div>
+  <div class="section-title"><h2>Raid Schedule</h2></div>
+  <div id="scheduleList" class="schedule-list">
+    <div class="schedule-row"><strong>RAID</strong><div><b>Wednesday & Thursday</b><br><small>Time TBC</small></div></div>
+  </div>
 </section>
 
 <section class="panel anchor-section" id="mythic">
-<div class="section-title"><h2>Mythic+</h2></div>
-<p><b>Mythic Mondays</b> give the guild a predictable night for keys, score progression, learning and helping each other push.</p>
+  <div class="section-title"><h2>Mythic+</h2></div>
+  <p id="mythicPlusCopy">
+    <b>Mythic Mondays</b> give the guild a predictable night for keys, score progression,
+    learning and helping each other push.
+  </p>
 </section>
-</div></main>
-<footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Progress together. Enjoy the game.</div></footer>
-<script src="assets/guild-config.js"></script><script src="assets/site.js"></script>
-<script>document.querySelectorAll('[data-guild-link]').forEach(a=>{const u=ODIT_GUILD[a.dataset.guildLink];if(u&&u!=='#')a.href=u;else{a.classList.add('ghost');a.title='Add this URL in assets/guild-config.js'}});</script>
+</div>
+</main>
+
+<footer class="footer">
+  <div class="wrap"><b>OH DUCK IT</b> • Progress together. Enjoy the game.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/progression-public.js"></script>
 </body></html>
