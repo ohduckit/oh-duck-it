@@ -15,7 +15,6 @@
       <a  href="structure.html">Guild Structure</a>
       <a class="active" href="recruitment.html">Recruitment</a>
       <a  href="resources.html">Resources</a>
-      <a class="officer-link " href="officers.html">Officer Portal</a>
     </div>
   </div>
 </nav>
@@ -170,11 +169,18 @@
 <div class="field full"><label for="about_you">Anything else?</label><textarea id="about_you" name="about_you" maxlength="2000" placeholder="Anything you think helps us understand you as a player or teammate."></textarea></div>
 <div class="field full"><label class="check"><input type="checkbox" name="privacy_consent" required> I agree that ODit officers may use the information in this form to assess and contact me about guild recruitment. *</label></div>
 </div></div>
+
+<div class="form-section recruitment-security">
+  <h3>Spam protection</h3>
+  <p>Complete the security check before submitting your application.</p>
+  <div id="turnstileWidget"></div>
+</div>
+
 <div class="actions"><button class="btn primary" id="submitBtn" type="submit">Submit Application</button></div>
 </form>
 </section>
 </div></main>
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Reliable • Prepared • Coachable • Team-first.</div></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/guild-config.js"></script><script src="assets/site.js"></script><script src="assets/recruitment-priorities.js"></script><script src="assets/recruitment.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/guild-config.js"></script><script src="assets/site.js"></script><script src="assets/recruitment-priorities.js"></script><script src="assets/security-config.js"></script><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script><script src="assets/recruitment.js"></script>
 <script>document.querySelectorAll('[data-guild-link]').forEach(a=>{const u=ODIT_GUILD[a.dataset.guildLink];if(u&&u!=='#'){a.href=u;a.target='_blank';a.rel='noopener'}else{a.addEventListener('click',e=>e.preventDefault())}});</script>
 </body></html>
