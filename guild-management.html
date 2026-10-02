@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oh Duck It — Guild Management</title><meta name="robots" content="noindex,nofollow">
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/guild-management-v22.css">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/guild-management-v22.css"><link rel="stylesheet" href="assets/guild-management-v23.css">
 </head><body>
 
 <nav class="sitebar">
@@ -32,19 +32,19 @@
 
 <section id="managementView" hidden>
 <div class="tavern-shell">
-<aside class="side-nav">
-<a href="#overview"><span class="ico">⌂</span>Overview</a>
-<a href="#roles"><span class="ico">♛</span>Role Assignments</a>
-<a href="#recruitment"><span class="ico">✉</span>Recruitment Priorities</a>
-<span class="future"><span class="ico">⚙</span>Permissions — planned</span>
-<span class="future"><span class="ico">📜</span>Guild Information — planned</span>
-<span class="future"><span class="ico">☷</span>Logs & Reports — planned</span>
-<span class="future"><span class="ico">🔧</span>Settings — planned</span>
+<aside class="side-nav" aria-label="Guild Management navigation">
+<a href="#overview"><span class="ico">⌂</span><span>Overview</span></a>
+<a href="#roles"><span class="ico">♛</span><span>Role Assignments</span><span class="nav-status">Live</span></a>
+<a href="#recruitment"><span class="ico">✉</span><span>Recruitment Priorities</span><span class="nav-status">Live</span></a>
+<a href="#permissions"><span class="ico">⚙</span><span>Permissions</span><span class="nav-status">Planned</span></a>
+<a href="#guild-info"><span class="ico">📜</span><span>Guild Information</span><span class="nav-status">Planned</span></a>
+<a href="#logs"><span class="ico">☷</span><span>Logs & Reports</span><span class="nav-status">Planned</span></a>
+<a href="#settings"><span class="ico">🔧</span><span>Settings</span><span class="nav-status">Planned</span></a>
 </aside>
 <div>
 <section class="panel anchor-section" id="overview">
-<div class="portal-top"><div><div class="eyebrow">Guild management</div><h1>Guild Structure Assignments</h1><p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p></div><div class="portal-tools"><a class="btn" href="officers.html">← Officer Portal</a><a class="btn" href="structure.html" target="_blank" rel="noopener">View public page ↗</a><button id="logoutBtn" class="btn">Sign out</button></div></div>
-<p>Current live management covers public role assignments, class/spec mentors and recruitment priorities. Further Council-approved admin functions can be added here as their backend exists.</p>
+<div class="portal-top"><div><div class="eyebrow">Guild management</div><h1>Guild Management</h1><p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p></div><div class="portal-tools"><a class="btn" href="officers.html">← Officer Portal</a><a class="btn" href="structure.html" target="_blank" rel="noopener">View public page ↗</a><button id="logoutBtn" class="btn">Sign out</button></div></div>
+<p>Manage the live public-facing guild structure and recruitment settings here. Planned administration modules are shown below so the management area has a clear, stable structure as the site grows.</p>
 </section>
 
 <section class="card structure-admin anchor-section" id="roles">
@@ -90,6 +90,73 @@
 
   <div class="actions" style="justify-content:flex-start">
     <button id="saveRecruitmentPriorities" class="btn primary" type="button">Save recruitment priorities</button>
+  </div>
+</section>
+
+
+<section class="panel anchor-section" id="permissions">
+  <div class="portal-section-head">
+    <div>
+      <div class="kicker">Administration</div>
+      <h2>Permissions</h2>
+    </div>
+    <span class="badge-planned">Planned module</span>
+  </div>
+  <div class="portal-placeholder">
+    <h3>Officer access & permissions</h3>
+    <p>
+      Reserved for managing officer access levels and future role-based permissions.
+      Authentication remains enforced by Supabase while this module is being designed.
+    </p>
+  </div>
+</section>
+
+<section class="panel anchor-section" id="guild-info">
+  <div class="portal-section-head">
+    <div>
+      <div class="kicker">Public content</div>
+      <h2>Guild Information</h2>
+    </div>
+    <span class="badge-planned">Planned module</span>
+  </div>
+  <div class="portal-placeholder">
+    <h3>Guild-wide information</h3>
+    <p>
+      Reserved for editable guild details that should appear across the public website,
+      without requiring manual HTML changes.
+    </p>
+  </div>
+</section>
+
+<section class="panel anchor-section" id="logs">
+  <div class="portal-section-head">
+    <div>
+      <div class="kicker">Audit</div>
+      <h2>Logs & Reports</h2>
+    </div>
+    <span class="badge-planned">Planned module</span>
+  </div>
+  <div class="portal-placeholder">
+    <h3>Administrative history</h3>
+    <p>
+      Reserved for change history, officer actions and future management reporting.
+    </p>
+  </div>
+</section>
+
+<section class="panel anchor-section" id="settings">
+  <div class="portal-section-head">
+    <div>
+      <div class="kicker">Configuration</div>
+      <h2>Settings</h2>
+    </div>
+    <span class="badge-planned">Planned module</span>
+  </div>
+  <div class="portal-placeholder">
+    <h3>Website & guild settings</h3>
+    <p>
+      Reserved for site-wide configuration that should only be available to authorised officers.
+    </p>
   </div>
 </section>
 
