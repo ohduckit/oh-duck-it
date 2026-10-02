@@ -23,6 +23,9 @@
     !cfg.key.startsWith('YOUR_');
 
   let client = null;
+  const securityCfg = window.ODIT_SECURITY || {};
+  let turnstileWidgetId = null;
+  let turnstileToken = '';
 
   // Current Midnight specialisations. Demon Hunter includes Devourer.
   const CLASS_SPECS = {
@@ -315,6 +318,56 @@
   resetSpecSelects();
   updateProfessionOptions();
 
+
+  function turnstileConfigured() {
+    return securityCfg.turnstileSiteKey &&
+      !securityCfg.turnstileSiteKey.startsWith('PASTE_');
+  }
+
+  function bootTurnstile(attempts = 0) {
+    if (!turnstileConfigured()) {
+      show(
+        backendNotice,
+        'Recruitment spam protection is not configured yet. Add the Cloudflare Turnstile site key in assets/security-config.js.',
+        'error'
+      );
+      submitBtn.disabled = true;
+      return;
+    }
+
+    if (!window.turnstile) {
+      if (attempts < 40) {
+        window.setTimeout(() => bootTurnstile(attempts + 1), 150);
+      } else {
+        show(
+          backendNotice,
+          'The anti-spam security check could not load. Please refresh the page.',
+          'error'
+        );
+        submitBtn.disabled = true;
+      }
+      return;
+    }
+
+    if (turnstileWidgetId !== null) return;
+
+    turnstileWidgetId = window.turnstile.render('#turnstileWidget', {
+      sitekey: securityCfg.turnstileSiteKey,
+      theme: 'dark',
+      callback: token => {
+        turnstileToken = token;
+      },
+      'expired-callback': () => {
+        turnstileToken = '';
+      },
+      'error-callback': () => {
+        turnstileToken = '';
+      }
+    });
+  }
+
+  bootTurnstile();
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     msg.hidden = true;
@@ -323,6 +376,15 @@
 
     validateInterests();
     if (!form.reportValidity()) return;
+
+    if (!turnstileToken) {
+      show(
+        msg,
+        'Please complete the anti-spam security check before submitting.',
+        'error'
+      );
+      return;
+    }
 
     const fd = new FormData(form);
     if (value(fd, 'website')) return; // honeypot
@@ -371,28 +433,39 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting…';
 
-    const { error } = await client.from('applications').insert(payload);
+    const functionName = securityCfg.submitFunction || 'submit-application';
+    const { data, error } = await client.functions.invoke(functionName, {
+      body: {
+        payload,
+        turnstileToken
+      }
+    });
 
     submitBtn.disabled = false;
     submitBtn.textContent = 'Submit Application';
 
-    if (error) {
-      console.error(error);
+    if (error || !data?.ok) {
+      console.error(error || data);
 
-      const missingColumns =
-        /profession_1|profession_2|interests|faction/i.test(error.message || '');
+      if (window.turnstile && turnstileWidgetId !== null) {
+        window.turnstile.reset(turnstileWidgetId);
+      }
+      turnstileToken = '';
 
       show(
         msg,
-        missingColumns
-          ? 'The application form has been updated, but the recruitment database still needs the V22 migration. Please contact an ODit officer.'
-          : 'We could not submit the application. Please check the form or contact an ODit officer on Discord.',
+        data?.message ||
+          'We could not submit the application. Please try again or contact an ODit officer on Discord.',
         'error'
       );
       return;
     }
 
     form.reset();
+    if (window.turnstile && turnstileWidgetId !== null) {
+      window.turnstile.reset(turnstileWidgetId);
+    }
+    turnstileToken = '';
     populateRealmOptions();
     resetSpecSelects();
     updateProfessionOptions();
