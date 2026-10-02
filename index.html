@@ -1,7 +1,412 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Oh Duck It — WoW Guild</title><meta name="description" content="Oh Duck It is an AoTC-focused, social and progression-minded World of Warcraft guild."><link rel="stylesheet" href="assets/site.css"></head><body>
-<nav class="sitebar"><div class="sitebar-inner"><a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a><button class="menu-toggle" type="button" aria-expanded="false">Menu</button><div class="site-links"><a class="active" href="index.html">Home</a><a href="progression.html">Progression</a><a href="structure.html">Guild Structure</a><a href="recruitment.html">Recruitment</a><a href="resources.html">Resources</a><a class="officer-link" href="officers.html">Officer Portal</a></div></div></nav>
-<header class="hero wrap"><img class="hero-banner" src="assets/odit-banner.png" alt="Oh Duck It guild banner"><div class="eyebrow">World of Warcraft Guild</div><h1>OH DUCK IT</h1><p><strong>AoTC-focused. Social. Progression-minded.</strong><br>Reliable, coachable players working towards Ahead of the Curve every season without turning raid night into a second job.</p><div class="actions"><a class="btn primary" href="recruitment.html">Apply to Join</a><a class="btn" href="progression.html">View Progression</a></div></header>
-<main>
-<section class="section"><div class="wrap"><div class="section-head"><div class="kicker">What we are building</div><h2>Progression without the misery</h2><p class="lede">ODit is built around a simple idea: turn up prepared, help the team, learn from mistakes, and enjoy the people you raid with.</p></div><div class="grid three"><article class="card"><div class="icon">🏆</div><h3>AoTC Every Season</h3><p>Two dedicated progression nights with a clear seasonal objective. Mythic can follow once AoTC is secured if roster strength and interest support it.</p><span class="mini">Primary raid goal</span></article><article class="card"><div class="icon">🗝️</div><h3>Mythic Mondays</h3><p>Regular Mythic+ groups, score progression, learning and a predictable weekly night for getting guild keys moving.</p><span class="mini">M+ progression</span></article><article class="card"><div class="icon">🍻</div><h3>Actual Community</h3><p>Optional reclears, fun runs and social activity matter too. Community members are part of the guild, not a waiting room for raid spots.</p><span class="mini">Social by design</span></article></div></div></section>
-<section class="section"><div class="wrap"><div class="section-head"><div class="kicker">Expectations</div><h2>Reliable, prepared, coachable</h2></div><div class="grid three"><article class="card"><h3>Reliable</h3><p>If you commit to raid, we expect you to be there or communicate early when real life gets in the way.</p></article><article class="card"><h3>Prepared</h3><p>Know your class, understand the encounter and arrive ready to contribute. We do not expect perfection.</p></article><article class="card"><h3>Team-first</h3><p>Damage and healing matter, but mechanics, utility, attitude and helping the group succeed matter too.</p></article></div><div class="actions"><a class="btn primary" href="recruitment.html">See Recruitment</a><a class="btn" href="structure.html">How ODit is Run</a></div></div></section>
-</main><footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • AoTC-focused • Social & progression-minded • For Azeroth, for beer, for ducks.</div></footer><script src="assets/site.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Oh Duck It — WoW Guild</title>
+  <meta name="description" content="Oh Duck It is an AoTC-focused, social and progression-minded World of Warcraft guild.">
+
+  <style>
+    :root{
+      --ink:#f5ead4;
+      --muted:#c9b99f;
+      --gold:#e4b34e;
+      --gold2:#8e5b18;
+      --deep:#120b07;
+      --panel:#1d120c;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--ink);
+      font-family:Inter,Segoe UI,system-ui,-apple-system,sans-serif;
+      background:#26150c url("assets/tavern-bg.png") center top/cover fixed no-repeat;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      pointer-events:none;
+      background:
+        linear-gradient(180deg,rgba(20,11,6,.02),rgba(15,8,5,.06) 48%,rgba(10,6,4,.16)),
+        radial-gradient(circle at 50% 18%,rgba(255,196,92,.10),transparent 34%);
+    }
+
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    .wrap{width:min(1180px,calc(100% - 40px));margin:auto}
+
+    /* Shared top navigation */
+    .sitebar{
+      position:sticky;
+      top:0;
+      z-index:100;
+      background:linear-gradient(180deg,rgba(50,28,16,.97),rgba(25,14,9,.98));
+      border-bottom:2px solid #9c6b24;
+      box-shadow:0 10px 30px rgba(0,0,0,.42);
+      backdrop-filter:blur(4px);
+    }
+
+    .sitebar-inner{
+      min-height:70px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+
+    .sitebrand{
+      color:#ffe7a1;
+      font-family:Georgia,"Times New Roman",serif;
+      font-weight:900;
+      letter-spacing:.08em;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+    }
+
+    .duckmark{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      border:1px solid #9d732b;
+      background:radial-gradient(circle,#5b3d17,#1c1209 70%);
+      box-shadow:inset 0 0 0 2px rgba(255,226,142,.05);
+    }
+
+    .site-links{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    .site-links a{
+      border:1px solid transparent;
+      border-radius:8px;
+      padding:9px 12px;
+      color:#d7c8b0;
+      font-size:13px;
+      transition:.16s ease;
+    }
+
+    .site-links a:hover,
+    .site-links a.active{
+      border-color:#8d6728;
+      background:linear-gradient(#3a2513,#21150d);
+      color:#ffe9a6;
+      transform:translateY(-1px);
+    }
+
+    .site-links a.private{
+      border-color:#4e361c;
+      color:#dbc798;
+    }
+
+    .menu-toggle{
+      display:none;
+      border:1px solid #745321;
+      background:#26170d;
+      color:#f0ca6c;
+      border-radius:7px;
+      padding:8px 11px;
+      font-weight:800;
+    }
+
+    /* V20 home face */
+    .hero-home{
+      padding:12px 0 18px;
+      text-align:center;
+    }
+
+    .home-plaque{
+      display:block;
+      width:min(790px,85vw);
+      height:auto;
+      margin:0 auto 0;
+      filter:drop-shadow(0 18px 24px rgba(0,0,0,.40));
+      user-select:none;
+    }
+
+    .home-tag{
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:19px;
+      font-weight:700;
+      margin:-2px 0 0;
+      color:#f3e7d4;
+      text-shadow:0 2px 4px #000;
+    }
+
+    .home-sub{
+      max-width:710px;
+      margin:7px auto 0;
+      color:#eadac2;
+      line-height:1.5;
+      font-size:14px;
+      text-shadow:0 2px 3px #000;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .btn{
+      border:1px solid #8b6123;
+      border-radius:8px;
+      padding:10px 15px;
+      background:linear-gradient(#3c2714,#20140c);
+      color:#f7e6b0;
+      font-weight:800;
+      box-shadow:
+        inset 0 1px rgba(255,237,177,.06),
+        0 5px 12px rgba(0,0,0,.24);
+      transition:.16s ease;
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+      border-color:#d0a044;
+      box-shadow:
+        inset 0 1px rgba(255,237,177,.10),
+        0 8px 18px rgba(0,0,0,.32);
+    }
+
+    .btn.primary{
+      background:linear-gradient(#d7a33b,#8e5b17);
+      color:#1b0e05;
+      border-color:#f0c865;
+      text-shadow:0 1px rgba(255,255,255,.15);
+    }
+
+    .quick-grid{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:12px;
+      max-width:960px;
+      margin:26px auto 0;
+    }
+
+    .quick-card{
+      min-height:120px;
+      border:1px solid #7a5724;
+      border-radius:12px;
+      background:linear-gradient(180deg,rgba(37,22,13,.97),rgba(19,12,8,.97));
+      padding:14px 10px;
+      box-shadow:
+        inset 0 0 0 2px rgba(235,185,73,.04),
+        0 10px 24px rgba(0,0,0,.26);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      transition:.16s ease;
+    }
+
+    a.quick-card:hover{
+      transform:translateY(-3px);
+      border-color:#ba8734;
+      box-shadow:
+        inset 0 0 0 2px rgba(235,185,73,.07),
+        0 14px 28px rgba(0,0,0,.34);
+    }
+
+    .quick-card b{
+      display:block;
+      font-family:Georgia,"Times New Roman",serif;
+      color:#f2d47c;
+      font-size:15px;
+    }
+
+    .quick-card small{
+      display:block;
+      color:#bdae96;
+      margin-top:4px;
+      font-size:11px;
+    }
+
+    .quick-icon{
+      width:38px;
+      height:38px;
+      margin:0 auto 8px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:radial-gradient(circle,#8a5b1d,#2c190d 70%);
+      border:1px solid #d1a044;
+      color:#ffe3a0;
+      font-size:19px;
+    }
+
+    .footer{
+      margin-top:12px;
+      padding:18px 0 28px;
+      text-align:center;
+      color:#a79478;
+      font-size:11px;
+      background:rgba(12,8,5,.40);
+      border-top:1px solid rgba(154,106,37,.28);
+    }
+
+    @media(max-width:900px){
+      .sitebar-inner{
+        min-height:64px;
+        padding:8px 0;
+        position:relative;
+      }
+
+      .menu-toggle{display:block}
+
+      .site-links{
+        display:none;
+        position:absolute;
+        left:0;
+        right:0;
+        top:64px;
+        flex-direction:column;
+        align-items:stretch;
+        background:#1d120c;
+        border:1px solid #775420;
+        border-radius:10px;
+        padding:8px;
+        box-shadow:0 12px 30px #000;
+      }
+
+      .site-links.open{display:flex}
+      .site-links a{width:100%;text-align:left}
+
+      .quick-grid{grid-template-columns:repeat(2,1fr)}
+      .quick-grid .quick-card:last-child{grid-column:1/-1}
+    }
+
+    @media(max-width:560px){
+      .wrap{width:min(100% - 22px,1180px)}
+      .hero-home{padding-top:8px}
+      .home-plaque{width:100%;margin-top:0}
+      .home-tag{font-size:17px}
+      .home-sub{font-size:13px;padding:0 4px}
+      .quick-grid{grid-template-columns:1fr;margin-top:20px}
+      .quick-grid .quick-card:last-child{grid-column:auto}
+      .quick-card{min-height:94px}
+      .actions .btn{flex:1 1 150px}
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="sitebar">
+    <div class="wrap sitebar-inner">
+      <a class="sitebrand" href="index.html" aria-label="Oh Duck It home">
+        <span class="duckmark">🦆</span>
+        <span>OH DUCK IT</span>
+      </a>
+
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mainNav">
+        Menu
+      </button>
+
+      <div class="site-links" id="mainNav">
+        <a class="active" href="index.html">Home</a>
+        <a href="progression.html">Progression</a>
+        <a href="structure.html">Guild Structure</a>
+        <a href="recruitment.html">Recruitment</a>
+        <a href="resources.html">Resources</a>
+        <a class="private" href="officers.html">Officer Portal</a>
+        <a class="private" href="guild-management.html">Guild Management</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="wrap hero-home">
+      <img
+        class="home-plaque"
+        src="assets/odit-home-plaque.png"
+        alt="Oh Duck It guild plaque"
+      >
+
+      <p class="home-tag">AoTC-focused. Social. Progression-minded.</p>
+
+      <p class="home-sub">
+        Reliable, coachable players working towards Ahead of the Curve every season
+        without turning raid night into a second job.
+      </p>
+
+      <div class="actions">
+        <a class="btn primary" href="recruitment.html">Join our journey →</a>
+        <a class="btn" href="progression.html">Learn more</a>
+      </div>
+
+      <div class="quick-grid" aria-label="Guild highlights">
+        <a class="quick-card" href="progression.html">
+          <div class="quick-icon">⚔</div>
+          <b>Progression</b>
+          <small>Raids &amp; goals</small>
+        </a>
+
+        <a class="quick-card" href="structure.html">
+          <div class="quick-icon">🤝</div>
+          <b>Reliable &amp; Social</b>
+          <small>Team culture</small>
+        </a>
+
+        <a class="quick-card" href="progression.html">
+          <div class="quick-icon">🏆</div>
+          <b>AoTC Focused</b>
+          <small>Every season</small>
+        </a>
+
+        <a class="quick-card" href="progression.html">
+          <div class="quick-icon">🗝</div>
+          <b>Mythic+ Active</b>
+          <small>Mythic Mondays</small>
+        </a>
+
+        <a class="quick-card" href="recruitment.html">
+          <div class="quick-icon">🍺</div>
+          <b>Play Your Way</b>
+          <small>Guild community</small>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <b>OH DUCK IT</b> • AoTC-focused • Social &amp; progression-minded •
+      For Azeroth, for beer, for ducks.
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const button = document.querySelector('.menu-toggle');
+      const links = document.querySelector('.site-links');
+
+      if (!button || !links) return;
+
+      button.addEventListener('click', () => {
+        const open = links.classList.toggle('open');
+        button.setAttribute('aria-expanded', String(open));
+      });
+
+      links.addEventListener('click', () => {
+        links.classList.remove('open');
+        button.setAttribute('aria-expanded', 'false');
+      });
+    })();
+  </script>
+</body>
+</html>
