@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oh Duck It — Recruitment</title><meta name="description" content="Apply to join Oh Duck It, an AoTC-focused World of Warcraft guild.">
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/recruitment-v22.css">
 </head><body>
 
 <nav class="sitebar">
@@ -62,11 +62,86 @@
 <div class="field"><label for="realm">Realm *</label><input id="realm" name="realm" maxlength="60" required></div>
 <div class="field"><label for="region">Region *</label><select id="region" name="region" required><option value="EU">EU</option><option value="US">US</option><option value="KR">KR</option><option value="TW">TW</option></select></div>
 <div class="field"><label for="class_name">Class *</label><select id="class_name" name="class_name" required><option value="">Choose class</option><option>Death Knight</option><option>Demon Hunter</option><option>Druid</option><option>Evoker</option><option>Hunter</option><option>Mage</option><option>Monk</option><option>Paladin</option><option>Priest</option><option>Rogue</option><option>Shaman</option><option>Warlock</option><option>Warrior</option></select></div>
-<div class="field"><label for="main_spec">Main spec *</label><input id="main_spec" name="main_spec" maxlength="40" placeholder="e.g. Retribution" required></div>
+<div class="field">
+<label for="main_spec">Main spec *</label>
+<select id="main_spec" name="main_spec" required disabled>
+<option value="">Choose class first</option>
+</select>
+</div>
 <div class="field"><label for="role">Preferred role *</label><select id="role" name="role" required><option value="">Choose role</option><option>Tank</option><option>Healer</option><option>Melee DPS</option><option>Ranged DPS</option><option>Flexible</option></select></div>
-<div class="field"><label for="off_specs">Off-spec(s)</label><input id="off_specs" name="off_specs" maxlength="100" placeholder="Optional"></div>
+<div class="field">
+<label for="off_specs">Off-spec</label>
+<select id="off_specs" name="off_specs" disabled>
+<option value="">Choose class first</option>
+</select>
+</div>
 <div class="field"><label for="item_level">Current item level</label><input id="item_level" name="item_level" type="number" min="1" max="999" inputmode="numeric"></div>
 </div></div>
+
+<div class="form-section" id="guild-interests">
+<h3>Guild interests & professions</h3>
+<p>Tell us how you want to play with ODit. Professions are optional, but useful for understanding what the guild can make and gather.</p>
+
+<div class="form-grid">
+<div class="field">
+<label for="profession_1">Profession 1</label>
+<select id="profession_1" name="profession_1">
+<option value="">None / not selected</option>
+<option>Alchemy</option>
+<option>Blacksmithing</option>
+<option>Enchanting</option>
+<option>Engineering</option>
+<option>Herbalism</option>
+<option>Inscription</option>
+<option>Jewelcrafting</option>
+<option>Leatherworking</option>
+<option>Mining</option>
+<option>Skinning</option>
+<option>Tailoring</option>
+</select>
+</div>
+
+<div class="field">
+<label for="profession_2">Profession 2</label>
+<select id="profession_2" name="profession_2">
+<option value="">None / not selected</option>
+<option>Alchemy</option>
+<option>Blacksmithing</option>
+<option>Enchanting</option>
+<option>Engineering</option>
+<option>Herbalism</option>
+<option>Inscription</option>
+<option>Jewelcrafting</option>
+<option>Leatherworking</option>
+<option>Mining</option>
+<option>Skinning</option>
+<option>Tailoring</option>
+</select>
+</div>
+
+<div class="field full interest-field">
+<label>What are you joining ODit for? *</label>
+<p class="field-help">Select one or more. At least one option is required.</p>
+<div class="interest-options" id="interestOptions">
+<label class="interest-choice">
+<input id="interest_casual" type="checkbox" name="interest_casual" value="Casual">
+<span><b>Casual / Social</b><small>Community, social events and playing at your own pace.</small></span>
+</label>
+
+<label class="interest-choice">
+<input id="interest_raiding" type="checkbox" name="interest_raiding" value="Raiding">
+<span><b>Raiding</b><small>Progression, reclears and the AoTC raid team.</small></span>
+</label>
+
+<label class="interest-choice">
+<input id="interest_mplus" type="checkbox" name="interest_mplus" value="Mythic+">
+<span><b>Mythic+</b><small>Keys, Mythic Mondays and score progression.</small></span>
+</label>
+</div>
+</div>
+</div>
+</div>
+
 <div class="form-section"><h3>Profiles & experience</h3><p>Links help us understand your experience; we are not recruiting purely by parse colour.</p><div class="form-grid">
 <div class="field"><label for="raiderio_url">Raider.IO URL</label><input id="raiderio_url" name="raiderio_url" type="url" placeholder="https://raider.io/..."></div>
 <div class="field"><label for="wcl_url">Warcraft Logs URL</label><input id="wcl_url" name="wcl_url" type="url" placeholder="https://www.warcraftlogs.com/..."></div>
