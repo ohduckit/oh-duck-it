@@ -57,9 +57,14 @@
 <div id="backendNotice" class="notice info" hidden></div><div id="formMessage" class="notice" hidden></div>
 <form id="recruitmentForm" novalidate>
 <div class="honeypot" aria-hidden="true"><label>Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label></div>
-<div class="form-section"><h3>Character</h3><p>Your main character and the role you want to play with ODit.</p><div class="form-grid">
+<div class="form-section"><h3>Character</h3><p>Your main character details.</p><div class="form-grid">
 <div class="field"><label for="character_name">Character name *</label><input id="character_name" name="character_name" maxlength="50" required></div>
-<div class="field"><label for="realm">Realm *</label><input id="realm" name="realm" maxlength="60" required></div>
+<div class="field">
+<label for="realm">Realm *</label>
+<input id="realm" name="realm" list="realmOptions" maxlength="60" autocomplete="off" placeholder="Start typing your realm…" required>
+<datalist id="realmOptions"></datalist>
+<span class="field-help">Start typing to filter the list. If your realm is not suggested, type its full name.</span>
+</div>
 <div class="field"><label for="region">Region *</label><select id="region" name="region" required><option value="EU">EU</option><option value="US">US</option><option value="KR">KR</option><option value="TW">TW</option></select></div>
 <div class="field"><label for="class_name">Class *</label><select id="class_name" name="class_name" required><option value="">Choose class</option><option>Death Knight</option><option>Demon Hunter</option><option>Druid</option><option>Evoker</option><option>Hunter</option><option>Mage</option><option>Monk</option><option>Paladin</option><option>Priest</option><option>Rogue</option><option>Shaman</option><option>Warlock</option><option>Warrior</option></select></div>
 <div class="field">
@@ -68,7 +73,14 @@
 <option value="">Choose class first</option>
 </select>
 </div>
-<div class="field"><label for="role">Preferred role *</label><select id="role" name="role" required><option value="">Choose role</option><option>Tank</option><option>Healer</option><option>Melee DPS</option><option>Ranged DPS</option><option>Flexible</option></select></div>
+<div class="field">
+<label for="faction">Faction *</label>
+<select id="faction" name="faction" required>
+<option value="">Choose faction</option>
+<option value="Alliance">Alliance</option>
+<option value="Horde">Horde</option>
+</select>
+</div>
 <div class="field">
 <label for="off_specs">Off-spec</label>
 <select id="off_specs" name="off_specs" disabled>
@@ -148,7 +160,7 @@
 <div class="field"><label for="armory_url">Armory URL</label><input id="armory_url" name="armory_url" type="url" placeholder="https://worldofwarcraft.blizzard.com/..."></div>
 <div class="field"><label for="current_progression">Current progression</label><input id="current_progression" name="current_progression" maxlength="100" placeholder="e.g. 5/8 HC"></div>
 <div class="field full"><label for="raid_experience">Raid experience</label><textarea id="raid_experience" name="raid_experience" maxlength="2000" placeholder="Previous AoTC / Mythic experience, recent raid history, or anything useful for us to know."></textarea></div>
-<div class="field full"><label for="mplus_experience">Mythic+ experience</label><textarea id="mplus_experience" name="mplus_experience" maxlength="1200" placeholder="Optional: key level / score, preferred role, goals."></textarea></div>
+<div class="field full"><label for="mplus_experience">Mythic+ experience</label><textarea id="mplus_experience" name="mplus_experience" maxlength="1200" placeholder="Optional: key level / score, preferred dungeons, goals."></textarea></div>
 </div></div>
 <div class="form-section"><h3>Availability</h3><p>Progression nights are Wednesday and Thursday.</p><div class="checkrow"><label class="check"><input type="checkbox" name="available_wed"> Available Wednesday</label><label class="check"><input type="checkbox" name="available_thu"> Available Thursday</label></div><div class="field" style="margin-top:13px"><label for="attendance_notes">Attendance notes</label><textarea id="attendance_notes" name="attendance_notes" maxlength="1000" placeholder="Work patterns, occasional restrictions, expected availability, etc."></textarea></div></div>
 <div class="form-section"><h3>Contact & fit</h3><p>Give us a way to contact you and tell us what you are looking for.</p><div class="form-grid">
