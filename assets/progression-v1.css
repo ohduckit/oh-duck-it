@@ -1,0 +1,276 @@
+/* ODit Progression Management + Public Progression v1 */
+
+.progression-admin-head,
+.progression-raid-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:14px;
+}
+
+.progression-admin-actions {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.progression-settings-grid {
+  margin-bottom:18px;
+}
+
+.progression-check-field {
+  align-self:end;
+}
+
+.progression-check {
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border:1px solid #60451f;
+  border-radius:8px;
+  background:#25160d;
+  color:#f3e4c9;
+}
+
+.progression-check input {
+  width:18px;
+  height:18px;
+  accent-color:#d6a23d;
+}
+
+.progression-raid-labels,
+.progression-raid-admin-row {
+  display:grid;
+  grid-template-columns:minmax(170px,1.3fr) 105px 76px 76px 76px 76px minmax(150px,1fr) auto;
+  gap:8px;
+  align-items:end;
+}
+
+.progression-raid-labels {
+  padding:0 10px 6px;
+  color:#d9bf84;
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.progression-raid-list {
+  display:grid;
+  gap:10px;
+}
+
+.progression-raid-admin-row {
+  padding:10px;
+  border:1px solid #4f351c;
+  border-radius:10px;
+  background:#17100b;
+}
+
+.progression-raid-admin-row .field {
+  margin:0;
+}
+
+.progression-raid-admin-row .field label {
+  display:none;
+}
+
+.progression-raid-admin-row input,
+.progression-raid-admin-row select {
+  width:100%;
+}
+
+.progression-raid-controls {
+  display:flex;
+  gap:6px;
+  align-items:center;
+}
+
+.progression-raid-controls .btn {
+  min-width:38px;
+  padding-left:10px;
+  padding-right:10px;
+}
+
+.progression-season-banner {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+}
+
+.progression-season-banner h2 {
+  margin:3px 0 6px;
+}
+
+.aotc-badge {
+  flex:0 0 auto;
+  padding:10px 14px;
+  border:1px solid #d8aa48;
+  border-radius:999px;
+  background:linear-gradient(#5c4019,#2d1d0d);
+  color:#ffe39a;
+  font-weight:900;
+  box-shadow:0 6px 18px rgba(0,0,0,.22);
+}
+
+.progression-stat-grid .stat-card b {
+  font-size:16px;
+}
+
+.raid-progress-list {
+  display:grid;
+  gap:14px;
+}
+
+.raid-progress-card {
+  padding:16px;
+  border:1px solid #65461f;
+  border-radius:11px;
+  background:linear-gradient(180deg,rgba(40,24,15,.96),rgba(22,14,9,.96));
+  box-shadow:0 7px 18px rgba(0,0,0,.22);
+}
+
+.raid-progress-card.upcoming {
+  opacity:.88;
+}
+
+.raid-progress-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:10px;
+}
+
+.raid-progress-head h3 {
+  margin:5px 0 0;
+  font-family:Georgia,"Times New Roman",serif;
+  color:#f0ce75;
+}
+
+.raid-progress-status {
+  display:inline-flex;
+  padding:4px 8px;
+  border-radius:999px;
+  border:1px solid #705127;
+  color:#dec99d;
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.raid-progress-status.live {
+  border-color:#8b682e;
+  color:#ffe09a;
+  background:#372511;
+}
+
+.raid-progress-status.upcoming {
+  border-color:#625441;
+  color:#c9bdab;
+  background:#251e17;
+}
+
+.raid-progress-status.complete {
+  border-color:#8a7437;
+  color:#f3db91;
+  background:#342b14;
+}
+
+.raid-boss-count {
+  color:#bbaa8d;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.raid-progress-note {
+  margin:0 0 12px;
+  color:#baa98e;
+  font-size:12px;
+}
+
+.raid-progress-bars {
+  display:grid;
+  gap:7px;
+}
+
+.progression-updated {
+  color:#a99a84;
+  font-size:11px;
+}
+
+.progression-loading {
+  color:#a99a84;
+  padding:10px 0;
+}
+
+.progression-links .ghost {
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+@media(max-width:1180px) {
+  .progression-raid-labels {
+    display:none;
+  }
+
+  .progression-raid-admin-row {
+    grid-template-columns:repeat(3,minmax(110px,1fr));
+  }
+
+  .progression-raid-admin-row .field label {
+    display:block;
+  }
+
+  .progression-raid-name-field,
+  .progression-raid-note-field {
+    grid-column:span 2;
+  }
+
+  .progression-raid-controls {
+    grid-column:1/-1;
+  }
+}
+
+@media(max-width:760px) {
+  .progression-admin-head,
+  .progression-raid-head,
+  .progression-season-banner {
+    flex-direction:column;
+  }
+
+  .progression-admin-actions {
+    justify-content:flex-start;
+  }
+
+  .progression-raid-admin-row {
+    grid-template-columns:1fr 1fr;
+  }
+
+  .progression-raid-name-field,
+  .progression-raid-note-field {
+    grid-column:1/-1;
+  }
+
+  .aotc-badge {
+    align-self:flex-start;
+  }
+}
+
+@media(max-width:520px) {
+  .progression-raid-admin-row {
+    grid-template-columns:1fr;
+  }
+
+  .progression-raid-name-field,
+  .progression-raid-note-field,
+  .progression-raid-controls {
+    grid-column:auto;
+  }
+}
