@@ -13,7 +13,7 @@
   const appList = document.getElementById('appList');
   const detail = document.getElementById('detail');
   const statusFilter = document.getElementById('statusFilter');
-  let client, user, applications = [], selectedId = null;
+  let client, user, applications = [], officers = [], selectedId = null;
 
   const esc = (s='') => String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const show = (el, text, kind='info') => { el.hidden=false; el.className=`notice ${kind}`; el.textContent=text; };
@@ -72,7 +72,18 @@
     authView.hidden = true;
     portalView.hidden = false;
     document.getElementById('officerIdentity').textContent = `Signed in as ${metaName(user)}.`;
+    await loadOfficers();
     await loadApplications();
+  }
+
+  async function loadOfficers() {
+    const { data, error } = await client.rpc('list_active_officers');
+    if (error) {
+      show(msg, `Could not load officers: ${error.message}`, 'error');
+      officers = [];
+      return;
+    }
+    officers = data || [];
   }
 
   async function loadApplications() {
@@ -130,7 +141,14 @@
           </select>
         </div>
         <button id="saveStatus" class="btn primary">Update status</button>
-        <button id="assignMe" class="btn">${a.assigned_to===user.id?'Assigned to me':'Assign to me'}</button>
+        <div class="workflow-field">
+          <label for="assigneeSelect">Assigned officer</label>
+          <select id="assigneeSelect" class="status-select">
+            <option value="">Unassigned</option>
+            ${officers.map(o=>`<option value="${esc(o.user_id)}" ${o.user_id===a.assigned_to?'selected':''}>${esc(o.display_name)}</option>`).join('')}
+          </select>
+        </div>
+        <button id="saveAssignment" class="btn">Save assignment</button>
       </div>
 
       <div class="detail-grid">
@@ -154,7 +172,7 @@
       </div>`;
 
     document.getElementById('saveStatus').addEventListener('click',saveStatus);
-    document.getElementById('assignMe').addEventListener('click',assignToMe);
+    document.getElementById('saveAssignment').addEventListener('click',saveAssignment);
     document.getElementById('addNote').addEventListener('click',addNote);
     document.getElementById('deleteApplication').addEventListener('click',deleteApplication);
     await loadNotes();
@@ -168,10 +186,23 @@
     await loadApplications();
   }
 
-  async function assignToMe(){
-    const {error}=await client.from('applications').update({assigned_to:user.id,assigned_name:metaName(user)}).eq('id',selectedId);
+  async function saveAssignment(){
+    const officerId=document.getElementById('assigneeSelect').value;
+    const officer=officers.find(o=>o.user_id===officerId);
+    const update=officer ? {
+      assigned_to:officer.user_id,
+      assigned_name:officer.display_name,
+      assigned_discord_user_id:officer.discord_user_id || null,
+      assigned_by_name:metaName(user)
+    } : {
+      assigned_to:null,
+      assigned_name:null,
+      assigned_discord_user_id:null,
+      assigned_by_name:metaName(user)
+    };
+    const {error}=await client.from('applications').update(update).eq('id',selectedId);
     if(error){show(msg,error.message,'error');return;}
-    show(msg,'Application assigned to you.','success');
+    show(msg,officer ? `Application assigned to ${officer.display_name}.` : 'Application is now unassigned.','success');
     await loadApplications();
   }
 
