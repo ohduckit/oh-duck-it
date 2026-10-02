@@ -143,3 +143,107 @@
     grid-template-columns:1fr;
   }
 }
+
+
+/* Recruitment V22.1 — contrast + checkbox correction */
+
+/* The application form sits inside a parchment container. The shared parchment
+   rules were forcing dark ink colours into the dark form cards. Explicitly
+   restore high-contrast colours inside those cards. */
+#apply .form-section h3{
+  color:#f2d27d !important;
+  text-shadow:0 1px 1px rgba(0,0,0,.65);
+}
+
+#apply .form-section>p{
+  color:#eadcc5 !important;
+}
+
+#apply .field>label,
+#apply .interest-field>label{
+  color:#d7b86e !important;
+}
+
+#apply .field-help{
+  color:#bca98b !important;
+}
+
+/* Improve typed text / placeholder contrast without making the fields harsh. */
+#apply .field input:not([type="checkbox"]),
+#apply .field select,
+#apply .field textarea{
+  color:#2f2113 !important;
+}
+
+#apply .field input:not([type="checkbox"])::placeholder,
+#apply .field textarea::placeholder{
+  color:#86755e !important;
+  opacity:1;
+}
+
+/* Privacy consent: shared .field input rules were turning this checkbox into a
+   full-width text control. Reset it to a normal checkbox and keep the copy
+   alongside it. */
+#apply .field.full > label.check{
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:flex-start !important;
+  justify-content:flex-start !important;
+  gap:10px !important;
+  width:100%;
+  color:#d7c6a8 !important;
+  font-size:12px !important;
+  line-height:1.45 !important;
+  letter-spacing:.025em !important;
+  text-transform:none !important;
+  font-weight:700 !important;
+  cursor:pointer;
+}
+
+#apply .field.full > label.check input[type="checkbox"]{
+  appearance:auto !important;
+  -webkit-appearance:checkbox !important;
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+  height:16px !important;
+  min-height:16px !important;
+  max-height:16px !important;
+  padding:0 !important;
+  margin:2px 0 0 0 !important;
+  border:0 !important;
+  border-radius:2px !important;
+  box-shadow:none !important;
+  flex:0 0 16px !important;
+  accent-color:#d7a83f;
+}
+
+/* Availability checkboxes should remain compact too. */
+#apply .checkrow .check{
+  color:#d7c6a8 !important;
+  text-transform:none !important;
+  letter-spacing:0 !important;
+}
+
+#apply .checkrow .check input[type="checkbox"]{
+  width:16px !important;
+  min-width:16px !important;
+  height:16px !important;
+  min-height:16px !important;
+  padding:0 !important;
+  margin:0 !important;
+  flex:0 0 16px !important;
+}
+
+/* Make the three interest cards easy to read against their dark background. */
+#apply .interest-choice{
+  color:#e9ddc9 !important;
+}
+
+#apply .interest-choice b{
+  color:#f3d27d !important;
+}
+
+#apply .interest-choice small{
+  color:#c7b79e !important;
+}
