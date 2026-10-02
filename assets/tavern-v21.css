@@ -332,3 +332,115 @@ a{color:inherit}
   .page-sign{padding-inline:25px}
   .page-sign h1{font-size:30px}
 }
+
+
+/* Officer Portal V22 */
+.portal-dashboard{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:14px;
+}
+.portal-module{
+  min-height:116px;
+  border:1px solid #5d4522;
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(28,17,11,.92),rgba(13,8,6,.96));
+  padding:14px;
+  text-decoration:none;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:.15s ease;
+}
+.portal-module:hover{
+  transform:translateY(-2px);
+  border-color:#b9802d;
+}
+.portal-module .module-icon{
+  font-size:24px;
+  line-height:1;
+}
+.portal-module strong{
+  display:block;
+  margin-top:9px;
+  color:#f0cf78;
+  font-family:Georgia,"Times New Roman",serif;
+}
+.portal-module small{
+  display:block;
+  margin-top:4px;
+  color:#9e8f77;
+  line-height:1.35;
+}
+.portal-module.planned{
+  opacity:.78;
+}
+.portal-module.live{
+  border-color:#846027;
+}
+.portal-section-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.portal-section-head h2{
+  margin:0;
+}
+.portal-section-tools{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.portal-placeholder{
+  border:1px dashed #66502c;
+  border-radius:10px;
+  padding:18px;
+  background:rgba(13,8,6,.46);
+}
+.portal-placeholder h3{
+  margin:0 0 6px;
+  color:#e7c779;
+  font-family:Georgia,"Times New Roman",serif;
+}
+.portal-placeholder p{
+  margin:0;
+  color:#aa9b84;
+}
+.side-nav .nav-status{
+  margin-left:auto;
+  font-size:8px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#8f806a;
+}
+.side-nav a.active .nav-status{
+  color:#d9ba67;
+}
+.portal-admin-card{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:18px;
+  align-items:center;
+  border:1px solid #66502b;
+  border-radius:10px;
+  padding:16px;
+  background:linear-gradient(180deg,rgba(32,20,13,.92),rgba(15,9,7,.96));
+}
+.portal-admin-card h3{
+  margin:0 0 5px;
+}
+.portal-admin-card p{
+  margin:0;
+}
+@media(max-width:900px){
+  .portal-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:620px){
+  .portal-dashboard{grid-template-columns:1fr}
+  .portal-admin-card{grid-template-columns:1fr}
+}
