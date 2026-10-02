@@ -1,4 +1,8 @@
 (() => {
+
+  // Officer access is intentionally not advertised in the public navigation.
+  // Supabase authentication + RLS remain the real access boundary.
+  document.querySelectorAll('.site-links .officer-link').forEach(link => link.remove());
   // Mobile top navigation.
   const menuButton = document.querySelector('.menu-toggle');
   const topLinks = document.querySelector('.site-links');
