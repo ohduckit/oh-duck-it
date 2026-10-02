@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oh Duck It — Guild Management</title><meta name="robots" content="noindex,nofollow">
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/guild-management-v22.css"><link rel="stylesheet" href="assets/guild-management-v23.css">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/guild-management-v22.css"><link rel="stylesheet" href="assets/guild-management-v23.css"><link rel="stylesheet" href="assets/resources-management.css">
 </head><body>
 
 <nav class="sitebar">
@@ -36,6 +36,7 @@
 <a href="#overview"><span class="ico">⌂</span><span>Overview</span></a>
 <a href="#roles"><span class="ico">♛</span><span>Role Assignments</span><span class="nav-status">Live</span></a>
 <a href="#recruitment"><span class="ico">✉</span><span>Recruitment Priorities</span><span class="nav-status">Live</span></a>
+<a href="#resources"><span class="ico">🛠</span><span>Resources</span><span class="nav-status">Live</span></a>
 <a href="#permissions"><span class="ico">⚙</span><span>Permissions</span><span class="nav-status">Planned</span></a>
 <a href="#guild-info"><span class="ico">📜</span><span>Guild Information</span><span class="nav-status">Planned</span></a>
 <a href="#logs"><span class="ico">☷</span><span>Logs & Reports</span><span class="nav-status">Planned</span></a>
@@ -44,7 +45,7 @@
 <div>
 <section class="panel anchor-section" id="overview">
 <div class="portal-top"><div><div class="eyebrow">Guild management</div><h1>Guild Management</h1><p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p></div><div class="portal-tools"><a class="btn" href="officers.html">← Officer Portal</a><a class="btn" href="structure.html" target="_blank" rel="noopener">View public page ↗</a><button id="logoutBtn" class="btn">Sign out</button></div></div>
-<p>Manage the live public-facing guild structure and recruitment settings here. Planned administration modules are shown below so the management area has a clear, stable structure as the site grows.</p>
+<p>Manage the live public-facing guild structure, recruitment settings and Resources page here. Planned administration modules are shown below so the management area has a clear, stable structure as the site grows.</p>
 </section>
 
 <section class="card structure-admin anchor-section" id="roles">
@@ -90,6 +91,47 @@
 
   <div class="actions" style="justify-content:flex-start">
     <button id="saveRecruitmentPriorities" class="btn primary" type="button">Save recruitment priorities</button>
+  </div>
+</section>
+
+
+<section class="card structure-admin anchor-section" id="resources">
+  <div class="resource-admin-head">
+    <div>
+      <h2>Resources</h2>
+      <p class="help">
+        Populate and maintain the public Resources page. Add links, guides and guild tools,
+        choose which section they appear in, and control their display order without editing HTML.
+      </p>
+    </div>
+    <div class="resource-admin-actions">
+      <button id="addResourceItem" class="btn" type="button">+ Add resource</button>
+      <a class="btn" href="resources.html" target="_blank" rel="noopener">View Resources page ↗</a>
+    </div>
+  </div>
+
+  <div id="resourceMessage" class="notice" style="margin:14px 0" hidden></div>
+
+  <div class="resource-admin-toolbar">
+    <label for="resourceSectionFilter">Edit section</label>
+    <select id="resourceSectionFilter">
+      <option value="class">Class Guides</option>
+      <option value="raid">Raid Guides</option>
+      <option value="mplus">Mythic+ Guides</option>
+      <option value="addons">Addons & UI</option>
+      <option value="external">External Links</option>
+      <option value="community">Community Tools</option>
+    </select>
+  </div>
+
+  <div class="resource-admin-labels" aria-hidden="true">
+    <span>Icon</span><span>Title</span><span>Description</span><span>URL</span><span></span>
+  </div>
+
+  <div id="resourceRows" class="resource-admin-list"></div>
+
+  <div class="actions" style="justify-content:flex-start">
+    <button id="saveResources" class="btn primary" type="button">Save Resources page</button>
   </div>
 </section>
 

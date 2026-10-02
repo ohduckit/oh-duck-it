@@ -34,41 +34,37 @@
 <div>
 <section class="panel anchor-section" id="overview"><h2>Guild Resource Hub</h2><p>Useful guild profiles, guides and tools gathered in one place. This page can grow as the Council and role officers agree recommended resources.</p></section>
 
-<section class="panel anchor-section" id="class"><div class="section-title"><h2>Class Guides</h2></div><div class="resource-grid">
-<a class="resource-card" href="https://www.wowhead.com/guides/classes" target="_blank" rel="noopener"><div class="bigicon">📖</div><h3>Class Guides</h3><p>Core class and spec references.</p></a>
-<a class="resource-card" href="https://www.raidbots.com/" target="_blank" rel="noopener"><div class="bigicon">📈</div><h3>Raidbots</h3><p>Character simulation tools.</p></a>
-<a class="resource-card" href="#community"><div class="bigicon">👥</div><h3>Spec Mentors</h3><p>Guild help from appointed mentors.</p></a>
-</div></section>
+<section class="panel anchor-section" id="class">
+<div class="section-title"><h2>Class Guides</h2></div>
+<div data-resource-section="class"></div>
+</section>
 
-<section class="panel anchor-section" id="raid"><div class="section-title"><h2>Raid Guides</h2></div><div class="resource-grid">
-<a class="resource-card" data-guild-link="warcraftLogs" href="#"><div class="bigicon">📊</div><h3>Warcraft Logs</h3><p>Raid reports, parses and progression.</p></a>
-<a class="resource-card" href="https://www.wowhead.com/guides/raids" target="_blank" rel="noopener"><div class="bigicon">⚔</div><h3>Encounter Guides</h3><p>Boss mechanics and raid references.</p></a>
-<a class="resource-card" href="progression.html"><div class="bigicon">🏆</div><h3>ODit Progression</h3><p>Our goals, schedule and current progress.</p></a>
-</div></section>
+<section class="panel anchor-section" id="raid">
+<div class="section-title"><h2>Raid Guides</h2></div>
+<div data-resource-section="raid"></div>
+</section>
 
-<section class="panel anchor-section" id="mplus"><div class="section-title"><h2>Mythic+ Guides</h2></div><div class="resource-grid">
-<a class="resource-card" data-guild-link="raiderIO" href="#"><div class="bigicon">🗝</div><h3>Raider.IO</h3><p>Guild profile and Mythic+ activity.</p></a>
-<a class="resource-card" href="https://raider.io/" target="_blank" rel="noopener"><div class="bigicon">🗺</div><h3>Routes & Profiles</h3><p>External Mythic+ resources.</p></a>
-<a class="resource-card" href="progression.html#mythic"><div class="bigicon">📅</div><h3>Mythic Mondays</h3><p>Our regular guild key night.</p></a>
-</div></section>
+<section class="panel anchor-section" id="mplus">
+<div class="section-title"><h2>Mythic+ Guides</h2></div>
+<div data-resource-section="mplus"></div>
+</section>
 
-<section class="panel anchor-section" id="addons"><div class="section-title"><h2>Addons & UI</h2><span class="badge-planned">Growing resource</span></div><p>Recommended guild addons, UI tools and useful setup notes can be added here as the team agrees them.</p></section>
+<section class="panel anchor-section" id="addons">
+<div class="section-title"><h2>Addons & UI</h2></div>
+<div data-resource-section="addons"></div>
+</section>
 
-<section class="panel anchor-section" id="external"><div class="section-title"><h2>External Links</h2></div>
-<div class="resource-list">
-<a class="resource" data-guild-link="armory" href="#"><div><strong>WoW Armory</strong><small>Official guild / character profiles</small></div><span class="arrow">→</span></a>
-<a class="resource" href="https://www.wowhead.com/" target="_blank" rel="noopener"><div><strong>Wowhead</strong><small>Guides, items and game data</small></div><span class="arrow">↗</span></a>
-<a class="resource" href="https://www.raidbots.com/" target="_blank" rel="noopener"><div><strong>Raidbots</strong><small>Character simulation tools</small></div><span class="arrow">↗</span></a>
-<a class="resource" href="https://www.warcraftlogs.com/" target="_blank" rel="noopener"><div><strong>Warcraft Logs</strong><small>Combat analysis</small></div><span class="arrow">↗</span></a>
-</div></section>
+<section class="panel anchor-section" id="external">
+<div class="section-title"><h2>External Links</h2></div>
+<div data-resource-section="external"></div>
+</section>
 
-<section class="panel anchor-section" id="community"><div class="section-title"><h2>Community Tools</h2></div><div class="resource-grid">
-<a class="resource-card" data-guild-link="discordInvite" href="#"><div class="bigicon">💬</div><h3>Discord</h3><p>ODit community and recruitment contact.</p></a>
-<div class="resource-card"><div class="bigicon">📆</div><h3>Calendars</h3><p>Raid and guild scheduling resources.</p></div>
-<div class="resource-card"><div class="bigicon">🍻</div><h3>Shared Resources</h3><p>Guild documents, signups and tools.</p></div>
-</div></section>
+<section class="panel anchor-section" id="community">
+<div class="section-title"><h2>Community Tools</h2></div>
+<div data-resource-section="community"></div>
+</section>
 </div></main>
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • External resources remain the property of their respective services.</div></footer>
-<script src="assets/guild-config.js"></script><script src="assets/site.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/guild-config.js"></script><script src="assets/site.js"></script><script src="assets/resources-public.js"></script>
 <script>document.querySelectorAll('[data-guild-link]').forEach(a=>{const u=ODIT_GUILD[a.dataset.guildLink];if(u&&u!=='#'){a.href=u;a.target='_blank';a.rel='noopener'}else{a.addEventListener('click',e=>e.preventDefault());a.title='Add this URL in assets/guild-config.js'}});</script>
 </body></html>
