@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 720">
+<defs>
+ <linearGradient id="bronze" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#efbd5b"/><stop offset=".15" stop-color="#a86822"/><stop offset=".45" stop-color="#5b3013"/><stop offset=".7" stop-color="#8e541d"/><stop offset="1" stop-color="#d59432"/></linearGradient>
+ <linearGradient id="darkbronze" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7f491a"/><stop offset=".45" stop-color="#2c160a"/><stop offset="1" stop-color="#8f551e"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0a0"/><stop offset=".28" stop-color="#e9b94d"/><stop offset=".58" stop-color="#9c5d18"/><stop offset=".82" stop-color="#ffd96b"/><stop offset="1" stop-color="#6f3d11"/></linearGradient>
+ <filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#000" flood-opacity=".65"/></filter>
+ <filter id="texture"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" seed="13" result="n"/><feComposite in="n" in2="SourceGraphic" operator="in"/><feBlend in="SourceGraphic" mode="multiply"/></filter>
+ <clipPath id="logoCircle"><circle cx="500" cy="236" r="194"/></clipPath>
+</defs>
+<g filter="url(#shadow)">
+ <path d="M92 432 Q92 394 135 388 L228 374 Q269 366 291 324 L324 263 Q343 225 382 217 L500 193 L618 217 Q657 225 676 263 L709 324 Q731 366 772 374 L865 388 Q908 394 908 432 L908 590 Q908 622 876 628 L654 649 Q612 653 588 684 L558 713 H442 L412 684 Q388 653 346 649 L124 628 Q92 622 92 590Z" fill="url(#bronze)" stroke="#3b1b08" stroke-width="13"/>
+ <path d="M119 443 Q119 416 148 412 L246 396 Q293 388 318 340 L350 281 Q366 252 399 246 L500 226 L601 246 Q634 252 650 281 L682 340 Q707 388 754 396 L852 412 Q881 416 881 443 L881 566 Q881 591 854 596 L643 616 Q589 621 558 660 L540 681 H460 L442 660 Q411 621 357 616 L146 596 Q119 591 119 566Z" fill="url(#darkbronze)" stroke="#d69535" stroke-width="5"/>
+ <circle cx="500" cy="234" r="222" fill="url(#bronze)" stroke="#3b1b08" stroke-width="14"/>
+ <circle cx="500" cy="234" r="205" fill="#160d08" stroke="#e0a33e" stroke-width="6"/>
+ <g clip-path="url(#logoCircle)"><image href="odit-banner.png" x="278" y="22" width="444" height="400" preserveAspectRatio="xMidYMid slice"/></g>
+ <circle cx="500" cy="234" r="197" fill="none" stroke="#f0bf55" stroke-width="4" opacity=".8"/>
+ <g fill="#3b1c09" stroke="#e0a13a" stroke-width="3"><circle cx="310" cy="410" r="12"/><circle cx="690" cy="410" r="12"/><circle cx="142" cy="526" r="10"/><circle cx="858" cy="526" r="10"/><circle cx="500" cy="663" r="10"/></g>
+ <text x="500" y="498" text-anchor="middle" font-family="Georgia,serif" font-size="96" font-weight="900" fill="url(#gold)" stroke="#321606" stroke-width="5" paint-order="stroke">OH DUCK IT</text>
+ <path d="M232 529H768" stroke="#d99a34" stroke-width="3"/><path d="M232 576H768" stroke="#6b3d14" stroke-width="2"/>
+ <text x="500" y="558" text-anchor="middle" font-family="Georgia,serif" font-size="22" font-weight="700" letter-spacing="3" fill="#f3cd69">EQUAL POWER COMMITTEE — GUILD CHARTER</text>
+ <text x="500" y="606" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" letter-spacing="2" fill="#ddc690">TAVERN COUNCIL  ◆  EST. 2026  ◆  HORDE &amp; ALLIANCE UNITED</text>
+ <path d="M500 649l24 30-24 28-24-28z" fill="#2469d8" stroke="#e3a73c" stroke-width="6"/><path d="M500 657l10 21-10 14-10-14z" fill="#8ed9ff"/>
+</g>
+</svg>
