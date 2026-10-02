@@ -1,36 +1,71 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Oh Duck It — Guild Management</title>
-  <meta name="robots" content="noindex,nofollow">
-  <link rel="stylesheet" href="assets/site.css">
-</head>
-<body>
-<nav class="sitebar"><div class="sitebar-inner"><a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a><button class="menu-toggle" type="button" aria-expanded="false">Menu</button><div class="site-links"><a href="index.html">Home</a><a href="progression.html">Progression</a><a href="structure.html">Guild Structure</a><a href="recruitment.html">Recruitment</a><a href="resources.html">Resources</a><a class="officer-link" href="officers.html">Officer Portal</a></div></div></nav>
-<main class="portal-wrap">
-  <section id="authView" class="card auth-card"><div class="eyebrow">Private area</div><h1 style="font-family:Georgia,serif">Guild Management</h1><p id="authText">Sign in with Discord to manage ODit guild structure assignments.</p><div id="authNotice" class="notice info" style="margin:16px 0" hidden></div><div class="actions"><button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button><button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button></div><div id="unauthorisedBox" hidden><p class="help">This Discord account is not authorised as an ODit officer.</p><div id="userUid" class="uid-box"></div></div></section>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oh Duck It — Guild Management</title><meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css">
+</head><body>
 
-  <section id="managementView" hidden>
-    <div class="portal-top"><div><div class="eyebrow">Guild management</div><h1>Guild Structure Assignments</h1><p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p></div><div class="portal-tools"><a class="btn" href="officers.html">← Recruitment Portal</a><a class="btn" href="structure.html" target="_blank" rel="noopener">View public page ↗</a><button id="logoutBtn" class="btn">Sign out</button></div></div>
-    <section class="card structure-admin">
-      <p class="help">Changes here update the public Guild Structure page for everyone. This page is available only to authorised officers.</p>
-      <div id="structureMessage" class="notice" style="margin:14px 0" hidden></div>
-      <div class="form-grid structure-fields">
-        <div class="field"><label>Raid Leader</label><input data-structure-owner="raid-leader"></div>
-        <div class="field"><label>Tank Lead</label><input data-structure-owner="tank-lead"></div>
-        <div class="field"><label>Healer Lead</label><input data-structure-owner="healer-lead"></div>
-        <div class="field"><label>DPS Lead</label><input data-structure-owner="dps-lead"></div>
-        <div class="field"><label>Mythic+ Lead</label><input data-structure-owner="mplus-lead"></div>
-        <div class="field"><label>Recruitment &amp; Roster Lead</label><input data-structure-owner="recruit-lead"></div>
-        <div class="field"><label>Community Lead</label><input data-structure-owner="community-lead"></div>
-      </div>
-      <div class="mentor-admin-head"><div><h3>Class / Spec Mentors</h3><p class="help">Mentors appear on the public Guild Structure page.</p></div><button id="addStructureMentor" class="btn" type="button">+ Add mentor</button></div>
-      <div id="structureMentors" class="mentor-admin-list"></div>
-      <div class="actions" style="justify-content:flex-start"><button id="saveGuildStructure" class="btn primary" type="button">Save guild structure</button></div>
-    </section>
-  </section>
+<nav class="sitebar">
+  <div class="sitebar-inner">
+    <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
+    <div class="site-links">
+      <a  href="index.html">Home</a>
+      <a  href="progression.html">Progression</a>
+      <a  href="structure.html">Guild Structure</a>
+      <a  href="recruitment.html">Recruitment</a>
+      <a  href="resources.html">Resources</a>
+      <a class="officer-link " href="officers.html">Officer Portal</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head wrap"><div class="page-sign"><h1>GUILD MANAGEMENT</h1><p>Roster, settings & administration</p></div></header>
+<main class="portal-wrap">
+<section id="authView" class="card auth-card">
+<div class="eyebrow">Private area</div><h1 style="font-family:Georgia,serif">Guild Management</h1>
+<p id="authText">Sign in with Discord to manage ODit guild structure assignments.</p>
+<div id="authNotice" class="notice info" style="margin:16px 0" hidden></div>
+<div class="actions"><button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button><button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button></div>
+<div id="unauthorisedBox" hidden><p class="help">This Discord account is not authorised as an ODit officer.</p><div id="userUid" class="uid-box"></div></div>
+</section>
+
+<section id="managementView" hidden>
+<div class="tavern-shell">
+<aside class="side-nav">
+<a class="active" href="#overview"><span class="ico">⌂</span>Overview</a>
+<a href="#roles"><span class="ico">♛</span>Role Assignments</a>
+<span class="future"><span class="ico">⚙</span>Permissions — planned</span>
+<span class="future"><span class="ico">📜</span>Guild Information — planned</span>
+<span class="future"><span class="ico">☷</span>Logs & Reports — planned</span>
+<span class="future"><span class="ico">🔧</span>Settings — planned</span>
+</aside>
+<div>
+<section class="panel anchor-section" id="overview">
+<div class="portal-top"><div><div class="eyebrow">Guild management</div><h1>Guild Structure Assignments</h1><p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p></div><div class="portal-tools"><a class="btn" href="officers.html">← Officer Portal</a><a class="btn" href="structure.html" target="_blank" rel="noopener">View public page ↗</a><button id="logoutBtn" class="btn">Sign out</button></div></div>
+<p>Current live management covers public role assignments and class/spec mentors. Further Council-approved admin functions can be added here as their backend exists.</p>
+</section>
+
+<section class="card structure-admin anchor-section" id="roles">
+<h2>Role Assignments</h2>
+<p class="help">Changes here update the public Guild Structure page for everyone. This page is available only to authorised officers.</p>
+<div id="structureMessage" class="notice" style="margin:14px 0" hidden></div>
+<div class="form-grid structure-fields">
+<div class="field"><label>Raid Leader</label><input data-structure-owner="raid-leader"></div>
+<div class="field"><label>Tank Lead</label><input data-structure-owner="tank-lead"></div>
+<div class="field"><label>Healer Lead</label><input data-structure-owner="healer-lead"></div>
+<div class="field"><label>DPS Lead</label><input data-structure-owner="dps-lead"></div>
+<div class="field"><label>Mythic+ Lead</label><input data-structure-owner="mplus-lead"></div>
+<div class="field"><label>Recruitment & Roster Lead</label><input data-structure-owner="recruit-lead"></div>
+<div class="field"><label>Community Lead</label><input data-structure-owner="community-lead"></div>
+</div>
+<div class="mentor-admin-head"><div><h3>Class / Spec Mentors</h3><p class="help">Mentors appear on the public Guild Structure page.</p></div><button id="addStructureMentor" class="btn" type="button">+ Add mentor</button></div>
+<div id="structureMentors" class="mentor-admin-list"></div>
+<div class="actions" style="justify-content:flex-start"><button id="saveGuildStructure" class="btn primary" type="button">Save guild structure</button></div>
+</section>
+</div>
+</div>
+</section>
 </main>
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Guild management is restricted to authorised officers.</div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/site.js"></script><script src="assets/guild-management.js"></script>

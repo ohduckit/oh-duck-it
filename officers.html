@@ -1,91 +1,76 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Oh Duck It — Officer Portal</title>
-  <meta name="robots" content="noindex,nofollow">
-  <link rel="stylesheet" href="assets/site.css">
-</head>
-<body>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oh Duck It — Officer Portal</title><meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css">
+</head><body>
+
 <nav class="sitebar">
   <div class="sitebar-inner">
     <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
     <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
     <div class="site-links">
-      <a href="index.html">Home</a>
-      <a href="progression.html">Progression</a>
-      <a href="structure.html">Guild Structure</a>
-      <a href="recruitment.html">Recruitment</a>
-      <a href="resources.html">Resources</a>
+      <a  href="index.html">Home</a>
+      <a  href="progression.html">Progression</a>
+      <a  href="structure.html">Guild Structure</a>
+      <a  href="recruitment.html">Recruitment</a>
+      <a  href="resources.html">Resources</a>
       <a class="officer-link active" href="officers.html">Officer Portal</a>
     </div>
   </div>
 </nav>
 
+<header class="page-head wrap"><div class="page-sign"><h1>OFFICER PORTAL</h1><p>Plans, tools & council</p></div></header>
 <main class="portal-wrap">
-  <section id="authView" class="card auth-card">
-    <div class="eyebrow">Private area</div>
-    <h1 style="font-family:Georgia,serif">Officer Portal</h1>
-    <p id="authText">Sign in with Discord to access ODit recruitment applications.</p>
-    <div id="authNotice" class="notice info" style="margin:16px 0" hidden></div>
-    <div class="actions">
-      <button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button>
-      <button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button>
-    </div>
-    <div id="unauthorisedBox" hidden>
-      <p class="help">You are signed in, but this account has not been authorised as an ODit officer. Add this user ID to the <code>officers</code> table in Supabase:</p>
-      <div id="userUid" class="uid-box"></div>
-      <div class="actions"><button id="copyUid" class="btn" type="button">Copy User ID</button></div>
-    </div>
-  </section>
+<section id="authView" class="card auth-card">
+<div class="eyebrow">Private area</div><h1 style="font-family:Georgia,serif">Officer Portal</h1>
+<p id="authText">Sign in with Discord to access ODit officer tools.</p>
+<div id="authNotice" class="notice info" style="margin:16px 0" hidden></div>
+<div class="actions"><button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button><button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button></div>
+<div id="unauthorisedBox" hidden><p class="help">You are signed in, but this account has not been authorised as an ODit officer. Add this user ID to the <code>officers</code> table in Supabase:</p><div id="userUid" class="uid-box"></div><div class="actions"><button id="copyUid" class="btn" type="button">Copy User ID</button></div></div>
+</section>
 
-  <section id="portalView" hidden>
-    <div class="portal-top">
-      <div>
-        <div class="eyebrow">Recruitment</div>
-        <h1>Officer Portal</h1>
-        <p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p>
-      </div>
-      <div class="portal-tools">
-        <a class="btn" href="guild-management.html">Guild Management</a>
-        <select id="statusFilter" class="portal-select" aria-label="Filter status">
-          <option value="">All statuses</option>
-          <option value="New">New</option>
-          <option value="Reviewing">Under Review</option>
-          <option value="Interview">Interview</option>
-          <option value="Trial">Trial</option>
-          <option value="Accepted">Accepted</option>
-          <option value="Declined">Declined</option>
-          <option value="Archived">Archived</option>
-        </select>
-        <button id="refreshBtn" class="btn">Refresh</button>
-        <button id="logoutBtn" class="btn">Sign out</button>
-      </div>
-    </div>
+<section id="portalView" hidden>
+<div class="tavern-shell">
+<aside class="side-nav">
+<a href="#overview"><span class="ico">⌂</span>Overview</a>
+<a class="active" href="#applications"><span class="ico">✉</span>Applications</a>
+<span class="future"><span class="ico">♙</span>Roster — planned</span>
+<span class="future"><span class="ico">⚔</span>Raid Notes — planned</span>
+<span class="future"><span class="ico">📜</span>Officer Notes — planned</span>
+<a href="guild-management.html"><span class="ico">⚙</span>Guild Management</a>
+</aside>
 
-    <div id="portalMessage" class="notice" style="margin-top:14px" hidden></div>
+<div>
+<section class="panel anchor-section" id="overview">
+<div class="portal-top">
+<div><div class="eyebrow">Officer tools</div><h1>Officer Portal</h1><p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p></div>
+<div class="portal-tools"><a class="btn" href="guild-management.html">Guild Management</a><select id="statusFilter" class="portal-select" aria-label="Filter status"><option value="">All statuses</option><option value="New">New</option><option value="Reviewing">Under Review</option><option value="Interview">Interview</option><option value="Trial">Trial</option><option value="Accepted">Accepted</option><option value="Declined">Declined</option><option value="Archived">Archived</option></select><button id="refreshBtn" class="btn">Refresh</button><button id="logoutBtn" class="btn">Sign out</button></div>
+</div>
+<div class="gold-line"></div>
+<p>Recruitment applications and Guild Management are live. Additional roster, raid-note and Council tools can be added without changing the public site structure.</p>
+</section>
 
-    <div class="stats stats-six">
-      <button class="stat stat-button" data-filter="New"><b id="statNew">0</b><span>New</span></button>
-      <button class="stat stat-button" data-filter="Reviewing"><b id="statReviewing">0</b><span>Under Review</span></button>
-      <button class="stat stat-button" data-filter="Interview"><b id="statInterview">0</b><span>Interview</span></button>
-      <button class="stat stat-button" data-filter="Trial"><b id="statTrial">0</b><span>Trial</span></button>
-      <button class="stat stat-button" data-filter="Accepted"><b id="statAccepted">0</b><span>Accepted</span></button>
-      <button class="stat stat-button" data-filter=""><b id="statTotal">0</b><span>Total</span></button>
-    </div>
-
-    <div class="portal-grid">
-      <aside class="app-list" id="appList"><div style="padding:18px;color:#8f8679">Loading applications…</div></aside>
-      <section class="detail" id="detail"><div style="color:#8f8679">Select an application to review it.</div></section>
-    </div>
-  </section>
+<div id="portalMessage" class="notice" style="margin-top:14px" hidden></div>
+<section class="panel anchor-section" id="applications">
+<h2>Applications</h2>
+<div class="stats stats-six">
+<button class="stat stat-button" data-filter="New"><b id="statNew">0</b><span>New</span></button>
+<button class="stat stat-button" data-filter="Reviewing"><b id="statReviewing">0</b><span>Under Review</span></button>
+<button class="stat stat-button" data-filter="Interview"><b id="statInterview">0</b><span>Interview</span></button>
+<button class="stat stat-button" data-filter="Trial"><b id="statTrial">0</b><span>Trial</span></button>
+<button class="stat stat-button" data-filter="Accepted"><b id="statAccepted">0</b><span>Accepted</span></button>
+<button class="stat stat-button" data-filter=""><b id="statTotal">0</b><span>Total</span></button>
+</div>
+<div class="portal-grid">
+<aside class="app-list" id="appList"><div style="padding:18px;color:#8f8679">Loading applications…</div></aside>
+<section class="detail" id="detail"><div style="color:#8f8679">Select an application to review it.</div></section>
+</div>
+</section>
+</div>
+</div>
+</section>
 </main>
-
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Officer access is enforced by Supabase authentication and Row Level Security.</div></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/supabase-config.js"></script>
-<script src="assets/site.js"></script>
-<script src="assets/officers.js"></script>
-</body>
-</html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/site.js"></script><script src="assets/officers.js"></script>
+</body></html>
