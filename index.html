@@ -8,14 +8,14 @@
 
   <style>
     :root{
-      --gold:#e0ad3d;
-      --gold-light:#f3d37c;
-      --gold-dark:#7a4b12;
-      --ink:#f4e8d0;
-      --muted:#cdbfa7;
-      --panel:#1d120d;
-      --panel2:#2a190f;
-      --nav:#1b100b;
+      --gold:#e2b04a;
+      --gold-light:#f1d482;
+      --gold-dark:#7f4f16;
+      --ink:#f6ead6;
+      --muted:#d7c7ae;
+      --nav:#1a100b;
+      --panel-top:rgba(49,30,19,.94);
+      --panel-bottom:rgba(25,15,10,.94);
     }
 
     *{box-sizing:border-box}
@@ -40,27 +40,27 @@
       position:sticky;
       top:0;
       z-index:50;
-      background:rgba(25,14,9,.96);
-      border-bottom:1px solid rgba(201,145,49,.55);
+      background:rgba(24,14,9,.95);
+      border-bottom:1px solid rgba(196,142,47,.55);
       box-shadow:0 8px 18px rgba(0,0,0,.32);
       backdrop-filter:blur(6px);
     }
 
     .sitebar-inner{
       width:min(1180px,calc(100% - 40px));
-      min-height:64px;
+      min-height:66px;
       margin:0 auto;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:22px;
+      gap:20px;
     }
 
     .sitebrand{
       display:flex;
       align-items:center;
       gap:10px;
-      color:#ffe3a0;
+      color:#ffe5a6;
       font-family:Georgia,"Times New Roman",serif;
       font-weight:900;
       letter-spacing:.07em;
@@ -70,11 +70,11 @@
     .brandmark{
       width:34px;
       height:34px;
-      border:1px solid #8d6224;
       border-radius:50%;
       display:grid;
       place-items:center;
-      background:radial-gradient(circle,#513418,#1c1109 72%);
+      border:1px solid #8d6224;
+      background:radial-gradient(circle,#55371a,#1b1109 72%);
       box-shadow:inset 0 0 0 2px rgba(255,228,155,.05);
     }
 
@@ -87,7 +87,7 @@
     }
 
     .site-links a{
-      color:#d9cbb5;
+      color:#d8cab5;
       padding:9px 12px;
       border:1px solid transparent;
       border-radius:8px;
@@ -97,18 +97,18 @@
 
     .site-links a:hover,
     .site-links a.active{
-      color:#ffe6a0;
+      color:#ffe9ae;
       border-color:#8a6125;
       background:linear-gradient(#3a2515,#22150d);
     }
 
     .site-links .officer{
-      border-color:#4f351d;
+      border-color:#4b341c;
     }
 
     .menu-toggle{
       display:none;
-      color:#f2cf75;
+      color:#f1cf76;
       background:#24160e;
       border:1px solid #765321;
       border-radius:8px;
@@ -118,41 +118,41 @@
 
     .home{
       width:min(1180px,calc(100% - 40px));
-      min-height:calc(100vh - 64px);
+      min-height:calc(100vh - 66px);
       margin:0 auto;
       display:flex;
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      padding:28px 0 34px;
       text-align:center;
+      padding:26px 0 34px;
     }
 
     .plaque{
-      width:min(760px,76vw);
-      max-height:58vh;
+      width:min(740px,74vw);
+      max-height:62vh;
       object-fit:contain;
       display:block;
-      filter:drop-shadow(0 18px 26px rgba(0,0,0,.42));
-      margin:0 auto 2px;
+      margin:0 auto 4px;
+      filter:drop-shadow(0 18px 28px rgba(0,0,0,.44));
     }
 
     .tagline{
-      margin:4px 0 0;
+      margin:6px 0 0;
       font-family:Georgia,"Times New Roman",serif;
       font-size:20px;
       font-weight:700;
-      color:#f4e8d5;
-      text-shadow:0 2px 4px #000;
+      color:#f3e8d6;
+      text-shadow:0 2px 4px rgba(0,0,0,.9);
     }
 
     .subline{
-      max-width:720px;
+      max-width:760px;
       margin:7px auto 0;
-      color:#eadcc7;
+      color:#eadcc6;
       font-size:14px;
       line-height:1.45;
-      text-shadow:0 2px 3px #000;
+      text-shadow:0 2px 3px rgba(0,0,0,.9);
     }
 
     .actions{
@@ -160,7 +160,7 @@
       justify-content:center;
       gap:10px;
       flex-wrap:wrap;
-      margin-top:15px;
+      margin-top:16px;
     }
 
     .btn{
@@ -168,11 +168,11 @@
       align-items:center;
       justify-content:center;
       min-height:42px;
-      padding:10px 17px;
+      padding:10px 18px;
       border-radius:8px;
       border:1px solid #8b6123;
       background:linear-gradient(#392414,#20130c);
-      color:#f4dfaa;
+      color:#f6e2ae;
       font-weight:800;
       box-shadow:0 6px 14px rgba(0,0,0,.25);
       transition:.15s ease;
@@ -184,8 +184,8 @@
     }
 
     .btn.primary{
-      color:#1a0e06;
-      background:linear-gradient(#e0af43,#9a6219);
+      color:#1b0e06;
+      background:linear-gradient(#e4b247,#9c6319);
       border-color:#f1ca68;
     }
 
@@ -201,11 +201,11 @@
       min-height:108px;
       padding:14px 10px;
       border-radius:11px;
-      border:1px solid rgba(178,126,43,.72);
-      background:linear-gradient(180deg,rgba(42,25,15,.95),rgba(24,14,10,.95));
+      border:1px solid rgba(182,128,43,.78);
+      background:linear-gradient(180deg,var(--panel-top),var(--panel-bottom));
       box-shadow:
         inset 0 1px rgba(255,228,155,.05),
-        0 8px 18px rgba(0,0,0,.26);
+        0 8px 18px rgba(0,0,0,.28);
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -215,7 +215,7 @@
 
     .quick-card:hover{
       transform:translateY(-3px);
-      border-color:#d0a048;
+      border-color:#d3a24b;
     }
 
     .quick-icon{
@@ -245,9 +245,9 @@
     .footer{
       text-align:center;
       padding:14px 18px 22px;
-      color:#a99b84;
+      color:#aa9c86;
       font-size:11px;
-      background:rgba(15,9,6,.58);
+      background:rgba(15,9,6,.60);
       border-top:1px solid rgba(157,105,32,.24);
     }
 
@@ -260,7 +260,7 @@
         position:absolute;
         left:0;
         right:0;
-        top:64px;
+        top:66px;
         flex-direction:column;
         align-items:stretch;
         padding:8px;
@@ -278,7 +278,11 @@
         padding-top:20px;
       }
 
-      .plaque{width:min(820px,92vw);max-height:none}
+      .plaque{
+        width:min(820px,92vw);
+        max-height:none;
+      }
+
       .quick-grid{grid-template-columns:repeat(2,1fr)}
       .quick-grid .quick-card:last-child{grid-column:1/-1}
     }
@@ -329,8 +333,8 @@
   <main class="home">
     <img
       class="plaque"
-      src="assets/odit-home-plaque.png"
-      alt="Oh Duck It guild plaque"
+      src="assets/oh-duck-it-front-plaque.png"
+      alt="Oh Duck It front-page guild plaque"
     >
 
     <p class="tagline">AoTC-focused. Social. Progression-minded.</p>
