@@ -1,8 +1,10 @@
 (() => {
+  // Officer access is intentionally not advertised to public visitors.
+  // site-auth.js adds the private links back only after Supabase confirms
+  // the current signed-in account is an active ODit officer.
+  document.querySelectorAll('.site-links .officer-link, .site-links .management-link')
+    .forEach(link => link.remove());
 
-  // Officer access is intentionally not advertised in the public navigation.
-  // Supabase authentication + RLS remain the real access boundary.
-  document.querySelectorAll('.site-links .officer-link').forEach(link => link.remove());
   // Mobile top navigation.
   const menuButton = document.querySelector('.menu-toggle');
   const topLinks = document.querySelector('.site-links');
@@ -34,7 +36,6 @@
 
     if (!items.length) return;
 
-    // The script is the only owner of side-nav active state.
     items.forEach(({ link }) => {
       link.classList.remove('active');
       link.removeAttribute('aria-current');
@@ -59,8 +60,6 @@
       return (bar?.getBoundingClientRect().bottom || 66);
     };
 
-    // Use a reading line roughly one third down the usable viewport.
-    // This is much more stable than relying only on section top positions.
     const sectionAtReadingLine = () => {
       const top = headerBottom();
       const available = Math.max(200, window.innerHeight - top);
@@ -131,19 +130,27 @@
     window.addEventListener('scroll', requestSync, { passive: true });
     window.addEventListener('resize', requestSync);
 
-    // Direct URL anchors win on initial load.
     const hashId = decodeURIComponent(location.hash.replace(/^#/, ''));
     const hashItem = items.find(item => item.id === hashId);
 
     if (hashItem) {
       setActive(hashItem.id);
     } else {
-      setActive(sectionAtReadingLine().id);
+      const initial = sectionAtReadingLine();
+      if (initial) setActive(initial.id);
     }
 
-    // Browser anchor positioning may finish after the script runs.
     requestAnimationFrame(requestSync);
     setTimeout(requestSync, 100);
     setTimeout(requestSync, 300);
   });
+
+  // Load the officer-aware navigation on every standard ODit page.
+  if (!document.querySelector('script[data-odit-site-auth]')) {
+    const authScript = document.createElement('script');
+    authScript.src = 'assets/site-auth.js';
+    authScript.dataset.oditSiteAuth = 'true';
+    authScript.defer = true;
+    document.head.appendChild(authScript);
+  }
 })();
