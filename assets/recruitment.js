@@ -6,6 +6,9 @@
   const backendNotice = document.getElementById('backendNotice');
   const submitBtn = document.getElementById('submitBtn');
   const classSelect = document.getElementById('class_name');
+  const regionSelect = document.getElementById('region');
+  const realmInput = document.getElementById('realm');
+  const realmOptions = document.getElementById('realmOptions');
   const mainSpecSelect = document.getElementById('main_spec');
   const offSpecSelect = document.getElementById('off_specs');
   const profession1 = document.getElementById('profession_1');
@@ -36,6 +39,68 @@
     'Shaman': ['Elemental', 'Enhancement', 'Restoration'],
     'Warlock': ['Affliction', 'Demonology', 'Destruction'],
     'Warrior': ['Arms', 'Fury', 'Protection']
+  };
+
+  // Searchable realm suggestions. The realm field deliberately still accepts a
+  // manually typed value so a newly-added / renamed realm can never block an application.
+  // EU is the guild's primary region, so it has the broadest suggestion list.
+  const REALMS = {
+    EU: [
+      "Aerie Peak","Agamaggan","Aggra (Português)","Aggramar","Ahn'Qiraj","Al'Akir",
+      "Alexstrasza","Alleria","Alonsus","Aman'Thul","Ambossar","Anachronos","Anetheron",
+      "Antonidas","Anub'arak","Arak-arahm","Arathi","Arathor","Archimonde","Area 52",
+      "Argent Dawn","Arthas","Arygos","Aszune","Auchindoun","Azjol-Nerub","Azuremyst",
+      "Baelgun","Balnazzar","Blackhand","Blackmoore","Blackrock","Blackscar","Blade's Edge",
+      "Bladefist","Bloodfeather","Bloodhoof","Bloodscalp","Blutkessel","Booty Bay",
+      "Boulderfist","Bronze Dragonflight","Bronzebeard","Burning Blade","Burning Legion",
+      "Burning Steppes","C'Thun","Chamber of Aspects","Chants éternels","Cho'gall",
+      "Confrérie du Thorium","Crushridge","Cult de la Rive noire","Dalaran","Darkmoon Faire",
+      "Darksorrow","Darkspear","Das Konsortium","Das Syndikat","Deathguard","Deathweaver",
+      "Deathwing","Defias Brotherhood","Dentarg","Der Mithrilorden","Der Rat von Dalaran",
+      "Die Aldor","Die Arguswacht","Die ewige Wacht","Die Nachtwache","Die Silberne Hand",
+      "Die Todeskrallen","Doomhammer","Draenor","Dragonblight","Dragonmaw","Drak'thul",
+      "Drek'Thar","Dun Modr","Dun Morogh","Dunemaul","Durotan","Earthen Ring","Echsenkessel",
+      "Eitrigg","Eldre'Thalas","Emerald Dream","Emeriss","Eonar","Eredar","Executus",
+      "Exodar","Festung der Stürme","Fordragon","Forscherliga","Frostmane","Frostmourne",
+      "Frostwhisper","Garona","Genjuros","Ghostlands","Gilneas","Grim Batol","Gul'dan",
+      "Hakkar","Haomarush","Hellfire","Hellscream","Hyjal","Illidan","Jaedenar","Kael'thas",
+      "Karazhan","Kargath","Kazzak","Khadgar","Khaz Modan","Khaz'goroth","Kil'jaeden",
+      "Kilrogg","Kirin Tor","Kor'gall","Krag'jin","Krasus","Kul Tiras","La Croisade écarlate",
+      "Laughing Skull","Les Clairvoyants","Les Sentinelles","Lightbringer","Lightning's Blade",
+      "Lordaeron","Los Errantes","Lothar","Madmortem","Magtheridon","Mal'Ganis","Malfurion",
+      "Malorne","Malygos","Mannoroth","Marécage de Zangar","Mazrigos","Medivh","Minahonda",
+      "Moonglade","Mug'thol","Nagrand","Nathrezim","Naxxramas","Nazjatar","Nefarian",
+      "Nemesis","Neptulon","Ner'zhul","Nera'thor","Nethersturm","Nordrassil","Norgannon",
+      "Nozdormu","Onyxia","Outland","Perenolde","Pozzo dell'Eternità","Proudmoore","Quel'Thalas",
+      "Ragnaros","Rajaxx","Rashgarroth","Ravencrest","Ravenholdt","Rexxar","Runetotem",
+      "Sanguino","Sargeras","Saurfang","Scarshield Legion","Sen'jin","Shadowsong",
+      "Shattered Halls","Shattered Hand","Shattrath","Shen'dralar","Silvermoon","Sinstralis",
+      "Skullcrusher","Spinebreaker","Sporeggar","Steamwheedle Cartel","Stormrage","Stormreaver",
+      "Stormscale","Sunstrider","Sylvanas","Taerar","Talnivarr","Tarren Mill","Teldrassil",
+      "Terenas","Terokkar","Terrordar","The Maelstrom","The Sha'tar","The Venture Co",
+      "Theradras","Thrall","Throk'Feroth","Thunderhorn","Tirion","Todeswache","Trollbane",
+      "Turalyon","Twilight's Hammer","Twisting Nether","Tyrande","Uldaman","Ulduar","Uldum",
+      "Un'Goro","Varimathras","Vashj","Vek'lor","Vek'nilash","Vol'jin","Wildhammer",
+      "Wrathbringer","Xavius","Ysera","Ysondre","Zenedar","Zirkel des Cenarius","Zuluhed"
+    ],
+    US: [
+      "A52","Aegwynn","Aerie Peak","Aggramar","Akama","Alexstrasza","Alleria","Alterac Mountains",
+      "Area 52","Argent Dawn","Arthas","Arygos","Auchindoun","Azgalor","Azjol-Nerub","Azralon",
+      "Barthilas","Black Dragonflight","Blackhand","Blackrock","Bleeding Hollow","Bloodhoof",
+      "Bonechewer","Borean Tundra","Bronzebeard","Burning Blade","Burning Legion","Caelestrasz",
+      "Cenarius","Cho'gall","Dalaran","Darkspear","Deathwing","Doomhammer","Draenor","Dragonblight",
+      "Dragonmaw","Dreadmaul","Earthen Ring","Eitrigg","Emerald Dream","Eonar","Executus",
+      "Frostmane","Frostmourne","Garona","Ghostlands","Gilneas","Greymane","Grizzly Hills",
+      "Gundrak","Hellscream","Hyjal","Illidan","Jubei'Thos","Kel'Thuzad","Khaz Modan",
+      "Kil'jaeden","Kilrogg","Kirin Tor","Korgath","Lightbringer","Mal'Ganis","Mannoroth",
+      "Medivh","Moon Guard","Nagrand","Nazjatar","Ner'zhul","Proudmoore","Quel'Thalas",
+      "Ragnaros","Ravencrest","Sargeras","Sen'jin","Shadowmoon","Shadowsong","Silver Hand",
+      "Skywall","Spinebreaker","Stormrage","Stormreaver","Stormscale","Tichondrius","Thrall",
+      "Thunderhorn","Turalyon","Twisting Nether","Uldaman","Uldum","Vashj","Whisperwind",
+      "Wildhammer","Wyrmrest Accord","Zul'jin"
+    ],
+    KR: ["Azshara","Burning Legion","Cenarius","Dalaran","Deathwing","Durotan","Garona","Gul'dan","Hellscream","Hyjal","Norgannon","Rexxar","Stormrage","Windrunner"],
+    TW: ["Arthas","Bleeding Hollow","Crystalpine Stinger","Dragonmaw","Frostmane","Hellfire","Icecrown","Light's Hope","Menethil","Nightsong","Order of the Cloud Serpent","Quel'dorei","Shadowmoon","Silverwing Hold","Skywall","Stormscale","Wrathbringer"]
   };
 
   const show = (el, text, kind='info') => {
@@ -69,6 +134,25 @@
     opt.textContent = label;
     return opt;
   };
+
+  function populateRealmOptions({ clearRealm = false } = {}) {
+    const region = regionSelect?.value || 'EU';
+    const realms = REALMS[region] || [];
+
+    realmOptions.innerHTML = '';
+    realms
+      .slice()
+      .sort((a, b) => a.localeCompare(b))
+      .forEach(realm => realmOptions.append(option(realm)));
+
+    if (clearRealm && realmInput) realmInput.value = '';
+
+    if (realmInput) {
+      realmInput.placeholder = realms.length
+        ? 'Start typing your realm…'
+        : 'Type your realm name…';
+    }
+  }
 
   function resetSpecSelects() {
     mainSpecSelect.innerHTML = '';
@@ -139,6 +223,8 @@
     return valid;
   }
 
+  regionSelect?.addEventListener('change', () => populateRealmOptions({ clearRealm: true }));
+
   classSelect.addEventListener('change', () => {
     resetSpecSelects();
     updateOffSpecOptions();
@@ -149,6 +235,7 @@
   profession2.addEventListener('change', updateProfessionOptions);
   interestBoxes.forEach(box => box.addEventListener('change', validateInterests));
 
+  populateRealmOptions();
   resetSpecSelects();
   updateProfessionOptions();
 
@@ -170,7 +257,7 @@
       region: value(fd, 'region'),
       class_name: value(fd, 'class_name'),
       main_spec: value(fd, 'main_spec'),
-      role: value(fd, 'role'),
+      faction: value(fd, 'faction'),
       off_specs: nullable(value(fd, 'off_specs')),
       item_level: value(fd, 'item_level') ? Number(value(fd, 'item_level')) : null,
 
@@ -206,7 +293,7 @@
       console.error(error);
 
       const missingColumns =
-        /profession_1|profession_2|interests/i.test(error.message || '');
+        /profession_1|profession_2|interests|faction/i.test(error.message || '');
 
       show(
         msg,
@@ -219,6 +306,7 @@
     }
 
     form.reset();
+    populateRealmOptions();
     resetSpecSelects();
     updateProfessionOptions();
     validateInterests();
