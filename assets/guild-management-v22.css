@@ -1,0 +1,81 @@
+/* Guild Management V22 — Recruitment Priorities */
+
+.priority-admin-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.priority-admin-head h2{margin:0 0 6px}
+
+.priority-admin-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.priority-admin-list{
+  display:grid;
+  gap:10px;
+  margin:14px 0;
+}
+
+.priority-admin-labels{
+  display:grid;
+  grid-template-columns:90px 1fr 1.35fr 200px;
+  gap:10px;
+  padding:0 11px;
+  margin-top:15px;
+  color:#9f9079;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.priority-admin-row{
+  display:grid;
+  grid-template-columns:90px 1fr 1.35fr 200px;
+  gap:10px;
+  align-items:end;
+  border:1px solid #51401f;
+  border-radius:10px;
+  padding:11px;
+  background:rgba(11,7,5,.55);
+}
+
+.priority-admin-row .field label{
+  color:#bcae95;
+}
+
+.priority-icon-field select{
+  font-size:18px !important;
+  text-align:center;
+}
+
+.priority-row-controls{
+  display:flex;
+  gap:6px;
+  justify-content:flex-end;
+}
+
+.priority-row-controls .btn{
+  min-width:40px;
+  padding-inline:10px;
+}
+
+@media(max-width:900px){
+  .priority-admin-labels{display:none}
+  .priority-admin-row{grid-template-columns:100px 1fr 1fr}
+  .priority-row-controls{
+    grid-column:1/-1;
+    justify-content:flex-start;
+  }
+}
+
+@media(max-width:620px){
+  .priority-admin-row{grid-template-columns:1fr}
+  .priority-row-controls{grid-column:auto}
+}
