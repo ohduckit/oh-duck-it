@@ -41,6 +41,82 @@
     'Warrior': ['Arms', 'Fury', 'Protection']
   };
 
+  // Preferred role is no longer asked of the applicant. It is derived from the
+  // selected class + main spec and still written to the legacy `role` column so
+  // existing officer views / Discord notifications can use it automatically.
+  const SPEC_ROLES = {
+    'Death Knight': {
+      Blood: 'Tank',
+      Frost: 'Melee DPS',
+      Unholy: 'Melee DPS'
+    },
+    'Demon Hunter': {
+      Devourer: 'Ranged DPS',
+      Havoc: 'Melee DPS',
+      Vengeance: 'Tank'
+    },
+    Druid: {
+      Balance: 'Ranged DPS',
+      Feral: 'Melee DPS',
+      Guardian: 'Tank',
+      Restoration: 'Healer'
+    },
+    Evoker: {
+      Augmentation: 'Ranged DPS',
+      Devastation: 'Ranged DPS',
+      Preservation: 'Healer'
+    },
+    Hunter: {
+      'Beast Mastery': 'Ranged DPS',
+      Marksmanship: 'Ranged DPS',
+      Survival: 'Melee DPS'
+    },
+    Mage: {
+      Arcane: 'Ranged DPS',
+      Fire: 'Ranged DPS',
+      Frost: 'Ranged DPS'
+    },
+    Monk: {
+      Brewmaster: 'Tank',
+      Mistweaver: 'Healer',
+      Windwalker: 'Melee DPS'
+    },
+    Paladin: {
+      Holy: 'Healer',
+      Protection: 'Tank',
+      Retribution: 'Melee DPS'
+    },
+    Priest: {
+      Discipline: 'Healer',
+      Holy: 'Healer',
+      Shadow: 'Ranged DPS'
+    },
+    Rogue: {
+      Assassination: 'Melee DPS',
+      Outlaw: 'Melee DPS',
+      Subtlety: 'Melee DPS'
+    },
+    Shaman: {
+      Elemental: 'Ranged DPS',
+      Enhancement: 'Melee DPS',
+      Restoration: 'Healer'
+    },
+    Warlock: {
+      Affliction: 'Ranged DPS',
+      Demonology: 'Ranged DPS',
+      Destruction: 'Ranged DPS'
+    },
+    Warrior: {
+      Arms: 'Melee DPS',
+      Fury: 'Melee DPS',
+      Protection: 'Tank'
+    }
+  };
+
+  function inferredRole(className, spec) {
+    return SPEC_ROLES[className]?.[spec] || null;
+  }
+
   // Searchable realm suggestions. The realm field deliberately still accepts a
   // manually typed value so a newly-added / renamed realm can never block an application.
   // EU is the guild's primary region, so it has the broadest suggestion list.
@@ -251,12 +327,23 @@
     const fd = new FormData(form);
     if (value(fd, 'website')) return; // honeypot
 
+    const autoRole = inferredRole(value(fd, 'class_name'), value(fd, 'main_spec'));
+    if (!autoRole) {
+      show(
+        msg,
+        'We could not determine the role for the selected main spec. Please reselect your class and main spec.',
+        'error'
+      );
+      return;
+    }
+
     const payload = {
       character_name: value(fd, 'character_name'),
       realm: value(fd, 'realm'),
       region: value(fd, 'region'),
       class_name: value(fd, 'class_name'),
       main_spec: value(fd, 'main_spec'),
+      role: autoRole,
       faction: value(fd, 'faction'),
       off_specs: nullable(value(fd, 'off_specs')),
       item_level: value(fd, 'item_level') ? Number(value(fd, 'item_level')) : null,
