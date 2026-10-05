@@ -1,5 +1,5 @@
 window.ODIT_GUILD = {
-  discordInvite: '#',
+  discordInvite: 'https://discord.gg/6ExYC5YTVm',
   raiderIO: '#',
   warcraftLogs: '#',
   armory: '#',
