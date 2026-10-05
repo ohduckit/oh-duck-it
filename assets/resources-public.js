@@ -13,8 +13,22 @@
     return value;
   };
 
+  // Central guild-link fallback. If the Resources editor has no explicit URL
+  // for the Discord card, use the same Applicant Lounge invite configured in
+  // assets/guild-config.js. An explicit Resources URL still takes priority.
+  const resolveUrl=(item)=>{
+    const explicit=safeUrl(item?.url);
+    if(explicit)return explicit;
+
+    if(String(item?.title||'').trim().toLowerCase()==='discord'){
+      return safeUrl(window.ODIT_GUILD?.discordInvite);
+    }
+
+    return '';
+  };
+
   const renderCard=(item)=>{
-    const url=safeUrl(item.url);
+    const url=resolveUrl(item);
     const external=/^https?:\/\//i.test(url);
     const tag=url?'a':'div';
     const attrs=url
@@ -29,7 +43,7 @@
   };
 
   const renderList=(item)=>{
-    const url=safeUrl(item.url);
+    const url=resolveUrl(item);
     const external=/^https?:\/\//i.test(url);
     const tag=url?'a':'div';
     const attrs=url
