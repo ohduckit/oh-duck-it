@@ -1,0 +1,76 @@
+/* ODit Battle.net Character Ownership Verification v2 */
+
+.battlenet-verification{
+  margin-top:16px;
+  padding:14px;
+  border:1px solid #60451f;
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(34,21,13,.95),rgba(20,13,9,.95));
+}
+
+.bnet-verification-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.bnet-verification-head .field-help{
+  margin-top:5px !important;
+  margin-bottom:0 !important;
+}
+
+.bnet-btn{
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+
+.bnet-verification-status{
+  margin-top:10px;
+  padding:9px 11px;
+  border:1px solid #5b472d;
+  border-radius:8px;
+  background:#17110c;
+  color:#c9b99e;
+  font-size:12px;
+  line-height:1.4;
+}
+
+.bnet-verification-status.success{
+  border-color:#50763f;
+  background:#172514;
+  color:#cde8c1;
+}
+
+.bnet-verification-status.error{
+  border-color:#a44136;
+  background:#321512;
+  color:#ffd2ca;
+}
+
+.bnet-verification-status.warning{
+  border-color:#987026;
+  background:#2c210f;
+  color:#f0d293;
+}
+
+.bnet-verification-status.info{
+  border-color:#6a552d;
+  background:#21180d;
+  color:#e2cfaa;
+}
+
+.bnet-verification-status strong{
+  color:inherit;
+}
+
+@media(max-width:720px){
+  .bnet-verification-head{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .bnet-btn{
+    width:100%;
+  }
+}
