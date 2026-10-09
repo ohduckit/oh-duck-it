@@ -241,6 +241,17 @@
     .toLowerCase()
     .replace(/[^\p{L}\p{N}]/gu, '');
 
+  // Escape Battle.net character data before rendering it inside the picker.
+  // v2.2 called esc(...) in renderBattleNetCharacters() but did not define it,
+  // which stopped the modal from rendering after the character list loaded.
+  const esc = (value='') => String(value).replace(/[&<>'"]/g, c => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    "'":'&#39;',
+    '"':'&quot;'
+  }[c]));
+
   const profileSourceLabel = (kind) => ({
     raiderio: 'Raider.IO',
     armory: 'WoW Armory'
@@ -473,9 +484,13 @@
     if (clearRealm && realmInput) realmInput.value = '';
 
     if (realmInput) {
-      realmInput.placeholder = realms.length
-        ? 'Start typing your realm…'
-        : 'Type your realm name…';
+      if (realmInput.readOnly) {
+        realmInput.placeholder = 'Filled by Battle.net';
+      } else {
+        realmInput.placeholder = realms.length
+          ? 'Start typing your realm…'
+          : 'Type your realm name…';
+      }
     }
   }
 
@@ -806,10 +821,26 @@
   }
 
   function openBattleNetCharacterDialog() {
-    renderBattleNetCharacters();
-    if (typeof bnetCharacterDialog?.showModal === 'function') {
-      bnetCharacterDialog.showModal();
+    try {
+      renderBattleNetCharacters();
+
+      if (!bnetCharacterDialog) {
+        throw new Error('Battle.net character dialog is missing from the page.');
+      }
+
+      if (typeof bnetCharacterDialog.showModal === 'function') {
+        if (!bnetCharacterDialog.open) bnetCharacterDialog.showModal();
+      } else {
+        bnetCharacterDialog.setAttribute('open', '');
+      }
+
       window.setTimeout(() => bnetCharacterSearch?.focus(), 50);
+    } catch (error) {
+      console.error('Could not open Battle.net character picker:', error);
+      setBattleNetStatus(
+        'error',
+        'Your Battle.net characters were loaded, but the character picker could not open. Please refresh the page and try again.'
+      );
     }
   }
 
