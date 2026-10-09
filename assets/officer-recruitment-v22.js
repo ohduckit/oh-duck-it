@@ -85,6 +85,16 @@
         background:#281a0f;
         color:#e2c28e;
       }
+      .interview-response-box{
+        margin-top:10px;
+        padding:10px;
+        border:1px solid #5b421f;
+        border-radius:8px;
+        background:#21160f;
+      }
+      .interview-response-box.confirmed{border-color:#4f7342}
+      .interview-response-box.reschedule{border-color:#9a6a2d}
+      .interview-response-box p{margin:5px 0;color:#cdbda7;line-height:1.45}
       @media(max-width:760px){
         .interview-grid{grid-template-columns:1fr}
       }
@@ -105,6 +115,9 @@
         discord_last_dm_at, discord_last_error,
         interview_at, interview_room, interview_channel_id,
         interview_scheduled_by, interview_message_sent_at,
+        interview_response_status, interview_response_at, interview_response_message,
+        interview_officer_notified_at, interview_officer_notification_error,
+        assigned_name, assigned_discord_user_id,
         battlenet_active_spec, main_spec, status
       `);
 
@@ -150,6 +163,9 @@
         discord_last_dm_at, discord_last_error,
         interview_at, interview_room, interview_channel_id,
         interview_scheduled_by, interview_message_sent_at,
+        interview_response_status, interview_response_at, interview_response_message,
+        interview_officer_notified_at, interview_officer_notification_error,
+        assigned_name, assigned_discord_user_id,
         battlenet_active_spec, main_spec, status
       `)
       .eq('id', id)
@@ -216,6 +232,22 @@
         ? `${esc(meta.discord_global_name)} (@${esc(meta.discord_username)})`
         : `@${esc(meta.discord_username || 'verified-user')}`;
 
+    const responseState = meta.interview_response_status || '';
+    const responseClass = responseState === 'Confirmed'
+      ? 'confirmed'
+      : responseState === 'Reschedule requested'
+        ? 'reschedule'
+        : '';
+    const responseBlock = meta.interview_at ? `
+      <div class="interview-response-box ${responseClass}">
+        <p><b>Applicant response:</b> ${esc(responseState || 'Awaiting response')}</p>
+        ${meta.interview_response_at ? `<p><b>Response received:</b> ${esc(niceDate(meta.interview_response_at))}</p>` : ''}
+        ${meta.interview_response_message ? `<p><b>Availability / message:</b> ${esc(meta.interview_response_message)}</p>` : ''}
+        <p><b>Assigned officer notification:</b> ${meta.interview_officer_notified_at ? `Sent ${esc(niceDate(meta.interview_officer_notified_at))}` : 'Not confirmed'}</p>
+        ${meta.interview_officer_notification_error ? `<p class="discord-warning">${esc(meta.interview_officer_notification_error)}</p>` : ''}
+      </div>
+    ` : '';
+
     const interviewPanel = meta.status === 'Interview' ? `
       <div class="interview-grid">
         <div class="field">
@@ -255,6 +287,7 @@
           <b>Discord message:</b> ${meta.interview_message_sent_at ? `Sent ${esc(niceDate(meta.interview_message_sent_at))}` : 'Not delivered'}
         </p>
       ` : ''}
+      ${responseBlock}
       ${meta.discord_last_error ? `
         <div class="notice error" style="margin-top:10px">${esc(meta.discord_last_error)}</div>
       ` : ''}
@@ -321,7 +354,7 @@
       });
 
       showPortal(
-        result.message || 'Interview scheduled.',
+        result.message || 'Recruitment chat sent.',
         result.dm_sent ? 'success' : 'error'
       );
 
