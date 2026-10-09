@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oh Duck It — Recruitment</title><meta name="description" content="Apply to join Oh Duck It, an AoTC-focused World of Warcraft guild.">
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/recruitment-v22.css">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/recruitment-v22.css"><link rel="stylesheet" href="assets/recruitment-validation-v1.css">
 </head><body>
 
 <nav class="sitebar">
@@ -89,27 +89,32 @@
 <div class="field"><label for="item_level">Current item level</label><input id="item_level" name="item_level" type="number" min="1" max="999" inputmode="numeric"></div>
 </div>
 
-<div class="field full" style="margin-top:14px">
+<div class="field full verification-heading" style="margin-top:14px">
   <label>Character verification *</label>
   <p class="field-help">
-    Add at least one direct character profile below. Every profile you provide must match the character name, realm and region entered above.
+    Add at least one direct character profile. Raider.IO and the current WoW Armory format can be matched directly against the character above.
+    Warcraft Logs links that use a numeric character ID can be included, but need Raider.IO or Armory alongside them because the ID-only URL does not contain the character name or realm.
   </p>
+  <div id="profileValidationSummary" class="profile-validation-summary" hidden></div>
 </div>
 <div class="form-grid" id="characterProfileVerification">
-  <div class="field">
+  <div class="field profile-field" data-profile-field="raiderio">
     <label for="raiderio_url">Raider.IO character profile</label>
-    <input id="raiderio_url" name="raiderio_url" type="url" inputmode="url" autocomplete="url" placeholder="https://raider.io/characters/eu/realm/character">
+    <input id="raiderio_url" name="raiderio_url" type="url" inputmode="url" autocomplete="url" placeholder="https://raider.io/characters/eu/realm/character" aria-describedby="raiderioValidation">
+    <span id="raiderioValidation" class="profile-field-status" aria-live="polite"></span>
   </div>
-  <div class="field">
+  <div class="field profile-field" data-profile-field="wcl">
     <label for="wcl_url">Warcraft Logs character profile</label>
-    <input id="wcl_url" name="wcl_url" type="url" inputmode="url" autocomplete="url" placeholder="https://www.warcraftlogs.com/character/eu/realm/character">
+    <input id="wcl_url" name="wcl_url" type="url" inputmode="url" autocomplete="url" placeholder="https://www.warcraftlogs.com/character/..." aria-describedby="wclValidation">
+    <span id="wclValidation" class="profile-field-status" aria-live="polite"></span>
   </div>
-  <div class="field">
-    <label for="armory_url">Armory character profile</label>
-    <input id="armory_url" name="armory_url" type="url" inputmode="url" autocomplete="url" placeholder="https://worldofwarcraft.blizzard.com/.../character/eu/realm/character">
+  <div class="field profile-field" data-profile-field="armory">
+    <label for="armory_url">WoW Armory character profile</label>
+    <input id="armory_url" name="armory_url" type="url" inputmode="url" autocomplete="url" placeholder="https://worldofwarcraft.blizzard.com/.../worldsoul/eu/armory/character/realm/character" aria-describedby="armoryValidation">
+    <span id="armoryValidation" class="profile-field-status" aria-live="polite"></span>
   </div>
   <div class="field full">
-    <span class="field-help">At least one is required. Guild pages, search pages and profiles for a different character will be rejected.</span>
+    <span class="field-help">At least one verifiable profile is required. If anything does not match, the exact field will be highlighted before the form can submit.</span>
   </div>
 </div>
 </div>
