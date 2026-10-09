@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oh Duck It — Recruitment</title><meta name="description" content="Apply to join Oh Duck It, an AoTC-focused World of Warcraft guild.">
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/recruitment-v22.css"><link rel="stylesheet" href="assets/recruitment-validation-v1.css"><link rel="stylesheet" href="assets/recruitment-battlenet-v2.css"><link rel="stylesheet" href="assets/recruitment-battlenet-autofill-v2-1.css">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/recruitment-v22.css"><link rel="stylesheet" href="assets/recruitment-validation-v1.css"><link rel="stylesheet" href="assets/recruitment-battlenet-v2.css"><link rel="stylesheet" href="assets/recruitment-battlenet-inline-v2-2.css">
 </head><body>
 
 <nav class="sitebar">
@@ -33,9 +33,9 @@
 <section class="recruit-layout anchor-section" id="overview">
 <div class="parchment">
 <h2>Join Oh Duck It</h2>
-<p><b>AoTC-focused, social and progression-minded.</b><br>We want reliable, coachable players who enjoy raiding together, know their class and are open to improvement.</p>
+<p><b>AoTC-focused, social and progression-minded.</b><br>We want reliable players who enjoy raiding together, know their class and are open to improvement.</p>
 <ul class="goals"><li>AoTC every season.</li><li>Two progression nights: Wednesday & Thursday.</li><li>Regular Mythic+ and Mythic Mondays.</li><li>Optional reclears and fun runs.</li><li>Mythic after AoTC if interest and roster allow.</li></ul>
-<div class="actions" style="justify-content:flex-start"><a class="btn primary" href="#apply">Apply now</a><a class="btn discord" data-guild-link="discordInvite" href="#">Join our Discord</a></div>
+<div class="actions" style="justify-content:flex-start"><a class="btn primary" href="#apply">Apply now</a><a class="btn discord" data-guild-link="discordInvite" href="#">Got a question? Ask us on Discord</a></div>
 </div>
 <aside class="parchment" id="looking"><h3>Current Priorities</h3><div class="priority-list">
 <div class="priority"><span class="round">🛡</span><div><b>Tanks</b><small>Open / depth</small></div></div>
@@ -45,7 +45,7 @@
 </div></aside>
 </section>
 
-<section class="panel anchor-section" id="philosophy"><h2>Our Philosophy</h2><p>We prefer reliable, coachable players who want to improve with the team over elitism or individual glory. Mechanics, utility, attitude and contribution matter alongside performance.</p></section>
+<section class="panel anchor-section" id="philosophy"><h2>Our Philosophy</h2><p>We prefer reliable players who want to improve with the team over elitism or individual glory. Mechanics, utility, attitude and contribution matter alongside performance.</p></section>
 
 <section class="panel anchor-section" id="trial"><h2>Trial Process</h2><p>Applications are reviewed by authorised officers. Suitable applicants can move through review, interview and trial stages before a final decision. Expectations and feedback should be clear throughout.</p></section>
 
@@ -59,7 +59,7 @@
 <div class="form-section"><h3>Character</h3>
 <p>
   Choose the character you want to join Oh Duck It on through Battle.net.
-  Once selected, the character details and public profile links are filled automatically.
+  Battle.net confirms the character belongs to the account you authorise, then ODit fills the character details automatically.
 </p>
 
 <div class="bnet-picker">
@@ -109,10 +109,16 @@
   </div>
 
   <div class="field">
-    <label for="main_spec">Active spec *</label>
-    <select id="main_spec" name="main_spec" required class="verified-select" aria-readonly="true" tabindex="-1">
-      <option value="">Filled by Battle.net</option>
+    <label for="bnet_active_spec">Battle.net active spec</label>
+    <input id="bnet_active_spec" type="text" readonly placeholder="Filled by Battle.net">
+  </div>
+
+  <div class="field applying-as-field">
+    <label for="main_spec">Applying as *</label>
+    <select id="main_spec" name="main_spec" required disabled>
+      <option value="">Choose character first</option>
     </select>
+    <span class="field-help">Defaults to your active Battle.net spec. Change this if you are applying on another spec for the same class.</span>
   </div>
 
   <div class="field">
@@ -140,24 +146,42 @@
 <div class="field full verification-heading" style="margin-top:14px">
   <label>Character references</label>
   <p class="field-help">
-    These are generated automatically from the Battle.net character you select.
-    They are useful references for officers; Battle.net is the ownership verification.
+    Raider.IO and WoW Armory links are generated from the Battle.net character you selected.
+    They are references for officers; Battle.net is the ownership check.
   </p>
 </div>
 
 <div class="form-grid" id="characterProfileVerification">
-  <div class="field profile-field" data-profile-field="raiderio">
+  <div class="field profile-field">
     <label for="raiderio_url">Raider.IO character profile</label>
-    <input id="raiderio_url" name="raiderio_url" type="url" readonly placeholder="Filled automatically" aria-describedby="raiderioValidation">
-    <span id="raiderioValidation" class="profile-field-status" aria-live="polite"></span>
+    <input id="raiderio_url" name="raiderio_url" type="url" readonly placeholder="Filled automatically">
   </div>
 
-  <div class="field profile-field" data-profile-field="armory">
+  <div class="field profile-field">
     <label for="armory_url">WoW Armory character profile</label>
-    <input id="armory_url" name="armory_url" type="url" readonly placeholder="Filled automatically" aria-describedby="armoryValidation">
-    <span id="armoryValidation" class="profile-field-status" aria-live="polite"></span>
+    <input id="armory_url" name="armory_url" type="url" readonly placeholder="Filled automatically">
   </div>
 </div>
+
+<dialog id="bnetCharacterDialog" class="bnet-character-dialog">
+  <div class="bnet-dialog-shell">
+    <div class="bnet-dialog-head">
+      <div>
+        <div class="kicker">Battle.net verified account</div>
+        <h3>Choose the character you want to join on</h3>
+        <p>Only characters returned by the Battle.net account you just authorised are shown here.</p>
+      </div>
+      <button id="closeBnetDialog" class="bnet-dialog-close" type="button" aria-label="Close">×</button>
+    </div>
+
+    <div class="bnet-dialog-tools">
+      <input id="bnetCharacterSearch" type="search" placeholder="Search character, realm or class…" autocomplete="off">
+    </div>
+
+    <div id="bnetCharacterList" class="bnet-character-list"></div>
+    <div id="bnetCharacterEmpty" class="bnet-character-empty" hidden>No characters match that search.</div>
+  </div>
+</dialog>
 </div>
 
 <div class="form-section" id="guild-interests">
@@ -249,7 +273,7 @@
 </form>
 </section>
 </div></main>
-<footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Reliable • Prepared • Coachable • Team-first.</div></footer>
+<footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Reliable • Prepared • Team-first • Improving together.</div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/guild-config.js"></script><script src="assets/site.js"></script><script src="assets/recruitment-priorities.js"></script><script src="assets/security-config.js"></script><script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script><script src="assets/recruitment.js"></script>
 <script>document.querySelectorAll('[data-guild-link]').forEach(a=>{const u=ODIT_GUILD[a.dataset.guildLink];if(u&&u!=='#'){a.href=u;a.target='_blank';a.rel='noopener'}else{a.addEventListener('click',e=>e.preventDefault())}});</script>
 </body></html>
