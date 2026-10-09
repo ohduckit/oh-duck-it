@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oh Duck It — Recruitment</title><meta name="description" content="Apply to join Oh Duck It, an AoTC-focused World of Warcraft guild.">
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/recruitment-v22.css"><link rel="stylesheet" href="assets/recruitment-validation-v1.css"><link rel="stylesheet" href="assets/recruitment-battlenet-v2.css">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/recruitment-v22.css"><link rel="stylesheet" href="assets/recruitment-validation-v1.css"><link rel="stylesheet" href="assets/recruitment-battlenet-v2.css"><link rel="stylesheet" href="assets/recruitment-battlenet-autofill-v2-1.css">
 </head><body>
 
 <nav class="sitebar">
@@ -56,79 +56,106 @@
 <div id="backendNotice" class="notice info" hidden></div><div id="formMessage" class="notice" hidden></div>
 <form id="recruitmentForm" novalidate>
 <div class="honeypot" aria-hidden="true"><label>Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label></div>
-<div class="form-section"><h3>Character</h3><p>Enter the character you want to join Oh Duck It on.</p><div class="form-grid">
-<div class="field"><label for="character_name">Character name *</label><input id="character_name" name="character_name" maxlength="50" required></div>
-<div class="field">
-<label for="realm">Realm *</label>
-<input id="realm" name="realm" list="realmOptions" maxlength="60" autocomplete="off" placeholder="Start typing your realm…" required>
-<datalist id="realmOptions"></datalist>
-<span class="field-help">Start typing to filter the list. If your realm is not suggested, type its full name.</span>
-</div>
-<div class="field"><label for="region">Region *</label><select id="region" name="region" required><option value="EU">EU</option><option value="US">US</option><option value="KR">KR</option><option value="TW">TW</option></select></div>
-<div class="field"><label for="class_name">Class *</label><select id="class_name" name="class_name" required><option value="">Choose class</option><option>Death Knight</option><option>Demon Hunter</option><option>Druid</option><option>Evoker</option><option>Hunter</option><option>Mage</option><option>Monk</option><option>Paladin</option><option>Priest</option><option>Rogue</option><option>Shaman</option><option>Warlock</option><option>Warrior</option></select></div>
-<div class="field">
-<label for="main_spec">Main spec *</label>
-<select id="main_spec" name="main_spec" required disabled>
-<option value="">Choose class first</option>
-</select>
-</div>
-<div class="field">
-<label for="faction">Faction *</label>
-<select id="faction" name="faction" required>
-<option value="">Choose faction</option>
-<option value="Alliance">Alliance</option>
-<option value="Horde">Horde</option>
-</select>
-</div>
-<div class="field">
-<label for="off_specs">Off-spec</label>
-<select id="off_specs" name="off_specs" disabled>
-<option value="">Choose class first</option>
-</select>
-</div>
-<div class="field"><label for="item_level">Current item level</label><input id="item_level" name="item_level" type="number" min="1" max="999" inputmode="numeric"></div>
-</div>
+<div class="form-section"><h3>Character</h3>
+<p>
+  Choose the character you want to join Oh Duck It on through Battle.net.
+  Once selected, the character details and public profile links are filled automatically.
+</p>
 
+<div class="bnet-picker">
+  <div class="field">
+    <label for="region">Battle.net region *</label>
+    <select id="region" name="region" required>
+      <option value="EU">EU</option>
+      <option value="US">US</option>
+      <option value="KR">KR</option>
+      <option value="TW">TW</option>
+    </select>
+    <span class="field-help">ODit is an EU guild; EU should normally be selected.</span>
+  </div>
 
-<div class="field full battlenet-verification" id="battleNetVerification">
-  <div class="bnet-verification-head">
-    <div>
-      <label>Battle.net ownership verification *</label>
-      <p class="field-help">
-        Prove that the character above is on your Battle.net World of Warcraft account.
-        ODit never sees your Battle.net password.
-      </p>
-    </div>
+  <div class="bnet-picker-action">
     <button id="battleNetVerifyBtn" class="btn bnet-btn" type="button">
-      Verify with Battle.net
+      Choose character with Battle.net
     </button>
   </div>
-  <div id="battleNetVerificationStatus" class="bnet-verification-status" aria-live="polite">
-    Not verified yet.
+</div>
+
+<div id="battleNetVerificationStatus" class="bnet-verification-status" aria-live="polite">
+  No character selected yet.
+</div>
+
+<div class="verified-character-grid form-grid" id="verifiedCharacterDetails">
+  <div class="field">
+    <label for="character_name">Character name *</label>
+    <input id="character_name" name="character_name" maxlength="50" required readonly placeholder="Filled by Battle.net">
+  </div>
+
+  <div class="field">
+    <label for="realm">Realm *</label>
+    <input id="realm" name="realm" maxlength="60" required readonly placeholder="Filled by Battle.net">
+    <datalist id="realmOptions"></datalist>
+  </div>
+
+  <div class="field">
+    <label for="class_name">Class *</label>
+    <select id="class_name" name="class_name" required class="verified-select" aria-readonly="true" tabindex="-1">
+      <option value="">Filled by Battle.net</option>
+      <option>Death Knight</option><option>Demon Hunter</option><option>Druid</option>
+      <option>Evoker</option><option>Hunter</option><option>Mage</option><option>Monk</option>
+      <option>Paladin</option><option>Priest</option><option>Rogue</option><option>Shaman</option>
+      <option>Warlock</option><option>Warrior</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="main_spec">Active spec *</label>
+    <select id="main_spec" name="main_spec" required class="verified-select" aria-readonly="true" tabindex="-1">
+      <option value="">Filled by Battle.net</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="faction">Faction *</label>
+    <select id="faction" name="faction" required class="verified-select" aria-readonly="true" tabindex="-1">
+      <option value="">Filled by Battle.net</option>
+      <option value="Alliance">Alliance</option>
+      <option value="Horde">Horde</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="item_level">Equipped item level</label>
+    <input id="item_level" name="item_level" type="number" min="1" max="9999" readonly placeholder="Filled by Battle.net">
+  </div>
+
+  <div class="field">
+    <label for="off_specs">Off-spec</label>
+    <select id="off_specs" name="off_specs" disabled>
+      <option value="">Choose character first</option>
+    </select>
   </div>
 </div>
 
 <div class="field full verification-heading" style="margin-top:14px">
-  <label>Character profile *</label>
+  <label>Character references</label>
   <p class="field-help">
-    Add at least one direct profile for the character above: Raider.IO or WoW Armory.
-    We check that the link itself matches the entered character, realm and region.
+    These are generated automatically from the Battle.net character you select.
+    They are useful references for officers; Battle.net is the ownership verification.
   </p>
 </div>
+
 <div class="form-grid" id="characterProfileVerification">
   <div class="field profile-field" data-profile-field="raiderio">
     <label for="raiderio_url">Raider.IO character profile</label>
-    <input id="raiderio_url" name="raiderio_url" type="url" inputmode="url" autocomplete="url" placeholder="https://raider.io/characters/eu/realm/character" aria-describedby="raiderioValidation">
+    <input id="raiderio_url" name="raiderio_url" type="url" readonly placeholder="Filled automatically" aria-describedby="raiderioValidation">
     <span id="raiderioValidation" class="profile-field-status" aria-live="polite"></span>
   </div>
+
   <div class="field profile-field" data-profile-field="armory">
     <label for="armory_url">WoW Armory character profile</label>
-    <input id="armory_url" name="armory_url" type="url" inputmode="url" autocomplete="url" placeholder="https://worldofwarcraft.blizzard.com/.../character/realm/character" aria-describedby="armoryValidation">
+    <input id="armory_url" name="armory_url" type="url" readonly placeholder="Filled automatically" aria-describedby="armoryValidation">
     <span id="armoryValidation" class="profile-field-status" aria-live="polite"></span>
-  </div>
-  <div class="field full">
-    <span id="profileGroupValidation" class="profile-group-validation" aria-live="polite"></span>
-    <span class="field-help">At least one is required. A red message appears only under the field that needs attention.</span>
   </div>
 </div>
 </div>
