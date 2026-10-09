@@ -20,6 +20,11 @@
     armory: document.getElementById('armory_url')
   };
   const profileInputList = Object.values(profileInputs).filter(Boolean);
+  const battleNetVerifyBtn = document.getElementById('battleNetVerifyBtn');
+  const battleNetStatus = document.getElementById('battleNetVerificationStatus');
+  const BNET_DRAFT_KEY = 'odit-recruitment-bnet-draft-v1';
+  let battleNetVerificationToken = '';
+  let battleNetVerifiedIdentity = null;
 
   const cfg = window.ODIT_SUPABASE || {};
   const configured =
@@ -541,6 +546,17 @@
   profession1.addEventListener('change', updateProfessionOptions);
   profession2.addEventListener('change', updateProfessionOptions);
   interestBoxes.forEach(box => box.addEventListener('change', validateInterests));
+  battleNetVerifyBtn?.addEventListener('click', beginBattleNetVerification);
+
+  const invalidateVerifiedCharacter = () => {
+    if (battleNetVerificationToken || battleNetVerifiedIdentity) {
+      clearBattleNetVerification('Character details changed — verify with Battle.net again.');
+    }
+  };
+
+  characterInput?.addEventListener('input', invalidateVerifiedCharacter);
+  realmInput?.addEventListener('input', invalidateVerifiedCharacter);
+  regionSelect?.addEventListener('change', invalidateVerifiedCharacter);
   Object.entries(profileInputs).forEach(([kind, input]) => {
     if (!input) return;
 
@@ -572,6 +588,215 @@
   populateRealmOptions();
   resetSpecSelects();
   updateProfessionOptions();
+  restoreRecruitmentDraft();
+
+
+  function setBattleNetStatus(state, text) {
+    if (!battleNetStatus) return;
+    battleNetStatus.className = 'bnet-verification-status';
+    if (state) battleNetStatus.classList.add(state);
+    battleNetStatus.textContent = text;
+  }
+
+  function recruitmentDraft() {
+    const fields = {};
+    [...form.elements].forEach(el => {
+      if (!el.name || el.name === 'website') return;
+
+      if (el.type === 'checkbox') {
+        fields[el.name] = el.checked;
+      } else {
+        fields[el.name] = el.value;
+      }
+    });
+    return fields;
+  }
+
+  function saveRecruitmentDraft() {
+    try {
+      sessionStorage.setItem(BNET_DRAFT_KEY, JSON.stringify(recruitmentDraft()));
+    } catch (err) {
+      console.warn('Could not save recruitment draft before Battle.net verification:', err);
+    }
+  }
+
+  function restoreRecruitmentDraft() {
+    let draft;
+    try {
+      const raw = sessionStorage.getItem(BNET_DRAFT_KEY);
+      if (!raw) return;
+      draft = JSON.parse(raw);
+    } catch {
+      return;
+    }
+
+    if (!draft || typeof draft !== 'object') return;
+
+    if (draft.region && regionSelect) {
+      regionSelect.value = draft.region;
+      populateRealmOptions();
+    }
+
+    if (draft.class_name && classSelect) {
+      classSelect.value = draft.class_name;
+      resetSpecSelects();
+    }
+
+    [...form.elements].forEach(el => {
+      if (!el.name || !(el.name in draft) || el.name === 'region' || el.name === 'class_name') return;
+
+      if (el.type === 'checkbox') {
+        el.checked = draft[el.name] === true;
+      } else if (!el.disabled || el.name === 'main_spec' || el.name === 'off_specs') {
+        el.value = draft[el.name] ?? '';
+      }
+    });
+
+    if (draft.main_spec && mainSpecSelect) mainSpecSelect.value = draft.main_spec;
+    updateOffSpecOptions();
+    if (draft.off_specs && offSpecSelect) offSpecSelect.value = draft.off_specs;
+    updateProfessionOptions();
+    validateInterests();
+  }
+
+  function currentCharacterIdentity() {
+    return {
+      character: String(characterInput?.value || '').trim(),
+      realm: String(realmInput?.value || '').trim(),
+      region: String(regionSelect?.value || '').trim().toUpperCase()
+    };
+  }
+
+  function clearBattleNetVerification(reason = '') {
+    battleNetVerificationToken = '';
+    battleNetVerifiedIdentity = null;
+
+    if (reason) {
+      setBattleNetStatus('warning', reason);
+    } else {
+      setBattleNetStatus('', 'Not verified yet.');
+    }
+  }
+
+  function verificationMatchesCurrentCharacter(identity) {
+    const current = currentCharacterIdentity();
+    return (
+      identity &&
+      identityKey(identity.character || '') === identityKey(current.character) &&
+      identityKey(identity.realm || '') === identityKey(current.realm) &&
+      String(identity.region || '').toUpperCase() === current.region
+    );
+  }
+
+  async function verifyReturnedBattleNetToken(token) {
+    if (!token || !client) return false;
+
+    setBattleNetStatus('info', 'Checking Battle.net verification…');
+
+    const { data, error } = await client.functions.invoke('battlenet-verify', {
+      body: { action: 'status', token }
+    });
+
+    if (error || !data?.ok || !data?.verified) {
+      console.error(error || data);
+      clearBattleNetVerification('Battle.net verification could not be confirmed. Please verify again.');
+      return false;
+    }
+
+    const identity = {
+      character: data.character,
+      realm: data.realm,
+      region: data.region
+    };
+
+    if (!verificationMatchesCurrentCharacter(identity)) {
+      clearBattleNetVerification(
+        `Battle.net verified ${identity.character} — ${identity.realm} (${identity.region}), but the form now contains different character details. Verify again.`
+      );
+      return false;
+    }
+
+    battleNetVerificationToken = token;
+    battleNetVerifiedIdentity = identity;
+    setBattleNetStatus(
+      'success',
+      `✓ Battle.net verified ownership of ${identity.character} — ${identity.realm} (${identity.region}).`
+    );
+    return true;
+  }
+
+  async function beginBattleNetVerification() {
+    if (!client) return;
+
+    const identity = currentCharacterIdentity();
+    const missing = [];
+
+    if (!identity.character) missing.push(characterInput);
+    if (!identity.realm) missing.push(realmInput);
+    if (!identity.region) missing.push(regionSelect);
+
+    if (missing.length) {
+      setBattleNetStatus(
+        'error',
+        'Enter the character name, realm and region before verifying with Battle.net.'
+      );
+      missing[0]?.focus();
+      return;
+    }
+
+    saveRecruitmentDraft();
+    setBattleNetStatus('info', 'Opening Battle.net secure sign-in…');
+    battleNetVerifyBtn.disabled = true;
+
+    const { data, error } = await client.functions.invoke('battlenet-verify', {
+      body: {
+        action: 'start',
+        character_name: identity.character,
+        realm: identity.realm,
+        region: identity.region
+      }
+    });
+
+    battleNetVerifyBtn.disabled = false;
+
+    if (error || !data?.ok || !data?.authorizeUrl) {
+      console.error(error || data);
+      setBattleNetStatus(
+        'error',
+        data?.message || 'Battle.net verification could not start. Please try again.'
+      );
+      return;
+    }
+
+    window.location.assign(data.authorizeUrl);
+  }
+
+  async function handleBattleNetReturn() {
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get('bnet');
+    const token = params.get('bnet_token');
+    const reason = params.get('bnet_reason');
+
+    if (!result && !token && !reason) return;
+
+    // Remove verification tokens/errors from the visible URL immediately.
+    const cleanUrl = `${window.location.pathname}${window.location.hash || ''}`;
+    history.replaceState(null, '', cleanUrl);
+
+    if (result === 'verified' && token) {
+      await verifyReturnedBattleNetToken(token);
+      return;
+    }
+
+    if (result === 'cancelled') {
+      clearBattleNetVerification('Battle.net verification was cancelled.');
+      return;
+    }
+
+    clearBattleNetVerification(
+      reason || 'Battle.net could not verify this character. Check the character/realm and try again.'
+    );
+  }
 
 
   function turnstileConfigured() {
@@ -623,6 +848,11 @@
 
   bootTurnstile();
 
+  // Battle.net redirects back to this same recruitment page.
+  // Restore the applicant's draft, validate the signed verification token,
+  // then continue the form exactly where they left off.
+  handleBattleNetReturn();
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     msg.hidden = true;
@@ -647,6 +877,20 @@
           firstInvalid.reportValidity();
         }, 350);
       }
+      return;
+    }
+
+    if (!battleNetVerificationToken || !battleNetVerifiedIdentity || !verificationMatchesCurrentCharacter(battleNetVerifiedIdentity)) {
+      show(
+        msg,
+        'Your application has not been submitted. Verify this character with Battle.net first.',
+        'error'
+      );
+      setBattleNetStatus(
+        'error',
+        'Battle.net ownership verification is required before this application can be submitted.'
+      );
+      document.getElementById('battleNetVerification')?.scrollIntoView({behavior:'smooth', block:'center'});
       return;
     }
 
@@ -700,7 +944,8 @@
       battle_tag: nullable(value(fd, 'battle_tag')),
       why_odit: value(fd, 'why_odit'),
       about_you: nullable(value(fd, 'about_you')),
-      privacy_consent: fd.has('privacy_consent')
+      privacy_consent: fd.has('privacy_consent'),
+      bnet_verification_token: battleNetVerificationToken
     };
 
     submitBtn.disabled = true;
@@ -735,6 +980,8 @@
     }
 
     form.reset();
+    sessionStorage.removeItem(BNET_DRAFT_KEY);
+    clearBattleNetVerification();
     if (window.turnstile && turnstileWidgetId !== null) {
       window.turnstile.reset(turnstileWidgetId);
     }
