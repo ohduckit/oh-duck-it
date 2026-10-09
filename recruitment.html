@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oh Duck It — Recruitment</title><meta name="description" content="Apply to join Oh Duck It, an AoTC-focused World of Warcraft guild.">
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/recruitment-v22.css"><link rel="stylesheet" href="assets/recruitment-validation-v1.css">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/recruitment-v22.css"><link rel="stylesheet" href="assets/recruitment-validation-v1.css"><link rel="stylesheet" href="assets/recruitment-battlenet-v2.css">
 </head><body>
 
 <nav class="sitebar">
@@ -87,6 +87,25 @@
 </select>
 </div>
 <div class="field"><label for="item_level">Current item level</label><input id="item_level" name="item_level" type="number" min="1" max="999" inputmode="numeric"></div>
+</div>
+
+
+<div class="field full battlenet-verification" id="battleNetVerification">
+  <div class="bnet-verification-head">
+    <div>
+      <label>Battle.net ownership verification *</label>
+      <p class="field-help">
+        Prove that the character above is on your Battle.net World of Warcraft account.
+        ODit never sees your Battle.net password.
+      </p>
+    </div>
+    <button id="battleNetVerifyBtn" class="btn bnet-btn" type="button">
+      Verify with Battle.net
+    </button>
+  </div>
+  <div id="battleNetVerificationStatus" class="bnet-verification-status" aria-live="polite">
+    Not verified yet.
+  </div>
 </div>
 
 <div class="field full verification-heading" style="margin-top:14px">
