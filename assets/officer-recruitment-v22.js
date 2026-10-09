@@ -95,6 +95,21 @@
       .interview-response-box.confirmed{border-color:#4f7342}
       .interview-response-box.reschedule{border-color:#9a6a2d}
       .interview-response-box p{margin:5px 0;color:#cdbda7;line-height:1.45}
+      .member-role-plan{
+        margin:14px 0 4px;
+        padding:12px;
+        border:1px solid #5b421f;
+        border-radius:9px;
+        background:#20150f;
+      }
+      .member-role-plan h4{margin:0 0 5px;color:#e6be61;font-family:Georgia,serif}
+      .member-role-options{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+      .member-role-option{
+        display:flex;align-items:center;gap:7px;padding:8px 10px;
+        border:1px solid #5b421f;border-radius:8px;background:#160f0b;color:#ead9bd;
+      }
+      .member-role-option input{width:auto}
+      .member-role-current{margin:7px 0;color:#b9aa93;font-size:12px}
       @media(max-width:760px){
         .interview-grid{grid-template-columns:1fr}
       }
@@ -109,7 +124,7 @@
     const { data, error } = await client
       .from('applications')
       .select(`
-        id, faction, profession_1, profession_2, interests,
+        id, faction, profession_1, profession_2, interests, approved_member_roles, discord_member_roles, member_roles_updated_at,
         discord_user_id, discord_username, discord_global_name,
         discord_verified_at, discord_guild_joined, discord_role_state,
         discord_last_dm_at, discord_last_error,
@@ -157,7 +172,7 @@
     const { data, error } = await client
       .from('applications')
       .select(`
-        id, faction, profession_1, profession_2, interests,
+        id, faction, profession_1, profession_2, interests, approved_member_roles, discord_member_roles, member_roles_updated_at,
         discord_user_id, discord_username, discord_global_name,
         discord_verified_at, discord_guild_joined, discord_role_state,
         discord_last_dm_at, discord_last_error,
@@ -175,6 +190,20 @@
 
     applicationMeta.set(id, data);
     return { id, meta:data };
+  }
+
+  function defaultMemberRoles(meta) {
+    const approved = Array.isArray(meta?.approved_member_roles)
+      ? meta.approved_member_roles.filter(v => ['Casual','Raider','Dungeoneer'].includes(v))
+      : [];
+    if (approved.length) return approved;
+
+    const interests = Array.isArray(meta?.interests) ? meta.interests : [];
+    const roles = [];
+    if (interests.includes('Casual')) roles.push('Casual');
+    if (interests.includes('Raiding')) roles.push('Raider');
+    if (interests.includes('Mythic+')) roles.push('Dungeoneer');
+    return roles;
   }
 
   async function decorateSelected() {
@@ -248,6 +277,38 @@
       </div>
     ` : '';
 
+    const plannedRoles = defaultMemberRoles(meta);
+    const currentRoles = Array.isArray(meta.discord_member_roles)
+      ? meta.discord_member_roles.filter(v => ['Casual','Raider','Dungeoneer'].includes(v))
+      : [];
+    const requested = Array.isArray(meta.interests) ? meta.interests : [];
+    const rolePlan = `
+      <div class="member-role-plan">
+        <h4>Membership roles</h4>
+        <p class="discord-action-note">
+          Applicant selected: <b>${requested.length ? esc(requested.join(' • ')) : '—'}</b>.
+          Officers can adjust the final membership roles without changing the original application.
+        </p>
+        <div class="member-role-options">
+          ${['Casual','Raider','Dungeoneer'].map(role => `
+            <label class="member-role-option">
+              <input type="checkbox" data-member-role="${role}" ${plannedRoles.includes(role) ? 'checked' : ''}>
+              <span>${role}</span>
+            </label>
+          `).join('')}
+        </div>
+        <div class="member-role-current">
+          <b>Currently applied in Discord:</b> ${currentRoles.length ? esc(currentRoles.join(' • ')) : 'None yet'}
+        </div>
+        <button id="saveMemberRoles" class="btn" type="button">
+          ${meta.status === 'Accepted' ? 'Save & sync Discord roles' : 'Save membership role plan'}
+        </button>
+        <p class="discord-action-note">
+          Before acceptance this only saves the plan. Once Accepted, saving here immediately adds/removes the managed Casual, Raider and Dungeoneer roles.
+        </p>
+      </div>
+    `;
+
     const interviewPanel = meta.status === 'Interview' ? `
       <div class="interview-grid">
         <div class="field">
@@ -288,12 +349,13 @@
         </p>
       ` : ''}
       ${responseBlock}
+      ${rolePlan}
       ${meta.discord_last_error ? `
         <div class="notice error" style="margin-top:10px">${esc(meta.discord_last_error)}</div>
       ` : ''}
       ${interviewPanel}
       <p class="discord-action-note">
-        A verified applicant has no ODit server access while New or Reviewing. Moving them to <b>Interview</b>, <b>Trial</b> or <b>Accepted</b> will add them to the server if needed and apply the appropriate managed role.
+        A verified applicant has no ODit server access while New or Reviewing. Moving them to <b>Interview</b> or <b>Trial</b> applies the recruitment role. <b>Accepted</b> applies the officer-approved Casual / Raider / Dungeoneer membership role plan.
       </p>
     `;
 
@@ -301,6 +363,9 @@
 
     const scheduleBtn = panel.querySelector('#scheduleDiscordInterview');
     scheduleBtn?.addEventListener('click', () => scheduleInterview(id));
+
+    const rolePlanBtn = panel.querySelector('#saveMemberRoles');
+    rolePlanBtn?.addEventListener('click', () => saveMemberRoles(id));
   }
 
   async function invokeDiscord(action, body={}) {
@@ -326,6 +391,35 @@
     }
 
     return data;
+  }
+
+  async function saveMemberRoles(applicationId) {
+    if (actionBusy) return;
+
+    const roles = [...detail.querySelectorAll('[data-member-role]:checked')]
+      .map(input => input.dataset.memberRole)
+      .filter(Boolean);
+
+    if (!roles.length) {
+      showPortal('Select at least one membership role.', 'error');
+      return;
+    }
+
+    actionBusy = true;
+    try {
+      const result = await invokeDiscord('save_member_roles', {
+        application_id: applicationId,
+        roles
+      });
+
+      showPortal(result.message || 'Membership roles saved.', 'success');
+      applicationMeta.clear();
+      document.getElementById('refreshBtn')?.click();
+    } catch (err) {
+      showPortal(err.message, 'error');
+    } finally {
+      actionBusy = false;
+    }
   }
 
   async function scheduleInterview(applicationId) {
