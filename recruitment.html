@@ -90,12 +90,11 @@
 </div>
 
 <div class="field full verification-heading" style="margin-top:14px">
-  <label>Character verification *</label>
+  <label>Character profile *</label>
   <p class="field-help">
-    Add at least one character profile. You can use Raider.IO, Warcraft Logs or WoW Armory.
-    Raider.IO and WoW Armory can be matched directly to the character above. Some Warcraft Logs links use only a numeric ID, so those need Raider.IO or Armory alongside them for name/realm verification.
+    Add at least one direct profile for the character above: Raider.IO or WoW Armory.
+    We check that the link itself matches the entered character, realm and region.
   </p>
-  <div id="profileValidationSummary" class="profile-validation-summary" hidden></div>
 </div>
 <div class="form-grid" id="characterProfileVerification">
   <div class="field profile-field" data-profile-field="raiderio">
@@ -103,18 +102,14 @@
     <input id="raiderio_url" name="raiderio_url" type="url" inputmode="url" autocomplete="url" placeholder="https://raider.io/characters/eu/realm/character" aria-describedby="raiderioValidation">
     <span id="raiderioValidation" class="profile-field-status" aria-live="polite"></span>
   </div>
-  <div class="field profile-field" data-profile-field="wcl">
-    <label for="wcl_url">Warcraft Logs character profile</label>
-    <input id="wcl_url" name="wcl_url" type="url" inputmode="url" autocomplete="url" placeholder="https://www.warcraftlogs.com/character/..." aria-describedby="wclValidation">
-    <span id="wclValidation" class="profile-field-status" aria-live="polite"></span>
-  </div>
   <div class="field profile-field" data-profile-field="armory">
     <label for="armory_url">WoW Armory character profile</label>
-    <input id="armory_url" name="armory_url" type="url" inputmode="url" autocomplete="url" placeholder="https://worldofwarcraft.blizzard.com/.../worldsoul/eu/armory/character/realm/character" aria-describedby="armoryValidation">
+    <input id="armory_url" name="armory_url" type="url" inputmode="url" autocomplete="url" placeholder="https://worldofwarcraft.blizzard.com/.../character/realm/character" aria-describedby="armoryValidation">
     <span id="armoryValidation" class="profile-field-status" aria-live="polite"></span>
   </div>
   <div class="field full">
-    <span class="field-help">All three boxes are active. Paste whichever profile(s) you want to provide; validation runs after you leave the field or when you press Submit.</span>
+    <span id="profileGroupValidation" class="profile-group-validation" aria-live="polite"></span>
+    <span class="field-help">At least one is required. A red message appears only under the field that needs attention.</span>
   </div>
 </div>
 </div>
@@ -184,6 +179,7 @@
 </div>
 
 <div class="form-section"><h3>Experience</h3><p>Tell us about your current progression and experience; we are not recruiting purely by parse colour.</p><div class="form-grid">
+<div class="field"><label for="wcl_url">Warcraft Logs profile</label><input id="wcl_url" name="wcl_url" type="url" inputmode="url" autocomplete="url" placeholder="Optional — https://www.warcraftlogs.com/character/..."><span class="field-help">Optional. Used by officers to review logs; it is not used as character ownership verification.</span></div>
 <div class="field"><label for="current_progression">Current progression</label><input id="current_progression" name="current_progression" maxlength="100" placeholder="e.g. 5/8 HC"></div>
 <div class="field full"><label for="raid_experience">Raid experience</label><textarea id="raid_experience" name="raid_experience" maxlength="2000" placeholder="Previous AoTC / Mythic experience, recent raid history, or anything useful for us to know."></textarea></div>
 <div class="field full"><label for="mplus_experience">Mythic+ experience</label><textarea id="mplus_experience" name="mplus_experience" maxlength="1200" placeholder="Optional: key level / score, preferred dungeons, goals."></textarea></div>
