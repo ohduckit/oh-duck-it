@@ -24,6 +24,15 @@
   const itemLevelInput = document.getElementById('item_level');
   const verifiedCharacterDetails = document.getElementById('verifiedCharacterDetails');
   const characterProfileVerification = document.getElementById('characterProfileVerification');
+  const battleNetActiveSpecInput = document.getElementById('bnet_active_spec');
+  const bnetCharacterDialog = document.getElementById('bnetCharacterDialog');
+  const bnetCharacterList = document.getElementById('bnetCharacterList');
+  const bnetCharacterSearch = document.getElementById('bnetCharacterSearch');
+  const bnetCharacterEmpty = document.getElementById('bnetCharacterEmpty');
+  const closeBnetDialog = document.getElementById('closeBnetDialog');
+  const BNET_VERIFIED_KEY = 'odit-recruitment-bnet-verified-v2';
+  let battleNetCharacterSession = '';
+  let battleNetCharacters = [];
   const battleNetVerifyBtn = document.getElementById('battleNetVerifyBtn');
   const battleNetStatus = document.getElementById('battleNetVerificationStatus');
   const BNET_DRAFT_KEY = 'odit-recruitment-bnet-draft-v1';
@@ -551,10 +560,15 @@
   profession2.addEventListener('change', updateProfessionOptions);
   interestBoxes.forEach(box => box.addEventListener('change', validateInterests));
   battleNetVerifyBtn?.addEventListener('click', beginBattleNetVerification);
+  closeBnetDialog?.addEventListener('click', () => bnetCharacterDialog?.close());
+  bnetCharacterSearch?.addEventListener('input', renderBattleNetCharacters);
 
-  // Region remains the only manually selectable identity field. Changing it
-  // invalidates the previous Battle.net selection and clears the auto-filled
-  // character.
+  bnetCharacterDialog?.addEventListener('click', event => {
+    if (event.target === bnetCharacterDialog) {
+      bnetCharacterDialog.close();
+    }
+  });
+
   regionSelect?.addEventListener('change', () => {
     if (battleNetVerificationToken || battleNetVerifiedIdentity) {
       clearBattleNetVerification(
@@ -566,8 +580,8 @@
 
 
   populateRealmOptions();
-  mainSpecSelect.innerHTML = '<option value="">Filled by Battle.net</option>';
-  mainSpecSelect.disabled = false;
+  mainSpecSelect.innerHTML = '<option value="">Choose character first</option>';
+  mainSpecSelect.disabled = true;
   offSpecSelect.innerHTML = '<option value="">Choose character first</option>';
   offSpecSelect.disabled = true;
   updateProfessionOptions();
@@ -599,7 +613,7 @@
     try {
       sessionStorage.setItem(BNET_DRAFT_KEY, JSON.stringify(recruitmentDraft()));
     } catch (err) {
-      console.warn('Could not save recruitment draft before Battle.net selection:', err);
+      console.warn('Could not save recruitment draft before Battle.net verification:', err);
     }
   }
 
@@ -615,15 +629,13 @@
 
     if (!draft || typeof draft !== 'object') return;
 
-    // Character fields are intentionally NOT restored here. Battle.net is the
-    // authoritative source for those after the user picks a character.
-    const skip = new Set([
+    const battleNetFields = new Set([
       'character_name','realm','class_name','main_spec','faction','item_level',
       'raiderio_url','armory_url'
     ]);
 
     [...form.elements].forEach(el => {
-      if (!el.name || skip.has(el.name) || !(el.name in draft)) return;
+      if (!el.name || battleNetFields.has(el.name) || !(el.name in draft)) return;
 
       if (el.type === 'checkbox') {
         el.checked = draft[el.name] === true;
@@ -648,12 +660,15 @@
     if (characterInput) characterInput.value = '';
     if (realmInput) realmInput.value = '';
     if (classSelect) classSelect.value = '';
-    if (mainSpecSelect) {
-      mainSpecSelect.innerHTML = '<option value="">Filled by Battle.net</option>';
-      mainSpecSelect.value = '';
-    }
+    if (battleNetActiveSpecInput) battleNetActiveSpecInput.value = '';
     if (factionSelect) factionSelect.value = '';
     if (itemLevelInput) itemLevelInput.value = '';
+
+    if (mainSpecSelect) {
+      mainSpecSelect.innerHTML = '<option value="">Choose character first</option>';
+      mainSpecSelect.value = '';
+      mainSpecSelect.disabled = true;
+    }
 
     if (offSpecSelect) {
       offSpecSelect.innerHTML = '<option value="">Choose character first</option>';
@@ -665,7 +680,6 @@
       input.setCustomValidity('');
     });
 
-    Object.keys(profileInputs).forEach(kind => setProfileStatus(kind));
     verifiedCharacterDetails?.classList.remove('verified');
     characterProfileVerification?.classList.remove('verified');
   }
@@ -673,6 +687,10 @@
   function clearBattleNetVerification(reason = '', { clearCharacter = false } = {}) {
     battleNetVerificationToken = '';
     battleNetVerifiedIdentity = null;
+
+    try {
+      sessionStorage.removeItem(BNET_VERIFIED_KEY);
+    } catch {}
 
     if (clearCharacter) clearAutoFilledCharacter();
 
@@ -699,17 +717,24 @@
 
   function applyVerifiedCharacter(data) {
     if (regionSelect) regionSelect.value = data.region || 'EU';
-
     if (characterInput) characterInput.value = data.character || '';
     if (realmInput) realmInput.value = data.realm || '';
+    if (battleNetActiveSpecInput) battleNetActiveSpecInput.value = data.active_spec || '';
 
     if (classSelect) {
       classSelect.value = data.class_name || '';
       resetSpecSelects();
     }
 
+    // "Applying as" defaults to the active Battle.net spec but stays editable
+    // within the verified character's class.
     if (mainSpecSelect) {
-      mainSpecSelect.value = data.main_spec || '';
+      const availableSpecs = CLASS_SPECS[data.class_name] || [];
+      const preferred = availableSpecs.includes(data.active_spec)
+        ? data.active_spec
+        : '';
+      mainSpecSelect.value = preferred;
+      mainSpecSelect.disabled = false;
       updateOffSpecOptions();
     }
 
@@ -721,16 +746,8 @@
           : String(data.item_level);
     }
 
-    if (profileInputs.raiderio) {
-      profileInputs.raiderio.value = data.raiderio_url || '';
-    }
-    if (profileInputs.armory) {
-      profileInputs.armory.value = data.armory_url || '';
-    }
-
-    // The public links are generated from the same Battle.net-selected
-    // character, so show the existing small green confirmation beneath them.
-    validateCharacterProfiles();
+    if (profileInputs.raiderio) profileInputs.raiderio.value = data.raiderio_url || '';
+    if (profileInputs.armory) profileInputs.armory.value = data.armory_url || '';
 
     verifiedCharacterDetails?.classList.add('verified');
     characterProfileVerification?.classList.add('verified');
@@ -740,25 +757,122 @@
     }
   }
 
-  async function verifyReturnedBattleNetToken(token) {
-    if (!token || !client) return false;
+  function characterSearchText(item) {
+    return [
+      item.name,
+      item.realm_name,
+      item.class_name,
+      item.faction,
+      item.level
+    ].filter(Boolean).join(' ').toLowerCase();
+  }
 
-    setBattleNetStatus('info', 'Loading your selected Battle.net character…');
+  function renderBattleNetCharacters() {
+    if (!bnetCharacterList) return;
+
+    const query = String(bnetCharacterSearch?.value || '').trim().toLowerCase();
+    const visible = battleNetCharacters.filter(item =>
+      !query || characterSearchText(item).includes(query)
+    );
+
+    bnetCharacterList.innerHTML = visible.map((item, index) => `
+      <button
+        class="bnet-character-card"
+        type="button"
+        data-character-index="${battleNetCharacters.indexOf(item)}"
+      >
+        <span class="bnet-character-main">
+          <strong>${esc(item.name)}</strong>
+          <span>${esc(item.realm_name)}</span>
+        </span>
+        <span class="bnet-character-meta">
+          ${item.class_name ? `<span>${esc(item.class_name)}</span>` : ''}
+          ${item.faction ? `<span>${esc(item.faction)}</span>` : ''}
+          ${item.level ? `<span>Level ${esc(item.level)}</span>` : ''}
+        </span>
+        <span class="bnet-character-choose">Choose →</span>
+      </button>
+    `).join('');
+
+    if (bnetCharacterEmpty) bnetCharacterEmpty.hidden = visible.length > 0;
+
+    bnetCharacterList.querySelectorAll('.bnet-character-card').forEach(button => {
+      button.addEventListener('click', () => {
+        const index = Number(button.dataset.characterIndex);
+        const item = battleNetCharacters[index];
+        if (item) selectBattleNetCharacter(item);
+      });
+    });
+  }
+
+  function openBattleNetCharacterDialog() {
+    renderBattleNetCharacters();
+    if (typeof bnetCharacterDialog?.showModal === 'function') {
+      bnetCharacterDialog.showModal();
+      window.setTimeout(() => bnetCharacterSearch?.focus(), 50);
+    }
+  }
+
+  async function loadBattleNetCharacterSession(sessionToken) {
+    if (!client || !sessionToken) return;
+
+    battleNetCharacterSession = sessionToken;
+    setBattleNetStatus('info', 'Loading characters from your Battle.net account…');
 
     const { data, error } = await client.functions.invoke('battlenet-verify', {
-      body: { action: 'status', token }
+      body: {
+        action: 'list',
+        session_token: sessionToken
+      }
     });
 
-    if (error || !data?.ok || !data?.verified) {
+    if (error || !data?.ok || !Array.isArray(data.characters)) {
       console.error(error || data);
-      clearBattleNetVerification(
-        'Battle.net character selection could not be confirmed. Please choose the character again.',
-        { clearCharacter: true }
+      battleNetCharacterSession = '';
+      setBattleNetStatus(
+        'error',
+        data?.message || 'Your Battle.net character list could not be loaded. Please try again.'
       );
-      return false;
+      return;
     }
 
-    battleNetVerificationToken = token;
+    battleNetCharacters = data.characters;
+    setBattleNetStatus(
+      'info',
+      `Battle.net account verified. Choose the character you want to apply with.`
+    );
+    openBattleNetCharacterDialog();
+  }
+
+  async function selectBattleNetCharacter(item) {
+    if (!client || !battleNetCharacterSession) return;
+
+    bnetCharacterList?.querySelectorAll('button').forEach(button => {
+      button.disabled = true;
+    });
+
+    setBattleNetStatus('info', `Loading ${item.name} — ${item.realm_name} from Battle.net…`);
+
+    const { data, error } = await client.functions.invoke('battlenet-verify', {
+      body: {
+        action: 'select',
+        session_token: battleNetCharacterSession,
+        character: item.name,
+        realm_slug: item.realm_slug
+      }
+    });
+
+    if (error || !data?.ok || !data?.verified || !data?.token) {
+      console.error(error || data);
+      setBattleNetStatus(
+        'error',
+        data?.message || 'That character could not be selected. Please try again.'
+      );
+      renderBattleNetCharacters();
+      return;
+    }
+
+    battleNetVerificationToken = data.token;
     battleNetVerifiedIdentity = {
       character: data.character,
       realm: data.realm,
@@ -767,12 +881,50 @@
 
     applyVerifiedCharacter(data);
 
+    try {
+      sessionStorage.setItem(BNET_VERIFIED_KEY, data.token);
+    } catch {}
+
     setBattleNetStatus(
       'success',
-      `✓ Battle.net verified ${data.character} — ${data.realm} (${data.region}) and filled the character details automatically.`
+      `✓ Battle.net verified ${data.character} — ${data.realm} (${data.region}). Character details filled automatically.`
     );
 
-    return true;
+    battleNetCharacterSession = '';
+    battleNetCharacters = [];
+    bnetCharacterSearch.value = '';
+    bnetCharacterDialog?.close();
+  }
+
+  async function restoreBattleNetVerification() {
+    let token = '';
+    try {
+      token = sessionStorage.getItem(BNET_VERIFIED_KEY) || '';
+    } catch {}
+
+    if (!token || !client) return;
+
+    const { data, error } = await client.functions.invoke('battlenet-verify', {
+      body: { action: 'status', token }
+    });
+
+    if (error || !data?.ok || !data?.verified) {
+      try { sessionStorage.removeItem(BNET_VERIFIED_KEY); } catch {}
+      return;
+    }
+
+    battleNetVerificationToken = token;
+    battleNetVerifiedIdentity = {
+      character: data.character,
+      realm: data.realm,
+      region: data.region
+    };
+    applyVerifiedCharacter(data);
+
+    setBattleNetStatus(
+      'success',
+      `✓ Battle.net verified ${data.character} — ${data.realm} (${data.region}).`
+    );
   }
 
   async function beginBattleNetVerification() {
@@ -786,7 +938,7 @@
     }
 
     saveRecruitmentDraft();
-    setBattleNetStatus('info', 'Opening Battle.net so you can choose your character…');
+    setBattleNetStatus('info', 'Opening Battle.net secure sign-in…');
     battleNetVerifyBtn.disabled = true;
 
     const { data, error } = await client.functions.invoke('battlenet-verify', {
@@ -802,7 +954,7 @@
       console.error(error || data);
       setBattleNetStatus(
         'error',
-        data?.message || 'Battle.net character selection could not start. Please try again.'
+        data?.message || 'Battle.net verification could not start. Please try again.'
       );
       return;
     }
@@ -813,27 +965,30 @@
   async function handleBattleNetReturn() {
     const params = new URLSearchParams(window.location.search);
     const result = params.get('bnet');
-    const token = params.get('bnet_token');
+    const sessionToken = params.get('bnet_session');
     const reason = params.get('bnet_reason');
 
-    if (!result && !token && !reason) return;
+    if (!result && !sessionToken && !reason) {
+      await restoreBattleNetVerification();
+      return;
+    }
 
-    // Remove short-lived tokens/errors from the visible browser URL immediately.
-    const cleanUrl = `${window.location.pathname}${window.location.hash || ''}`;
+    const cleanUrl = `${window.location.pathname}${window.location.hash || '#apply'}`;
     history.replaceState(null, '', cleanUrl);
 
-    if (result === 'verified' && token) {
-      await verifyReturnedBattleNetToken(token);
+    if (result === 'characters' && sessionToken) {
+      await loadBattleNetCharacterSession(sessionToken);
       return;
     }
 
     if (result === 'cancelled') {
-      clearBattleNetVerification('Battle.net character selection was cancelled.');
+      setBattleNetStatus('warning', 'Battle.net verification was cancelled.');
       return;
     }
 
-    clearBattleNetVerification(
-      reason || 'Battle.net could not load that character. Please choose it again.'
+    setBattleNetStatus(
+      'error',
+      reason || 'Battle.net verification could not be completed. Please try again.'
     );
   }
 
@@ -1020,7 +1175,8 @@
 
     form.reset();
     sessionStorage.removeItem(BNET_DRAFT_KEY);
-    clearBattleNetVerification();
+    sessionStorage.removeItem(BNET_VERIFIED_KEY);
+    clearBattleNetVerification('', { clearCharacter: true });
     if (window.turnstile && turnstileWidgetId !== null) {
       window.turnstile.reset(turnstileWidgetId);
     }

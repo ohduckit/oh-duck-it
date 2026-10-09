@@ -1,0 +1,231 @@
+/* ODit Battle.net inline character picker v2.2 */
+
+.bnet-picker{
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) auto;
+  gap:14px;
+  align-items:end;
+  margin-bottom:10px;
+}
+
+.bnet-picker-action{
+  display:flex;
+  align-items:end;
+  padding-bottom:8px;
+}
+
+.bnet-picker-action .btn{
+  min-height:42px;
+  white-space:nowrap;
+}
+
+.verified-character-grid{
+  margin-top:16px;
+}
+
+#verifiedCharacterDetails input[readonly],
+#characterProfileVerification input[readonly]{
+  background:#e9dfcb !important;
+  color:#2f2113 !important;
+  cursor:default !important;
+  opacity:1 !important;
+  border-color:#967044 !important;
+}
+
+#verifiedCharacterDetails input[readonly]::placeholder,
+#characterProfileVerification input[readonly]::placeholder{
+  color:#8c7a61 !important;
+  opacity:.82 !important;
+}
+
+#verifiedCharacterDetails .verified-select{
+  pointer-events:none;
+  background:#e9dfcb !important;
+  color:#2f2113 !important;
+  opacity:1 !important;
+  border-color:#967044 !important;
+  cursor:default !important;
+}
+
+#verifiedCharacterDetails.verified input[readonly],
+#verifiedCharacterDetails.verified .verified-select,
+#characterProfileVerification.verified input[readonly]{
+  border-color:#587b45 !important;
+  box-shadow:0 0 0 1px rgba(88,123,69,.12);
+}
+
+.applying-as-field select{
+  border-color:#c18c31 !important;
+  background:#f6ebd5 !important;
+  color:#2f2113 !important;
+  opacity:1 !important;
+}
+
+.applying-as-field select:disabled{
+  opacity:.65 !important;
+}
+
+.bnet-character-dialog{
+  width:min(900px,calc(100vw - 32px));
+  max-height:min(760px,calc(100vh - 32px));
+  margin:auto;
+  padding:0;
+  border:1px solid #8b6124;
+  border-radius:14px;
+  background:#1c110b;
+  color:#f3e6d1;
+  box-shadow:0 22px 70px rgba(0,0,0,.65);
+}
+
+.bnet-character-dialog::backdrop{
+  background:rgba(8,5,3,.78);
+  backdrop-filter:blur(3px);
+}
+
+.bnet-dialog-shell{
+  display:flex;
+  flex-direction:column;
+  max-height:min(760px,calc(100vh - 32px));
+}
+
+.bnet-dialog-head{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  padding:20px 22px 16px;
+  border-bottom:1px solid #5d401e;
+  background:linear-gradient(180deg,#3a2416,#28170f);
+}
+
+.bnet-dialog-head h3{
+  margin:4px 0 6px !important;
+  color:#f1cf78 !important;
+  font-family:Georgia,"Times New Roman",serif !important;
+  font-size:23px !important;
+}
+
+.bnet-dialog-head p{
+  margin:0 !important;
+  color:#c9b99f !important;
+  font-size:13px !important;
+}
+
+.bnet-dialog-close{
+  flex:0 0 auto;
+  width:36px;
+  height:36px;
+  border:1px solid #745124;
+  border-radius:8px;
+  background:#21140d;
+  color:#e8c66f;
+  font-size:24px;
+  line-height:1;
+  cursor:pointer;
+}
+
+.bnet-dialog-tools{
+  padding:14px 22px;
+  border-bottom:1px solid #493119;
+  background:#20140d;
+}
+
+.bnet-dialog-tools input{
+  width:100%;
+  min-height:42px;
+  padding:10px 12px;
+  border:1px solid #765220;
+  border-radius:8px;
+  background:#120c08;
+  color:#f5ead8;
+  font-size:14px;
+}
+
+.bnet-character-list{
+  overflow:auto;
+  display:grid;
+  gap:9px;
+  padding:16px 22px 22px;
+}
+
+.bnet-character-card{
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(160px,1fr) minmax(190px,1.3fr) auto;
+  gap:14px;
+  align-items:center;
+  padding:13px 14px;
+  border:1px solid #51371d;
+  border-radius:9px;
+  background:#19100b;
+  color:#efe2cd;
+  text-align:left;
+  cursor:pointer;
+}
+
+.bnet-character-card:hover,
+.bnet-character-card:focus{
+  border-color:#c29136;
+  background:#24170e;
+  outline:none;
+}
+
+.bnet-character-main strong{
+  display:block;
+  color:#f1cf76;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:17px;
+}
+
+.bnet-character-main span{
+  display:block;
+  margin-top:3px;
+  color:#ad9c82;
+  font-size:12px;
+}
+
+.bnet-character-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.bnet-character-meta span{
+  padding:4px 7px;
+  border:1px solid #49351f;
+  border-radius:999px;
+  color:#c9b89b;
+  font-size:11px;
+}
+
+.bnet-character-choose{
+  color:#f0c75c;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.bnet-character-empty{
+  padding:0 22px 22px;
+  color:#baa98e;
+}
+
+@media(max-width:720px){
+  .bnet-picker{
+    grid-template-columns:1fr;
+  }
+
+  .bnet-picker-action{
+    padding-bottom:0;
+  }
+
+  .bnet-picker-action .btn{
+    width:100%;
+  }
+
+  .bnet-character-card{
+    grid-template-columns:1fr;
+  }
+
+  .bnet-character-choose{
+    justify-self:start;
+  }
+}
