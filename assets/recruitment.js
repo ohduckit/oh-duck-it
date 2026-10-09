@@ -39,6 +39,16 @@
   let battleNetVerificationToken = '';
   let battleNetVerifiedIdentity = null;
 
+  const discordVerifyBtn = document.getElementById('discordVerifyBtn');
+  const discordVerification = document.getElementById('discordVerification');
+  const discordStatus = document.getElementById('discordVerificationStatus');
+  const discordContactInput = document.getElementById('discord_contact');
+  const discordGlobalNameInput = document.getElementById('discord_global_name');
+  const discordUserIdInput = document.getElementById('discord_user_id');
+  const DISCORD_VERIFIED_KEY = 'odit-recruitment-discord-verified-v1';
+  let discordVerificationToken = '';
+  let discordVerifiedIdentity = null;
+
   const cfg = window.ODIT_SUPABASE || {};
   const configured =
     cfg.url &&
@@ -575,6 +585,7 @@
   profession2.addEventListener('change', updateProfessionOptions);
   interestBoxes.forEach(box => box.addEventListener('change', validateInterests));
   battleNetVerifyBtn?.addEventListener('click', beginBattleNetVerification);
+  discordVerifyBtn?.addEventListener('click', beginDiscordVerification);
   closeBnetDialog?.addEventListener('click', () => bnetCharacterDialog?.close());
   bnetCharacterSearch?.addEventListener('input', renderBattleNetCharacters);
 
@@ -1024,6 +1035,162 @@
   }
 
 
+  function setDiscordStatus(state, text) {
+    if (!discordStatus) return;
+    discordStatus.className = 'discord-verification-status';
+    if (state) discordStatus.classList.add(state);
+    discordStatus.textContent = text;
+  }
+
+  function clearDiscordVerification(reason = '') {
+    discordVerificationToken = '';
+    discordVerifiedIdentity = null;
+
+    if (discordContactInput) discordContactInput.value = '';
+    if (discordGlobalNameInput) discordGlobalNameInput.value = '';
+    if (discordUserIdInput) discordUserIdInput.value = '';
+
+    discordVerification?.classList.remove('verified');
+
+    try {
+      sessionStorage.removeItem(DISCORD_VERIFIED_KEY);
+    } catch {}
+
+    if (reason) setDiscordStatus('error', reason);
+    else setDiscordStatus('', 'Not verified yet.');
+
+    if (discordVerifyBtn) {
+      discordVerifyBtn.textContent = 'Verify Discord & join Applicant Lounge';
+    }
+  }
+
+  function applyDiscordIdentity(data) {
+    const username = String(data.username || '').trim();
+    const globalName = String(data.global_name || '').trim();
+    const userId = String(data.user_id || '').trim();
+
+    if (discordContactInput) {
+      discordContactInput.value = username ? `@${username}` : '';
+    }
+    if (discordGlobalNameInput) {
+      discordGlobalNameInput.value = globalName || username;
+    }
+    if (discordUserIdInput) {
+      discordUserIdInput.value = userId;
+    }
+
+    discordVerifiedIdentity = {
+      user_id: userId,
+      username,
+      global_name: globalName
+    };
+
+    discordVerification?.classList.add('verified');
+
+    if (discordVerifyBtn) {
+      discordVerifyBtn.textContent = 'Verify a different Discord account';
+    }
+
+    setDiscordStatus(
+      'success',
+      `✓ Discord verified: ${globalName || username}${globalName && username ? ` (@${username})` : ''}. Applicant access is active.`
+    );
+  }
+
+  async function restoreDiscordVerification() {
+    let token = '';
+    try {
+      token = sessionStorage.getItem(DISCORD_VERIFIED_KEY) || '';
+    } catch {}
+
+    if (!token || !client) return;
+
+    const { data, error } = await client.functions.invoke('discord-recruitment', {
+      body: { action: 'status', token }
+    });
+
+    if (error || !data?.ok || !data?.verified) {
+      try { sessionStorage.removeItem(DISCORD_VERIFIED_KEY); } catch {}
+      return;
+    }
+
+    discordVerificationToken = token;
+    applyDiscordIdentity(data);
+  }
+
+  async function beginDiscordVerification() {
+    if (!client) return;
+
+    saveRecruitmentDraft();
+    setDiscordStatus('info', 'Opening Discord secure sign-in…');
+    discordVerifyBtn.disabled = true;
+
+    const { data, error } = await client.functions.invoke('discord-recruitment', {
+      body: { action: 'start' }
+    });
+
+    discordVerifyBtn.disabled = false;
+
+    if (error || !data?.ok || !data?.authorizeUrl) {
+      console.error(error || data);
+      setDiscordStatus(
+        'error',
+        data?.message || 'Discord verification could not start. Please try again.'
+      );
+      return;
+    }
+
+    window.location.assign(data.authorizeUrl);
+  }
+
+  async function handleDiscordReturn() {
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get('discord');
+    const token = params.get('discord_token');
+    const reason = params.get('discord_reason');
+
+    if (!result && !token && !reason) {
+      await restoreDiscordVerification();
+      return;
+    }
+
+    const cleanUrl = `${window.location.pathname}${window.location.hash || '#apply'}`;
+    history.replaceState(null, '', cleanUrl);
+
+    if (result === 'verified' && token) {
+      const { data, error } = await client.functions.invoke('discord-recruitment', {
+        body: { action: 'status', token }
+      });
+
+      if (error || !data?.ok || !data?.verified) {
+        console.error(error || data);
+        clearDiscordVerification(
+          'Discord verification could not be confirmed. Please verify again.'
+        );
+        return;
+      }
+
+      discordVerificationToken = token;
+      try {
+        sessionStorage.setItem(DISCORD_VERIFIED_KEY, token);
+      } catch {}
+
+      applyDiscordIdentity(data);
+      return;
+    }
+
+    if (result === 'cancelled') {
+      setDiscordStatus('error', 'Discord verification was cancelled.');
+      return;
+    }
+
+    setDiscordStatus(
+      'error',
+      reason || 'Discord verification could not be completed. Please try again.'
+    );
+  }
+
+
   function turnstileConfigured() {
     return securityCfg.turnstileSiteKey &&
       !securityCfg.turnstileSiteKey.startsWith('PASTE_');
@@ -1077,6 +1244,7 @@
   // Restore the applicant's draft, validate the signed verification token,
   // then continue the form exactly where they left off.
   handleBattleNetReturn();
+  handleDiscordReturn();
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1116,6 +1284,20 @@
         'Battle.net ownership verification is required before this application can be submitted.'
       );
       document.getElementById('battleNetVerification')?.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+
+    if (!discordVerificationToken || !discordVerifiedIdentity?.user_id) {
+      show(
+        msg,
+        'Your application has not been submitted. Verify your Discord account first.',
+        'error'
+      );
+      setDiscordStatus(
+        'error',
+        'Discord verification is required so ODit can contact the correct account.'
+      );
+      document.getElementById('discordVerification')?.scrollIntoView({behavior:'smooth', block:'center'});
       return;
     }
 
@@ -1170,7 +1352,8 @@
       why_odit: value(fd, 'why_odit'),
       about_you: nullable(value(fd, 'about_you')),
       privacy_consent: fd.has('privacy_consent'),
-      bnet_verification_token: battleNetVerificationToken
+      bnet_verification_token: battleNetVerificationToken,
+      discord_verification_token: discordVerificationToken
     };
 
     submitBtn.disabled = true;
@@ -1207,7 +1390,9 @@
     form.reset();
     sessionStorage.removeItem(BNET_DRAFT_KEY);
     sessionStorage.removeItem(BNET_VERIFIED_KEY);
+    sessionStorage.removeItem(DISCORD_VERIFIED_KEY);
     clearBattleNetVerification('', { clearCharacter: true });
+    clearDiscordVerification();
     if (window.turnstile && turnstileWidgetId !== null) {
       window.turnstile.reset(turnstileWidgetId);
     }

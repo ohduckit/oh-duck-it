@@ -1,0 +1,74 @@
+/* ODit Discord applicant verification v1 */
+
+.discord-verification{
+  padding:14px;
+  border:1px solid #55402c;
+  border-radius:10px;
+  background:#19110d;
+}
+
+.discord-verification-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+}
+
+.discord-verification-head .field-help{
+  margin:5px 0 0 !important;
+}
+
+.discord-verification-status{
+  margin-top:10px;
+  padding:9px 11px;
+  border:1px solid #55402c;
+  border-radius:8px;
+  background:#120d0a;
+  color:#c8b79e;
+  font-size:12px;
+  line-height:1.4;
+}
+
+.discord-verification-status.success{
+  border-color:#4c7540;
+  background:#172513;
+  color:#cde8c1;
+}
+
+.discord-verification-status.error{
+  border-color:#a43c34;
+  background:#311411;
+  color:#ffd0c8;
+}
+
+.discord-verification-status.info{
+  border-color:#5e4a78;
+  background:#1d1727;
+  color:#ddd1ef;
+}
+
+.discord-identity-grid{
+  margin-top:12px;
+}
+
+.discord-identity-grid input[readonly]{
+  background:#e9dfcb !important;
+  color:#2f2113 !important;
+  opacity:1 !important;
+  cursor:default !important;
+}
+
+.discord-verification.verified{
+  border-color:#4c7540;
+  box-shadow:0 0 0 1px rgba(76,117,64,.12);
+}
+
+@media(max-width:720px){
+  .discord-verification-head{
+    flex-direction:column;
+  }
+
+  .discord-verification-head .btn{
+    width:100%;
+  }
+}
