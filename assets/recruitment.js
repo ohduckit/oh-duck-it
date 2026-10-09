@@ -281,15 +281,16 @@
 
     const host = url.hostname.toLowerCase();
     const segments = url.pathname.split('/').filter(Boolean).map(safeDecode);
+    const lower = segments.map(s => s.toLowerCase());
 
     if (kind === 'raiderio') {
       if (host !== 'raider.io' && host !== 'www.raider.io') {
         return { ok:false, state:'invalid', message:'Use a direct Raider.IO character profile URL.' };
       }
 
-      const i = segments.findIndex(s => s.toLowerCase() === 'characters');
+      const i = lower.findIndex(s => s === 'characters');
       if (i < 0 || segments.length < i + 4) {
-        return { ok:false, state:'invalid', message:'Use the character profile, not a Raider.IO guild, search or homepage link.' };
+        return { ok:false, state:'invalid', message:'Use the Raider.IO character page, not a guild, search or homepage link.' };
       }
 
       return {
@@ -307,39 +308,42 @@
         return { ok:false, state:'invalid', message:'Use a direct World of Warcraft Armory character profile URL.' };
       }
 
-      // Current format:
-      // /en-gb/worldsoul/eu/armory/character/stormscale/dazrynne
-      const armoryIndex = segments.findIndex(s => s.toLowerCase() === 'armory');
-      const characterIndex = segments.findIndex((s, idx) =>
-        idx > armoryIndex && s.toLowerCase() === 'character'
-      );
+      // Be deliberately tolerant of Blizzard changing the route around the
+      // stable ".../character/<realm>/<character>" tail.
+      const characterIndex = lower.lastIndexOf('character');
+      if (characterIndex >= 0 && segments.length >= characterIndex + 3) {
+        const realm = segments[characterIndex + 1];
+        const character = segments[characterIndex + 2];
 
-      if (armoryIndex >= 1 && characterIndex >= 0 && segments.length >= characterIndex + 3) {
-        return {
-          ok:true,
-          state:'verifiable',
-          url:url.toString(),
-          region:segments[armoryIndex - 1],
-          realm:segments[characterIndex + 1],
-          character:segments[characterIndex + 2]
-        };
+        const allowedRegions = ['eu','us','kr','tw'];
+        let region = '';
+
+        // Find the closest region segment that appears before /character/.
+        for (let i = characterIndex - 1; i >= 0; i--) {
+          const candidate = lower[i];
+          if (allowedRegions.includes(candidate)) {
+            region = segments[i];
+            break;
+          }
+        }
+
+        if (region && realm && character) {
+          return {
+            ok:true,
+            state:'verifiable',
+            url:url.toString(),
+            region,
+            realm,
+            character
+          };
+        }
       }
 
-      // Legacy format:
-      // /en-gb/character/eu/stormscale/dazrynne
-      const legacyIndex = segments.findIndex(s => s.toLowerCase() === 'character');
-      if (legacyIndex >= 0 && segments.length >= legacyIndex + 4) {
-        return {
-          ok:true,
-          state:'verifiable',
-          url:url.toString(),
-          region:segments[legacyIndex + 1],
-          realm:segments[legacyIndex + 2],
-          character:segments[legacyIndex + 3]
-        };
-      }
-
-      return { ok:false, state:'invalid', message:'Use the direct WoW Armory character page, not an Armory search page.' };
+      return {
+        ok:false,
+        state:'invalid',
+        message:'Use the direct WoW Armory character page. It should end in /character/<realm>/<character>.'
+      };
     }
 
     if (kind === 'wcl') {
@@ -347,13 +351,12 @@
         return { ok:false, state:'invalid', message:'Use a Warcraft Logs character profile URL.' };
       }
 
-      const i = segments.findIndex(s => s.toLowerCase() === 'character');
+      const i = lower.findIndex(s => s === 'character');
       if (i < 0) {
         return { ok:false, state:'invalid', message:'Use a Warcraft Logs character profile, not a report, guild or homepage link.' };
       }
 
-      // Name-bearing WCL format: /character/eu/realm/character
-      if (segments.length >= i + 4 && segments[i + 1].toLowerCase() !== 'id') {
+      if (segments.length >= i + 4 && lower[i + 1] !== 'id') {
         return {
           ok:true,
           state:'verifiable',
@@ -364,18 +367,16 @@
         };
       }
 
-      // Current WCL can also use /character/id/12345678. It is a legitimate
-      // character link, but the identity cannot be proven from the URL alone.
       if (
         segments.length >= i + 3 &&
-        segments[i + 1].toLowerCase() === 'id' &&
+        lower[i + 1] === 'id' &&
         /^\d+$/.test(segments[i + 2])
       ) {
         return {
           ok:true,
           state:'supporting',
           url:url.toString(),
-          message:'Valid Warcraft Logs character link. Because it uses a numeric ID, Raider.IO or WoW Armory is also required so we can verify the character name and realm.'
+          message:'Valid Warcraft Logs character link. This format uses a numeric character ID, so add Raider.IO or WoW Armory as well to verify the name and realm.'
         };
       }
 
@@ -385,6 +386,12 @@
     return { ok:false, state:'invalid', message:'Unsupported character profile.' };
   }
 
+  function clearProfileFeedback(kind) {
+    const input = profileInputs[kind];
+    if (input) input.setCustomValidity('');
+    setProfileStatus(kind);
+  }
+
   function validateCharacterProfiles({ announce = false } = {}) {
     profileInputList.forEach(input => input.setCustomValidity(''));
     Object.keys(profileInputs).forEach(kind => setProfileStatus(kind));
@@ -392,11 +399,18 @@
     const entered = Object.entries(profileInputs)
       .filter(([, input]) => input && input.value.trim());
 
+    // No arbitrary red box: this is a group-level requirement.
     if (!entered.length) {
-      const text = 'Add at least one direct character profile: Raider.IO, Warcraft Logs, or WoW Armory.';
-      profileInputs.raiderio?.setCustomValidity(text);
-      setProfileStatus('raiderio', 'error', text);
-      setProfileSummary('error', text);
+      setProfileSummary(
+        'error',
+        'Add at least one character profile before submitting: Raider.IO, Warcraft Logs or WoW Armory.'
+      );
+      if (announce) {
+        document.getElementById('characterProfileVerification')?.scrollIntoView({
+          behavior:'smooth',
+          block:'center'
+        });
+      }
       return false;
     }
 
@@ -407,7 +421,10 @@
     };
 
     if (!expected.character || !expected.realm || !expected.region) {
-      setProfileSummary('error', 'Enter the character name, realm and region before adding verification profiles.');
+      setProfileSummary(
+        'error',
+        'Enter the character name, realm and region first, then add the verification profile.'
+      );
       return false;
     }
 
@@ -440,8 +457,8 @@
 
       if (!matches) {
         const text =
-          `${profileSourceLabel(kind)} points to ${parsed.character || 'another character'} on ${parsed.realm || 'another realm'} (${String(parsed.region || '').toUpperCase()}), ` +
-          `but the application is for ${characterInput.value.trim()} on ${realmInput.value.trim()} (${regionSelect.value}).`;
+          `${profileSourceLabel(kind)} is for ${parsed.character || 'another character'} on ${parsed.realm || 'another realm'} (${String(parsed.region || '').toUpperCase()}), ` +
+          `but this application is for ${characterInput.value.trim()} on ${realmInput.value.trim()} (${regionSelect.value}).`;
         input.setCustomValidity(text);
         setProfileStatus(kind, 'error', `✕ ${text}`);
         firstProblem ||= input;
@@ -461,9 +478,9 @@
       const kind = supportingKinds[0];
       const input = profileInputs[kind];
       const text =
-        'This Warcraft Logs link uses a numeric character ID, so its name and realm cannot be verified from the URL. Add a matching Raider.IO or WoW Armory profile as well.';
+        'Warcraft Logs is valid, but this ID-only URL cannot prove the character name and realm. Add a matching Raider.IO or WoW Armory profile as well.';
       input.setCustomValidity(text);
-      setProfileStatus(kind, 'error', `✕ ${text}`);
+      setProfileStatus(kind, 'warning', `⚠ ${text}`);
       firstProblem ||= input;
       valid = false;
     }
@@ -472,14 +489,15 @@
       setProfileSummary(
         'success',
         supportingKinds.length
-          ? `Character verified. ${profileSourceLabel(supportingKinds[0])} is being kept as a supporting profile.`
+          ? `Character verified. Warcraft Logs is included as a supporting profile.`
           : `Character verified as ${characterInput.value.trim()} — ${realmInput.value.trim()} (${regionSelect.value}).`
       );
     } else {
       setProfileSummary(
         'error',
-        'Character verification needs attention. Fix the red field(s) below before submitting.'
+        'Character verification needs attention. Check the message beneath the highlighted profile.'
       );
+
       if (announce && firstProblem) {
         firstProblem.scrollIntoView({ behavior:'smooth', block:'center' });
         window.setTimeout(() => firstProblem.focus({ preventScroll:true }), 350);
@@ -595,10 +613,33 @@
   profession1.addEventListener('change', updateProfessionOptions);
   profession2.addEventListener('change', updateProfessionOptions);
   interestBoxes.forEach(box => box.addEventListener('change', validateInterests));
-  profileInputList.forEach(input => input.addEventListener('input', validateCharacterProfiles));
-  characterInput?.addEventListener('input', validateCharacterProfiles);
-  realmInput?.addEventListener('input', validateCharacterProfiles);
-  regionSelect?.addEventListener('change', validateCharacterProfiles);
+  Object.entries(profileInputs).forEach(([kind, input]) => {
+    if (!input) return;
+
+    input.addEventListener('input', () => {
+      clearProfileFeedback(kind);
+      setProfileSummary();
+    });
+
+    input.addEventListener('blur', () => {
+      if (input.value.trim()) validateCharacterProfiles();
+    });
+  });
+
+  characterInput?.addEventListener('input', () => {
+    Object.keys(profileInputs).forEach(clearProfileFeedback);
+    setProfileSummary();
+  });
+
+  realmInput?.addEventListener('input', () => {
+    Object.keys(profileInputs).forEach(clearProfileFeedback);
+    setProfileSummary();
+  });
+
+  regionSelect?.addEventListener('change', () => {
+    Object.keys(profileInputs).forEach(clearProfileFeedback);
+    setProfileSummary();
+  });
 
   populateRealmOptions();
   resetSpecSelects();

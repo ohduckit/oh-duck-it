@@ -66,3 +66,48 @@
     background:#fff3ef !important;
   }
 }
+
+
+/* v1.2 — make all profile boxes look active, not disabled */
+#characterProfileVerification .profile-field input[type="url"]{
+  background:#efe7d6 !important;
+  color:#2f2113 !important;
+  opacity:1 !important;
+  cursor:text !important;
+  border-color:#9d7440 !important;
+}
+
+#characterProfileVerification .profile-field input[type="url"]::placeholder{
+  color:#8a7a63 !important;
+  opacity:.78 !important;
+}
+
+#characterProfileVerification .profile-field input[type="url"]:focus{
+  background:#fff9ec !important;
+  border-color:#d4a34b !important;
+  box-shadow:0 0 0 2px rgba(212,163,75,.16) !important;
+}
+
+#characterProfileVerification .profile-field input.profile-invalid{
+  background:#fff4f1 !important;
+  border-color:#b53a30 !important;
+}
+
+#characterProfileVerification .profile-field input.profile-valid{
+  background:#f3faef !important;
+  border-color:#587b45 !important;
+}
+
+#characterProfileVerification .profile-field input.profile-warning{
+  background:#fff9e9 !important;
+  border-color:#a97925 !important;
+}
+
+.profile-validation-summary{
+  font-size:13px;
+  font-weight:700;
+}
+
+.profile-field-status{
+  font-size:11.5px;
+}
