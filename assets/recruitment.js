@@ -17,7 +17,6 @@
   const characterInput = document.getElementById('character_name');
   const profileInputs = {
     raiderio: document.getElementById('raiderio_url'),
-    wcl: document.getElementById('wcl_url'),
     armory: document.getElementById('armory_url')
   };
   const profileInputList = Object.values(profileInputs).filter(Boolean);
@@ -226,16 +225,14 @@
 
   const profileSourceLabel = (kind) => ({
     raiderio: 'Raider.IO',
-    wcl: 'Warcraft Logs',
     armory: 'WoW Armory'
   }[kind] || 'Profile');
 
   const profileStatusEls = {
     raiderio: document.getElementById('raiderioValidation'),
-    wcl: document.getElementById('wclValidation'),
     armory: document.getElementById('armoryValidation')
   };
-  const profileSummary = document.getElementById('profileValidationSummary');
+  const profileGroupValidation = document.getElementById('profileGroupValidation');
 
   function setProfileStatus(kind, state='', text='') {
     const input = profileInputs[kind];
@@ -251,20 +248,16 @@
     } else if (state === 'success') {
       input.classList.add('profile-valid');
       status.classList.add('success');
-    } else if (state === 'warning') {
-      input.classList.add('profile-warning');
-      status.classList.add('warning');
     }
 
     status.textContent = text;
   }
 
-  function setProfileSummary(state='', text='') {
-    if (!profileSummary) return;
-    profileSummary.hidden = !text;
-    profileSummary.className = 'profile-validation-summary';
-    if (state) profileSummary.classList.add(state);
-    profileSummary.textContent = text;
+  function setProfileGroupValidation(text='', state='') {
+    if (!profileGroupValidation) return;
+    profileGroupValidation.textContent = text;
+    profileGroupValidation.className = 'profile-group-validation';
+    if (state) profileGroupValidation.classList.add(state);
   }
 
   function parseCharacterProfile(kind, raw) {
@@ -346,44 +339,13 @@
       };
     }
 
-    if (kind === 'wcl') {
-      if (host !== 'warcraftlogs.com' && host !== 'www.warcraftlogs.com') {
-        return { ok:false, state:'invalid', message:'Use a Warcraft Logs character profile URL.' };
-      }
-
-      const i = lower.findIndex(s => s === 'character');
-      if (i < 0) {
-        return { ok:false, state:'invalid', message:'Use a Warcraft Logs character profile, not a report, guild or homepage link.' };
-      }
-
-      if (segments.length >= i + 4 && lower[i + 1] !== 'id') {
-        return {
-          ok:true,
-          state:'verifiable',
-          url:url.toString(),
-          region:segments[i + 1],
-          realm:segments[i + 2],
-          character:segments[i + 3]
-        };
-      }
-
-      if (
-        segments.length >= i + 3 &&
-        lower[i + 1] === 'id' &&
-        /^\d+$/.test(segments[i + 2])
-      ) {
-        return {
-          ok:true,
-          state:'supporting',
-          url:url.toString(),
-          message:'Valid Warcraft Logs character link. This format uses a numeric character ID, so add Raider.IO or WoW Armory as well to verify the name and realm.'
-        };
-      }
-
-      return { ok:false, state:'invalid', message:'Use the direct Warcraft Logs character profile.' };
-    }
-
     return { ok:false, state:'invalid', message:'Unsupported character profile.' };
+  }
+
+  function clearProfileFeedback(kind) {
+    const input = profileInputs[kind];
+    if (input) input.setCustomValidity('');
+    setProfileStatus(kind);
   }
 
   function clearProfileFeedback(kind) {
@@ -395,15 +357,15 @@
   function validateCharacterProfiles({ announce = false } = {}) {
     profileInputList.forEach(input => input.setCustomValidity(''));
     Object.keys(profileInputs).forEach(kind => setProfileStatus(kind));
+    setProfileGroupValidation();
 
     const entered = Object.entries(profileInputs)
       .filter(([, input]) => input && input.value.trim());
 
-    // No arbitrary red box: this is a group-level requirement.
     if (!entered.length) {
-      setProfileSummary(
-        'error',
-        'Add at least one character profile before submitting: Raider.IO, Warcraft Logs or WoW Armory.'
+      setProfileGroupValidation(
+        'Add either a Raider.IO or WoW Armory character profile before submitting.',
+        'error'
       );
       if (announce) {
         document.getElementById('characterProfileVerification')?.scrollIntoView({
@@ -421,16 +383,14 @@
     };
 
     if (!expected.character || !expected.realm || !expected.region) {
-      setProfileSummary(
-        'error',
-        'Enter the character name, realm and region first, then add the verification profile.'
+      setProfileGroupValidation(
+        'Enter the character name, realm and region first.',
+        'error'
       );
       return false;
     }
 
     let valid = true;
-    let verifiedMatches = 0;
-    const supportingKinds = [];
     let firstProblem = null;
 
     for (const [kind, input] of entered) {
@@ -441,12 +401,6 @@
         setProfileStatus(kind, 'error', `✕ ${parsed.message}`);
         firstProblem ||= input;
         valid = false;
-        continue;
-      }
-
-      if (parsed.state === 'supporting') {
-        supportingKinds.push(kind);
-        setProfileStatus(kind, 'warning', `⚠ ${parsed.message}`);
         continue;
       }
 
@@ -466,7 +420,6 @@
         continue;
       }
 
-      verifiedMatches += 1;
       setProfileStatus(
         kind,
         'success',
@@ -474,34 +427,9 @@
       );
     }
 
-    if (valid && supportingKinds.length && verifiedMatches < 1) {
-      const kind = supportingKinds[0];
-      const input = profileInputs[kind];
-      const text =
-        'Warcraft Logs is valid, but this ID-only URL cannot prove the character name and realm. Add a matching Raider.IO or WoW Armory profile as well.';
-      input.setCustomValidity(text);
-      setProfileStatus(kind, 'warning', `⚠ ${text}`);
-      firstProblem ||= input;
-      valid = false;
-    }
-
-    if (valid) {
-      setProfileSummary(
-        'success',
-        supportingKinds.length
-          ? `Character verified. Warcraft Logs is included as a supporting profile.`
-          : `Character verified as ${characterInput.value.trim()} — ${realmInput.value.trim()} (${regionSelect.value}).`
-      );
-    } else {
-      setProfileSummary(
-        'error',
-        'Character verification needs attention. Check the message beneath the highlighted profile.'
-      );
-
-      if (announce && firstProblem) {
-        firstProblem.scrollIntoView({ behavior:'smooth', block:'center' });
-        window.setTimeout(() => firstProblem.focus({ preventScroll:true }), 350);
-      }
+    if (announce && firstProblem) {
+      firstProblem.scrollIntoView({behavior:'smooth', block:'center'});
+      window.setTimeout(() => firstProblem.focus({preventScroll:true}), 350);
     }
 
     return valid;
@@ -618,7 +546,7 @@
 
     input.addEventListener('input', () => {
       clearProfileFeedback(kind);
-      setProfileSummary();
+      setProfileGroupValidation();
     });
 
     input.addEventListener('blur', () => {
@@ -628,17 +556,17 @@
 
   characterInput?.addEventListener('input', () => {
     Object.keys(profileInputs).forEach(clearProfileFeedback);
-    setProfileSummary();
+    setProfileGroupValidation();
   });
 
   realmInput?.addEventListener('input', () => {
     Object.keys(profileInputs).forEach(clearProfileFeedback);
-    setProfileSummary();
+    setProfileGroupValidation();
   });
 
   regionSelect?.addEventListener('change', () => {
     Object.keys(profileInputs).forEach(clearProfileFeedback);
-    setProfileSummary();
+    setProfileGroupValidation();
   });
 
   populateRealmOptions();

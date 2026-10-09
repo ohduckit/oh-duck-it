@@ -1,27 +1,5 @@
 /* ODit recruitment character verification UX v1.1 */
 
-.profile-validation-summary {
-  margin-top:10px;
-  padding:10px 12px;
-  border:1px solid #8f5b21;
-  border-radius:8px;
-  background:#2a170e;
-  color:#f4d69a;
-  line-height:1.45;
-}
-
-.profile-validation-summary.error {
-  border-color:#b64a3e;
-  background:#341310;
-  color:#ffd0c8;
-}
-
-.profile-validation-summary.success {
-  border-color:#52783f;
-  background:#172514;
-  color:#cde8c1;
-}
-
 .profile-field-status {
   display:block;
   min-height:18px;
@@ -110,4 +88,23 @@
 
 .profile-field-status{
   font-size:11.5px;
+}
+
+
+/* v1.3 — no large validation banner; keep feedback local to the fields */
+.profile-group-validation{
+  display:block;
+  min-height:0;
+  margin:0 0 6px;
+  font-size:12px;
+  line-height:1.35;
+  font-weight:800;
+}
+
+.profile-group-validation:empty{
+  display:none;
+}
+
+.profile-group-validation.error{
+  color:#b43a30;
 }
