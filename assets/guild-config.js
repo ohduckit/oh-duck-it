@@ -1,5 +1,5 @@
 window.ODIT_GUILD = {
-  discordInvite: 'https://discord.gg/XAZYxmFCpR',
+  discordInvite: '#',
   raiderIO: 'https://raider.io/guilds/eu/shadowsong/Oh%20Duck%20It',
   warcraftLogs: '#',
   armory: '#',
