@@ -14,6 +14,13 @@
   const profession1 = document.getElementById('profession_1');
   const profession2 = document.getElementById('profession_2');
   const interestBoxes = [...form.querySelectorAll('input[name^="interest_"]')];
+  const characterInput = document.getElementById('character_name');
+  const profileInputs = {
+    raiderio: document.getElementById('raiderio_url'),
+    wcl: document.getElementById('wcl_url'),
+    armory: document.getElementById('armory_url')
+  };
+  const profileInputList = Object.values(profileInputs).filter(Boolean);
 
   const cfg = window.ODIT_SUPABASE || {};
   const configured =
@@ -207,6 +214,115 @@
     try { return new URL(v).toString(); } catch { return null; }
   };
 
+  const safeDecode = (value='') => {
+    try { return decodeURIComponent(value); } catch { return value; }
+  };
+
+  const identityKey = (value='') => safeDecode(String(value))
+    .normalize('NFKD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]/gu, '');
+
+  const profileSourceLabel = (kind) => ({
+    raiderio: 'Raider.IO',
+    wcl: 'Warcraft Logs',
+    armory: 'Armory'
+  }[kind] || 'Profile');
+
+  function parseCharacterProfile(kind, raw) {
+    let url;
+    try {
+      url = new URL(raw);
+    } catch {
+      return { ok:false, message:`Enter a valid ${profileSourceLabel(kind)} URL.` };
+    }
+
+    if (url.protocol !== 'https:') {
+      return { ok:false, message:`Use the HTTPS ${profileSourceLabel(kind)} character profile URL.` };
+    }
+
+    const host = url.hostname.toLowerCase();
+    const segments = url.pathname.split('/').filter(Boolean).map(safeDecode);
+    let marker = '';
+    let validHost = false;
+
+    if (kind === 'raiderio') {
+      validHost = host === 'raider.io' || host === 'www.raider.io';
+      marker = 'characters';
+    } else if (kind === 'wcl') {
+      validHost = host === 'warcraftlogs.com' || host === 'www.warcraftlogs.com';
+      marker = 'character';
+    } else if (kind === 'armory') {
+      validHost = host === 'worldofwarcraft.blizzard.com';
+      marker = 'character';
+    }
+
+    if (!validHost) {
+      return { ok:false, message:`Use a direct ${profileSourceLabel(kind)} character profile URL.` };
+    }
+
+    const markerIndex = segments.findIndex(segment => segment.toLowerCase() === marker);
+    if (markerIndex < 0 || segments.length < markerIndex + 4) {
+      return { ok:false, message:`Use a direct ${profileSourceLabel(kind)} character profile URL, not a homepage, guild page or search result.` };
+    }
+
+    return {
+      ok:true,
+      url:url.toString(),
+      region:segments[markerIndex + 1],
+      realm:segments[markerIndex + 2],
+      character:segments[markerIndex + 3]
+    };
+  }
+
+  function validateCharacterProfiles() {
+    profileInputList.forEach(input => input.setCustomValidity(''));
+
+    const entered = Object.entries(profileInputs)
+      .filter(([, input]) => input && input.value.trim());
+
+    if (!entered.length) {
+      profileInputs.raiderio?.setCustomValidity(
+        'Add at least one direct character profile: Raider.IO, Warcraft Logs, or Armory.'
+      );
+      return false;
+    }
+
+    const expected = {
+      character: identityKey(characterInput?.value || ''),
+      realm: identityKey(realmInput?.value || ''),
+      region: String(regionSelect?.value || '').trim().toLowerCase()
+    };
+
+    if (!expected.character || !expected.realm || !expected.region) return false;
+
+    let valid = true;
+
+    for (const [kind, input] of entered) {
+      const parsed = parseCharacterProfile(kind, input.value.trim());
+      if (!parsed.ok) {
+        input.setCustomValidity(parsed.message);
+        valid = false;
+        continue;
+      }
+
+      const matches =
+        String(parsed.region || '').toLowerCase() === expected.region &&
+        identityKey(parsed.realm) === expected.realm &&
+        identityKey(parsed.character) === expected.character;
+
+      if (!matches) {
+        input.setCustomValidity(
+          `${profileSourceLabel(kind)} must point to ${characterInput.value.trim()} on ${realmInput.value.trim()} (${regionSelect.value}).`
+        );
+        valid = false;
+      }
+    }
+
+    return valid;
+  }
+
   const option = (value, label=value) => {
     const opt = document.createElement('option');
     opt.value = value;
@@ -313,6 +429,10 @@
   profession1.addEventListener('change', updateProfessionOptions);
   profession2.addEventListener('change', updateProfessionOptions);
   interestBoxes.forEach(box => box.addEventListener('change', validateInterests));
+  profileInputList.forEach(input => input.addEventListener('input', validateCharacterProfiles));
+  characterInput?.addEventListener('input', validateCharacterProfiles);
+  realmInput?.addEventListener('input', validateCharacterProfiles);
+  regionSelect?.addEventListener('change', validateCharacterProfiles);
 
   populateRealmOptions();
   resetSpecSelects();
@@ -375,6 +495,7 @@
     if (!configured || !client) return;
 
     validateInterests();
+    validateCharacterProfiles();
     if (!form.reportValidity()) return;
 
     if (!turnstileToken) {
