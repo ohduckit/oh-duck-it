@@ -1,0 +1,68 @@
+/* ODit recruitment character verification UX v1.1 */
+
+.profile-validation-summary {
+  margin-top:10px;
+  padding:10px 12px;
+  border:1px solid #8f5b21;
+  border-radius:8px;
+  background:#2a170e;
+  color:#f4d69a;
+  line-height:1.45;
+}
+
+.profile-validation-summary.error {
+  border-color:#b64a3e;
+  background:#341310;
+  color:#ffd0c8;
+}
+
+.profile-validation-summary.success {
+  border-color:#52783f;
+  background:#172514;
+  color:#cde8c1;
+}
+
+.profile-field-status {
+  display:block;
+  min-height:18px;
+  margin-top:5px;
+  font-size:12px;
+  line-height:1.35;
+}
+
+.profile-field-status.error {
+  color:#a62d24;
+  font-weight:800;
+}
+
+.profile-field-status.success {
+  color:#426a31;
+  font-weight:800;
+}
+
+.profile-field-status.warning {
+  color:#8a5b16;
+  font-weight:800;
+}
+
+.profile-field input.profile-invalid {
+  border-color:#b53a30 !important;
+  box-shadow:0 0 0 2px rgba(181,58,48,.18);
+  background:#fff3ef !important;
+}
+
+.profile-field input.profile-valid {
+  border-color:#587b45 !important;
+  box-shadow:0 0 0 2px rgba(88,123,69,.12);
+}
+
+.profile-field input.profile-warning {
+  border-color:#a97925 !important;
+  box-shadow:0 0 0 2px rgba(169,121,37,.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  .profile-field input.profile-invalid {
+    background:#fff3ef !important;
+  }
+}

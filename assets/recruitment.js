@@ -227,65 +227,176 @@
   const profileSourceLabel = (kind) => ({
     raiderio: 'Raider.IO',
     wcl: 'Warcraft Logs',
-    armory: 'Armory'
+    armory: 'WoW Armory'
   }[kind] || 'Profile');
+
+  const profileStatusEls = {
+    raiderio: document.getElementById('raiderioValidation'),
+    wcl: document.getElementById('wclValidation'),
+    armory: document.getElementById('armoryValidation')
+  };
+  const profileSummary = document.getElementById('profileValidationSummary');
+
+  function setProfileStatus(kind, state='', text='') {
+    const input = profileInputs[kind];
+    const status = profileStatusEls[kind];
+    if (!input || !status) return;
+
+    input.classList.remove('profile-invalid', 'profile-valid', 'profile-warning');
+    status.className = 'profile-field-status';
+
+    if (state === 'error') {
+      input.classList.add('profile-invalid');
+      status.classList.add('error');
+    } else if (state === 'success') {
+      input.classList.add('profile-valid');
+      status.classList.add('success');
+    } else if (state === 'warning') {
+      input.classList.add('profile-warning');
+      status.classList.add('warning');
+    }
+
+    status.textContent = text;
+  }
+
+  function setProfileSummary(state='', text='') {
+    if (!profileSummary) return;
+    profileSummary.hidden = !text;
+    profileSummary.className = 'profile-validation-summary';
+    if (state) profileSummary.classList.add(state);
+    profileSummary.textContent = text;
+  }
 
   function parseCharacterProfile(kind, raw) {
     let url;
     try {
       url = new URL(raw);
     } catch {
-      return { ok:false, message:`Enter a valid ${profileSourceLabel(kind)} URL.` };
+      return { ok:false, state:'invalid', message:`Enter a valid ${profileSourceLabel(kind)} URL.` };
     }
 
     if (url.protocol !== 'https:') {
-      return { ok:false, message:`Use the HTTPS ${profileSourceLabel(kind)} character profile URL.` };
+      return { ok:false, state:'invalid', message:`Use the HTTPS ${profileSourceLabel(kind)} character profile URL.` };
     }
 
     const host = url.hostname.toLowerCase();
     const segments = url.pathname.split('/').filter(Boolean).map(safeDecode);
-    let marker = '';
-    let validHost = false;
 
     if (kind === 'raiderio') {
-      validHost = host === 'raider.io' || host === 'www.raider.io';
-      marker = 'characters';
-    } else if (kind === 'wcl') {
-      validHost = host === 'warcraftlogs.com' || host === 'www.warcraftlogs.com';
-      marker = 'character';
-    } else if (kind === 'armory') {
-      validHost = host === 'worldofwarcraft.blizzard.com';
-      marker = 'character';
+      if (host !== 'raider.io' && host !== 'www.raider.io') {
+        return { ok:false, state:'invalid', message:'Use a direct Raider.IO character profile URL.' };
+      }
+
+      const i = segments.findIndex(s => s.toLowerCase() === 'characters');
+      if (i < 0 || segments.length < i + 4) {
+        return { ok:false, state:'invalid', message:'Use the character profile, not a Raider.IO guild, search or homepage link.' };
+      }
+
+      return {
+        ok:true,
+        state:'verifiable',
+        url:url.toString(),
+        region:segments[i + 1],
+        realm:segments[i + 2],
+        character:segments[i + 3]
+      };
     }
 
-    if (!validHost) {
-      return { ok:false, message:`Use a direct ${profileSourceLabel(kind)} character profile URL.` };
+    if (kind === 'armory') {
+      if (host !== 'worldofwarcraft.blizzard.com') {
+        return { ok:false, state:'invalid', message:'Use a direct World of Warcraft Armory character profile URL.' };
+      }
+
+      // Current format:
+      // /en-gb/worldsoul/eu/armory/character/stormscale/dazrynne
+      const armoryIndex = segments.findIndex(s => s.toLowerCase() === 'armory');
+      const characterIndex = segments.findIndex((s, idx) =>
+        idx > armoryIndex && s.toLowerCase() === 'character'
+      );
+
+      if (armoryIndex >= 1 && characterIndex >= 0 && segments.length >= characterIndex + 3) {
+        return {
+          ok:true,
+          state:'verifiable',
+          url:url.toString(),
+          region:segments[armoryIndex - 1],
+          realm:segments[characterIndex + 1],
+          character:segments[characterIndex + 2]
+        };
+      }
+
+      // Legacy format:
+      // /en-gb/character/eu/stormscale/dazrynne
+      const legacyIndex = segments.findIndex(s => s.toLowerCase() === 'character');
+      if (legacyIndex >= 0 && segments.length >= legacyIndex + 4) {
+        return {
+          ok:true,
+          state:'verifiable',
+          url:url.toString(),
+          region:segments[legacyIndex + 1],
+          realm:segments[legacyIndex + 2],
+          character:segments[legacyIndex + 3]
+        };
+      }
+
+      return { ok:false, state:'invalid', message:'Use the direct WoW Armory character page, not an Armory search page.' };
     }
 
-    const markerIndex = segments.findIndex(segment => segment.toLowerCase() === marker);
-    if (markerIndex < 0 || segments.length < markerIndex + 4) {
-      return { ok:false, message:`Use a direct ${profileSourceLabel(kind)} character profile URL, not a homepage, guild page or search result.` };
+    if (kind === 'wcl') {
+      if (host !== 'warcraftlogs.com' && host !== 'www.warcraftlogs.com') {
+        return { ok:false, state:'invalid', message:'Use a Warcraft Logs character profile URL.' };
+      }
+
+      const i = segments.findIndex(s => s.toLowerCase() === 'character');
+      if (i < 0) {
+        return { ok:false, state:'invalid', message:'Use a Warcraft Logs character profile, not a report, guild or homepage link.' };
+      }
+
+      // Name-bearing WCL format: /character/eu/realm/character
+      if (segments.length >= i + 4 && segments[i + 1].toLowerCase() !== 'id') {
+        return {
+          ok:true,
+          state:'verifiable',
+          url:url.toString(),
+          region:segments[i + 1],
+          realm:segments[i + 2],
+          character:segments[i + 3]
+        };
+      }
+
+      // Current WCL can also use /character/id/12345678. It is a legitimate
+      // character link, but the identity cannot be proven from the URL alone.
+      if (
+        segments.length >= i + 3 &&
+        segments[i + 1].toLowerCase() === 'id' &&
+        /^\d+$/.test(segments[i + 2])
+      ) {
+        return {
+          ok:true,
+          state:'supporting',
+          url:url.toString(),
+          message:'Valid Warcraft Logs character link. Because it uses a numeric ID, Raider.IO or WoW Armory is also required so we can verify the character name and realm.'
+        };
+      }
+
+      return { ok:false, state:'invalid', message:'Use the direct Warcraft Logs character profile.' };
     }
 
-    return {
-      ok:true,
-      url:url.toString(),
-      region:segments[markerIndex + 1],
-      realm:segments[markerIndex + 2],
-      character:segments[markerIndex + 3]
-    };
+    return { ok:false, state:'invalid', message:'Unsupported character profile.' };
   }
 
-  function validateCharacterProfiles() {
+  function validateCharacterProfiles({ announce = false } = {}) {
     profileInputList.forEach(input => input.setCustomValidity(''));
+    Object.keys(profileInputs).forEach(kind => setProfileStatus(kind));
 
     const entered = Object.entries(profileInputs)
       .filter(([, input]) => input && input.value.trim());
 
     if (!entered.length) {
-      profileInputs.raiderio?.setCustomValidity(
-        'Add at least one direct character profile: Raider.IO, Warcraft Logs, or Armory.'
-      );
+      const text = 'Add at least one direct character profile: Raider.IO, Warcraft Logs, or WoW Armory.';
+      profileInputs.raiderio?.setCustomValidity(text);
+      setProfileStatus('raiderio', 'error', text);
+      setProfileSummary('error', text);
       return false;
     }
 
@@ -295,15 +406,30 @@
       region: String(regionSelect?.value || '').trim().toLowerCase()
     };
 
-    if (!expected.character || !expected.realm || !expected.region) return false;
+    if (!expected.character || !expected.realm || !expected.region) {
+      setProfileSummary('error', 'Enter the character name, realm and region before adding verification profiles.');
+      return false;
+    }
 
     let valid = true;
+    let verifiedMatches = 0;
+    const supportingKinds = [];
+    let firstProblem = null;
 
     for (const [kind, input] of entered) {
       const parsed = parseCharacterProfile(kind, input.value.trim());
+
       if (!parsed.ok) {
         input.setCustomValidity(parsed.message);
+        setProfileStatus(kind, 'error', `✕ ${parsed.message}`);
+        firstProblem ||= input;
         valid = false;
+        continue;
+      }
+
+      if (parsed.state === 'supporting') {
+        supportingKinds.push(kind);
+        setProfileStatus(kind, 'warning', `⚠ ${parsed.message}`);
         continue;
       }
 
@@ -313,10 +439,50 @@
         identityKey(parsed.character) === expected.character;
 
       if (!matches) {
-        input.setCustomValidity(
-          `${profileSourceLabel(kind)} must point to ${characterInput.value.trim()} on ${realmInput.value.trim()} (${regionSelect.value}).`
-        );
+        const text =
+          `${profileSourceLabel(kind)} points to ${parsed.character || 'another character'} on ${parsed.realm || 'another realm'} (${String(parsed.region || '').toUpperCase()}), ` +
+          `but the application is for ${characterInput.value.trim()} on ${realmInput.value.trim()} (${regionSelect.value}).`;
+        input.setCustomValidity(text);
+        setProfileStatus(kind, 'error', `✕ ${text}`);
+        firstProblem ||= input;
         valid = false;
+        continue;
+      }
+
+      verifiedMatches += 1;
+      setProfileStatus(
+        kind,
+        'success',
+        `✓ Matches ${characterInput.value.trim()} — ${realmInput.value.trim()} (${regionSelect.value})`
+      );
+    }
+
+    if (valid && supportingKinds.length && verifiedMatches < 1) {
+      const kind = supportingKinds[0];
+      const input = profileInputs[kind];
+      const text =
+        'This Warcraft Logs link uses a numeric character ID, so its name and realm cannot be verified from the URL. Add a matching Raider.IO or WoW Armory profile as well.';
+      input.setCustomValidity(text);
+      setProfileStatus(kind, 'error', `✕ ${text}`);
+      firstProblem ||= input;
+      valid = false;
+    }
+
+    if (valid) {
+      setProfileSummary(
+        'success',
+        supportingKinds.length
+          ? `Character verified. ${profileSourceLabel(supportingKinds[0])} is being kept as a supporting profile.`
+          : `Character verified as ${characterInput.value.trim()} — ${realmInput.value.trim()} (${regionSelect.value}).`
+      );
+    } else {
+      setProfileSummary(
+        'error',
+        'Character verification needs attention. Fix the red field(s) below before submitting.'
+      );
+      if (announce && firstProblem) {
+        firstProblem.scrollIntoView({ behavior:'smooth', block:'center' });
+        window.setTimeout(() => firstProblem.focus({ preventScroll:true }), 350);
       }
     }
 
@@ -495,8 +661,25 @@
     if (!configured || !client) return;
 
     validateInterests();
-    validateCharacterProfiles();
-    if (!form.reportValidity()) return;
+    const profilesValid = validateCharacterProfiles({ announce: true });
+
+    if (!form.checkValidity() || !profilesValid) {
+      const firstInvalid = form.querySelector(':invalid');
+      show(
+        msg,
+        'Your application has not been submitted. Please correct the highlighted field(s) and try again.',
+        'error'
+      );
+
+      if (firstInvalid && !profileInputList.includes(firstInvalid)) {
+        firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
+        window.setTimeout(() => {
+          firstInvalid.focus({preventScroll:true});
+          firstInvalid.reportValidity();
+        }, 350);
+      }
+      return;
+    }
 
     if (!turnstileToken) {
       show(
