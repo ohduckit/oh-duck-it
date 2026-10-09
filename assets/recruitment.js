@@ -222,6 +222,23 @@
     el.textContent = text;
   };
 
+
+  async function edgeFunctionMessage(error, data, fallback) {
+    if (data?.message) return data.message;
+
+    try {
+      const context = error?.context;
+      if (context && typeof context.clone === 'function') {
+        const payload = await context.clone().json();
+        if (payload?.message) return payload.message;
+      }
+    } catch {}
+
+    const raw = String(error?.message || '').trim();
+    if (raw && !/non-2xx status code/i.test(raw)) return raw;
+    return fallback;
+  }
+
   if (!configured) {
     show(
       backendNotice,
@@ -1060,7 +1077,7 @@
     else setDiscordStatus('', 'Not verified yet.');
 
     if (discordVerifyBtn) {
-      discordVerifyBtn.textContent = 'Verify Discord & join Applicant Lounge';
+      discordVerifyBtn.textContent = 'Verify Discord identity';
     }
   }
 
@@ -1093,7 +1110,7 @@
 
     setDiscordStatus(
       'success',
-      `✓ Discord verified: ${globalName || username}${globalName && username ? ` (@${username})` : ''}. Applicant access is active.`
+      `✓ Discord verified: ${globalName || username}${globalName && username ? ` (@${username})` : ''}. No ODit server access has been granted yet.`
     );
   }
 
@@ -1378,12 +1395,13 @@
       }
       turnstileToken = '';
 
-      show(
-        msg,
-        data?.message ||
-          'We could not submit the application. Please try again or contact an ODit officer on Discord.',
-        'error'
+      const failureMessage = await edgeFunctionMessage(
+        error,
+        data,
+        'We could not submit the application. Please try again or contact an ODit officer on Discord.'
       );
+
+      show(msg, failureMessage, 'error');
       return;
     }
 
