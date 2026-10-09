@@ -1,0 +1,67 @@
+/* ODit Battle.net character picker + autofill v2.1 */
+
+.bnet-picker{
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) auto;
+  gap:14px;
+  align-items:end;
+  margin-bottom:10px;
+}
+
+.bnet-picker-action{
+  display:flex;
+  align-items:end;
+  padding-bottom:8px;
+}
+
+.bnet-picker-action .btn{
+  min-height:42px;
+  white-space:nowrap;
+}
+
+.verified-character-grid{
+  margin-top:16px;
+}
+
+#verifiedCharacterDetails input[readonly],
+#characterProfileVerification input[readonly]{
+  background:#e9dfcb !important;
+  color:#2f2113 !important;
+  cursor:default !important;
+  border-color:#967044 !important;
+}
+
+#verifiedCharacterDetails input[readonly]::placeholder,
+#characterProfileVerification input[readonly]::placeholder{
+  color:#8c7a61 !important;
+  opacity:.82;
+}
+
+#verifiedCharacterDetails .verified-select{
+  pointer-events:none;
+  background:#e9dfcb !important;
+  color:#2f2113 !important;
+  border-color:#967044 !important;
+  cursor:default !important;
+}
+
+#verifiedCharacterDetails.verified input[readonly],
+#verifiedCharacterDetails.verified .verified-select,
+#characterProfileVerification.verified input[readonly]{
+  border-color:#587b45 !important;
+  box-shadow:0 0 0 1px rgba(88,123,69,.12);
+}
+
+@media(max-width:720px){
+  .bnet-picker{
+    grid-template-columns:1fr;
+  }
+
+  .bnet-picker-action{
+    padding-bottom:0;
+  }
+
+  .bnet-picker-action .btn{
+    width:100%;
+  }
+}
