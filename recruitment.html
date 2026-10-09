@@ -56,7 +56,7 @@
 <div id="backendNotice" class="notice info" hidden></div><div id="formMessage" class="notice" hidden></div>
 <form id="recruitmentForm" novalidate>
 <div class="honeypot" aria-hidden="true"><label>Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label></div>
-<div class="form-section"><h3>Character</h3><p>Your main character details.</p><div class="form-grid">
+<div class="form-section"><h3>Character</h3><p>Enter the character you want to join Oh Duck It on.</p><div class="form-grid">
 <div class="field"><label for="character_name">Character name *</label><input id="character_name" name="character_name" maxlength="50" required></div>
 <div class="field">
 <label for="realm">Realm *</label>
@@ -87,7 +87,32 @@
 </select>
 </div>
 <div class="field"><label for="item_level">Current item level</label><input id="item_level" name="item_level" type="number" min="1" max="999" inputmode="numeric"></div>
-</div></div>
+</div>
+
+<div class="field full" style="margin-top:14px">
+  <label>Character verification *</label>
+  <p class="field-help">
+    Add at least one direct character profile below. Every profile you provide must match the character name, realm and region entered above.
+  </p>
+</div>
+<div class="form-grid" id="characterProfileVerification">
+  <div class="field">
+    <label for="raiderio_url">Raider.IO character profile</label>
+    <input id="raiderio_url" name="raiderio_url" type="url" inputmode="url" autocomplete="url" placeholder="https://raider.io/characters/eu/realm/character">
+  </div>
+  <div class="field">
+    <label for="wcl_url">Warcraft Logs character profile</label>
+    <input id="wcl_url" name="wcl_url" type="url" inputmode="url" autocomplete="url" placeholder="https://www.warcraftlogs.com/character/eu/realm/character">
+  </div>
+  <div class="field">
+    <label for="armory_url">Armory character profile</label>
+    <input id="armory_url" name="armory_url" type="url" inputmode="url" autocomplete="url" placeholder="https://worldofwarcraft.blizzard.com/.../character/eu/realm/character">
+  </div>
+  <div class="field full">
+    <span class="field-help">At least one is required. Guild pages, search pages and profiles for a different character will be rejected.</span>
+  </div>
+</div>
+</div>
 
 <div class="form-section" id="guild-interests">
 <h3>Guild interests & professions</h3>
@@ -153,10 +178,7 @@
 </div>
 </div>
 
-<div class="form-section"><h3>Profiles & experience</h3><p>Links help us understand your experience; we are not recruiting purely by parse colour.</p><div class="form-grid">
-<div class="field"><label for="raiderio_url">Raider.IO URL</label><input id="raiderio_url" name="raiderio_url" type="url" placeholder="https://raider.io/..."></div>
-<div class="field"><label for="wcl_url">Warcraft Logs URL</label><input id="wcl_url" name="wcl_url" type="url" placeholder="https://www.warcraftlogs.com/..."></div>
-<div class="field"><label for="armory_url">Armory URL</label><input id="armory_url" name="armory_url" type="url" placeholder="https://worldofwarcraft.blizzard.com/..."></div>
+<div class="form-section"><h3>Experience</h3><p>Tell us about your current progression and experience; we are not recruiting purely by parse colour.</p><div class="form-grid">
 <div class="field"><label for="current_progression">Current progression</label><input id="current_progression" name="current_progression" maxlength="100" placeholder="e.g. 5/8 HC"></div>
 <div class="field full"><label for="raid_experience">Raid experience</label><textarea id="raid_experience" name="raid_experience" maxlength="2000" placeholder="Previous AoTC / Mythic experience, recent raid history, or anything useful for us to know."></textarea></div>
 <div class="field full"><label for="mplus_experience">Mythic+ experience</label><textarea id="mplus_experience" name="mplus_experience" maxlength="1200" placeholder="Optional: key level / score, preferred dungeons, goals."></textarea></div>
