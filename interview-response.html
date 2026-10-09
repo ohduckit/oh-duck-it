@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oh Duck It — Recruitment Chat</title>
+<meta name="description" content="Respond to your Oh Duck It recruitment chat time.">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css">
+<style>
+.response-wrap{max-width:760px;margin:0 auto 60px}.response-card{padding:28px}.response-card h2{margin-top:0}.response-status{margin:16px 0;padding:14px;border:1px solid #6c4d22;border-radius:10px;background:#24160d;color:#eadcc8}.response-status.success{border-color:#58764b;background:#172314}.response-status.error{border-color:#8a4038;background:#2d1714}.response-choice{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.response-form{margin-top:20px}.response-form textarea{width:100%;min-height:130px;background:#24160d;color:#eadcc8;border:1px solid #6c4d22;border-radius:8px;padding:11px;font:inherit;box-sizing:border-box}.response-meta{margin:12px 0;color:#62482b}.hidden{display:none!important}
+</style>
+</head><body>
+<nav class="sitebar"><div class="sitebar-inner"><a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a></div></nav>
+<header class="page-head wrap"><div class="page-sign"><h1>RECRUITMENT CHAT</h1><p>Just a quick reply</p></div></header>
+<main class="wrap response-wrap">
+  <section class="parchment response-card">
+    <div class="kicker" style="color:#765426">Oh Duck It</div>
+    <h2 id="responseTitle" style="color:#38230f">Checking your chat details…</h2>
+    <p id="responseIntro" class="response-meta">One moment while we check the link from Discord.</p>
+    <div id="responseStatus" class="response-status hidden" aria-live="polite"></div>
+
+    <div id="confirmView" class="hidden">
+      <p id="confirmDetails" class="response-meta"></p>
+      <div class="response-choice">
+        <button id="confirmBtn" class="btn primary" type="button">Yep, that works 👍</button>
+        <button id="switchToReschedule" class="btn" type="button">Actually, can we find another time?</button>
+      </div>
+    </div>
+
+    <div id="rescheduleView" class="response-form hidden">
+      <p id="rescheduleDetails" class="response-meta"></p>
+      <label for="availability"><b>What days or times are usually good for you?</b></label>
+      <textarea id="availability" maxlength="1200" placeholder="For example: Wednesday after 20:00, Thursday before 18:00, or most evenings after 19:30."></textarea>
+      <div class="response-choice">
+        <button id="rescheduleBtn" class="btn primary" type="button">Send that to the recruitment team</button>
+        <button id="backToConfirm" class="btn" type="button">The original time is fine</button>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Reliable • Prepared • Team-first • Improving together.</div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/interview-response.js"></script>
+</body></html>
