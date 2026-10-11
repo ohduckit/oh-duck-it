@@ -18,7 +18,7 @@
 
     { type:'group', label:'Raiding' },
     { key:'progression', icon:'⚔', label:'Progression', href:'officer-progression.html', status:'Live', permission:'progression.manage' },
-    { key:'roster', icon:'♙', label:'Roster', href:'officer-roster.html', status:'Planned', permission:'roster.manage' },
+    { key:'roster', icon:'♙', label:'Roster', href:'officer-roster.html', status:'Live', permission:'roster.manage' },
     { key:'raid-notes', icon:'⚑', label:'Raid Notes', href:'officer-raid-notes.html', status:'Planned', permission:'raid.notes.manage' },
 
     { type:'group', label:'Guild' },

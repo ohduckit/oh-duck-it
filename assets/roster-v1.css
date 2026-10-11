@@ -1,0 +1,426 @@
+/* Oh Duck It — Raid Roster v1 */
+
+.roster-hero {
+  background:
+    linear-gradient(180deg,rgba(18,11,8,.90),rgba(12,8,6,.97)),
+    radial-gradient(circle at 50% 10%,rgba(123,77,26,.22),transparent 45%);
+}
+
+.roster-hero-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:16px;
+}
+
+.roster-hero-head h2 { margin:0; }
+
+.roster-status-legend {
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.roster-group-list { display:grid; gap:16px; }
+.roster-role-section { display:grid; gap:9px; }
+
+.roster-role-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.roster-role-head h3 {
+  margin:0;
+  color:#f0ce75;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:16px;
+}
+
+.roster-role-count {
+  padding:3px 7px;
+  border:1px solid #5b4323;
+  border-radius:999px;
+  color:#bba98d;
+  font-size:9px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+
+.roster-player-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+
+.roster-player-card {
+  --class-color:#c69b6d;
+  min-width:0;
+  display:grid;
+  grid-template-columns:50px minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  min-height:70px;
+  padding:9px;
+  border:1px solid #4c351d;
+  border-left:3px solid var(--class-color);
+  border-radius:8px;
+  background:rgba(18,11,8,.78);
+  color:#dfd2be;
+  text-decoration:none;
+}
+
+.roster-player-card:hover {
+  border-color:#80602b;
+  background:rgba(28,17,10,.88);
+}
+
+.roster-player-avatar {
+  width:50px;
+  height:50px;
+  border-radius:7px;
+  object-fit:cover;
+  background:#120c08;
+  border:1px solid #5a4021;
+}
+
+.roster-player-name {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.roster-player-name b {
+  color:#f0c857;
+  font-size:13px;
+}
+
+.roster-player-main { min-width:0; }
+
+.roster-player-main small {
+  display:block;
+  margin-top:4px;
+  color:#c0b099;
+  line-height:1.25;
+}
+
+.roster-player-sub {
+  margin-top:4px;
+  color:#8f816f;
+  font-size:10px;
+  line-height:1.25;
+}
+
+.roster-status {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:3px 6px;
+  border-radius:999px;
+  border:1px solid #5f4a31;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.roster-status.core {
+  color:#d8e8c8;
+  border-color:#536842;
+  background:#1f2a18;
+}
+
+.roster-status.trial {
+  color:#f3d59a;
+  border-color:#86652e;
+  background:#31220f;
+}
+
+.roster-status.reserve {
+  color:#cbd5e8;
+  border-color:#4e5d76;
+  background:#171e2b;
+}
+
+.roster-metric {
+  text-align:right;
+  color:#a99982;
+  font-size:9px;
+  line-height:1.35;
+}
+
+.roster-metric b {
+  display:block;
+  color:#e8d9bf;
+  font-size:11px;
+}
+
+.roster-overview-grid {
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:9px;
+}
+
+.roster-overview-stat {
+  padding:13px;
+  border:1px solid #5c4322;
+  border-radius:9px;
+  background:rgba(18,11,8,.74);
+}
+
+.roster-overview-stat span {
+  display:block;
+  color:#9f907a;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+
+.roster-overview-stat b {
+  display:block;
+  margin-top:6px;
+  color:#f0ce75;
+  font-size:20px;
+}
+
+.roster-composition-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.roster-composition-card {
+  padding:14px;
+  border:1px solid #59411f;
+  border-radius:9px;
+  background:rgba(15,9,7,.66);
+}
+
+.roster-composition-card h3 {
+  margin:0 0 12px;
+  color:#f0ce75;
+}
+
+.roster-bar-list { display:grid; gap:9px; }
+.roster-bar-row { display:grid; gap:4px; }
+
+.roster-bar-label {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:#c7b79f;
+  font-size:11px;
+}
+
+.roster-bar {
+  height:7px;
+  border-radius:999px;
+  overflow:hidden;
+  background:#241810;
+}
+
+.roster-bar > span {
+  display:block;
+  height:100%;
+  width:var(--pct,0%);
+  background:var(--bar-color,#b88635);
+  border-radius:inherit;
+}
+
+.roster-attribution {
+  margin-top:12px;
+  color:#8f816d;
+  font-size:10px;
+}
+
+.roster-attribution a { color:#d0aa54; }
+
+.progression-roster-summary {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:12px 0;
+}
+
+.progression-roster-chip {
+  padding:7px 9px;
+  border:1px solid #51391e;
+  border-radius:8px;
+  background:#17100b;
+  color:#bfae93;
+  font-size:10px;
+}
+
+.progression-roster-chip b {
+  display:block;
+  color:#efcd74;
+  font-size:14px;
+}
+
+.officer-roster-toolbar {
+  display:grid;
+  grid-template-columns:minmax(180px,1fr) 160px 160px auto;
+  gap:9px;
+  align-items:end;
+  margin:14px 0;
+}
+
+.officer-roster-list { display:grid; gap:8px; }
+
+.officer-roster-row {
+  --class-color:#c69b6d;
+  display:grid;
+  grid-template-columns:42px minmax(150px,1.1fr) 120px 120px 100px auto;
+  gap:9px;
+  align-items:center;
+  padding:9px;
+  border:1px solid #4e381e;
+  border-left:3px solid var(--class-color);
+  border-radius:8px;
+  background:#17100b;
+}
+
+.officer-roster-row img {
+  width:42px;
+  height:42px;
+  border-radius:6px;
+  object-fit:cover;
+}
+
+.officer-roster-row b { color:#edcf7b; }
+.officer-roster-row small {
+  display:block;
+  margin-top:3px;
+  color:#9f917b;
+}
+
+.officer-roster-cell {
+  color:#c4b69f;
+  font-size:11px;
+}
+
+.officer-roster-actions {
+  display:flex;
+  gap:6px;
+  justify-content:flex-end;
+}
+
+.roster-dialog {
+  width:min(760px,calc(100vw - 30px));
+  max-height:calc(100vh - 30px);
+  margin:auto;
+  padding:0;
+  border:1px solid #765222;
+  border-radius:12px;
+  background:#1a100b;
+  color:#eadcc5;
+  box-shadow:0 22px 70px rgba(0,0,0,.65);
+}
+
+.roster-dialog::backdrop {
+  background:rgba(7,4,3,.78);
+  backdrop-filter:blur(2px);
+}
+
+.roster-dialog-shell {
+  max-height:calc(100vh - 30px);
+  overflow:auto;
+  padding:18px;
+}
+
+.roster-dialog-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.roster-dialog-head h2 {
+  margin:0;
+  color:#f0ce75;
+}
+
+.roster-dialog-close {
+  width:34px;
+  height:34px;
+  border:1px solid #64451f;
+  border-radius:7px;
+  background:#21140d;
+  color:#ebca71;
+  cursor:pointer;
+  font-size:20px;
+}
+
+.roster-form-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.roster-form-grid .full { grid-column:1/-1; }
+
+.roster-check {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:42px;
+  padding:9px;
+  border:1px solid #59401f;
+  border-radius:8px;
+  background:#160e0a;
+}
+
+.roster-check input {
+  width:17px;
+  height:17px;
+  accent-color:#d6a23d;
+}
+
+.roster-empty {
+  padding:20px;
+  border:1px dashed #5d4525;
+  border-radius:9px;
+  color:#9f9079;
+  text-align:center;
+}
+
+@media(max-width:1000px) {
+  .roster-overview-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  .officer-roster-row {
+    grid-template-columns:42px minmax(150px,1fr) 110px 110px auto;
+  }
+
+  .officer-roster-row .officer-roster-ilvl { display:none; }
+}
+
+@media(max-width:760px) {
+  .roster-player-grid,
+  .roster-composition-grid,
+  .roster-form-grid,
+  .officer-roster-toolbar {
+    grid-template-columns:1fr;
+  }
+
+  .roster-overview-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .officer-roster-row {
+    grid-template-columns:42px minmax(0,1fr) auto;
+  }
+
+  .officer-roster-role,
+  .officer-roster-status,
+  .officer-roster-ilvl { display:none; }
+
+  .roster-form-grid .full { grid-column:auto; }
+}

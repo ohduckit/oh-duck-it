@@ -654,3 +654,73 @@
     gap:2px;
   }
 }
+
+
+/* Recruitment v2.3 — compact class rows */
+#overview #looking .recruit-class-public {
+  display:grid;
+  grid-template-columns:88px minmax(0,1fr);
+  gap:7px;
+  align-items:start;
+  padding:6px;
+}
+
+#overview #looking .recruit-class-public-name {
+  padding:5px 4px;
+  font-size:12px;
+  line-height:1.15;
+}
+
+#overview #looking .recruit-class-spec-list {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px;
+  padding:0;
+}
+
+#overview #looking .recruit-spec-chip {
+  display:grid;
+  grid-template-columns:20px minmax(0,1fr) auto;
+  gap:5px;
+  align-items:center;
+  min-width:0;
+  padding:4px 5px;
+  border-radius:5px;
+  flex:none;
+}
+
+#overview #looking .recruit-spec-chip img {
+  width:20px;
+  height:20px;
+  border-radius:3px;
+}
+
+#overview #looking .recruit-spec-chip-name {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:9.5px;
+}
+
+#overview #looking .recruit-spec-chip .recruit-priority-pill {
+  min-width:34px;
+  min-height:17px;
+  padding:1px 4px;
+  font-size:6.5px;
+}
+
+@media(max-width:1180px) and (min-width:901px) {
+  #overview #looking .recruit-class-public {
+    grid-template-columns:78px minmax(0,1fr);
+  }
+}
+
+@media(max-width:520px) {
+  #overview #looking .recruit-class-public {
+    grid-template-columns:1fr;
+  }
+
+  #overview #looking .recruit-class-spec-list {
+    grid-template-columns:1fr 1fr;
+  }
+}
