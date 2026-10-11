@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oh Duck It — Recruitment Ownership</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/tavern-v21.css">
+<link rel="stylesheet" href="assets/guild-management-v22.css">
+<link rel="stylesheet" href="assets/guild-management-v23.css">
+<link rel="stylesheet" href="assets/officer-portal-pages.css">
+
+</head>
+<body data-officer-page="recruitment-ownership" data-officer-permission="recruitment.ownership.manage">
+<nav class="sitebar">
+  <div class="sitebar-inner">
+    <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
+    <div class="site-links">
+      <a href="index.html">Home</a>
+      <a href="progression.html">Progression</a>
+      <a href="structure.html">Guild Structure</a>
+      <a href="recruitment.html">Recruitment</a>
+      <a href="resources.html">Resources</a>
+      <a class="officer-link active" href="officers.html">Officer Portal</a>
+    </div>
+  </div>
+</nav>
+<header class="page-head wrap">
+  <div class="page-sign">
+    <h1>RECRUITMENT OWNERSHIP</h1>
+    <p>Applicant routing & role-lead ownership</p>
+  </div>
+</header>
+<main class="portal-wrap">
+<section id="authView" class="card auth-card">
+  <div class="eyebrow">Private area</div>
+  <h1 style="font-family:Georgia,serif">Officer Portal</h1>
+  <p id="authText">Sign in with Discord to access ODit officer tools.</p>
+  <div id="authNotice" class="notice info" style="margin:16px 0" hidden></div>
+  <div class="actions">
+    <button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button>
+    <button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button>
+  </div>
+  <div id="unauthorisedBox" hidden></div>
+</section>
+<section id="portalView" hidden>
+  <div class="tavern-shell officer-shell">
+    <aside id="officerNav" class="side-nav officer-side-nav" aria-label="Officer Portal navigation"></aside>
+    <div class="officer-content">
+<section class="panel officer-page-head">
+  <div class="portal-top">
+    <div>
+      <div class="eyebrow">Recruitment</div>
+      <h1>Recruitment Ownership</h1>
+      <p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p>
+    </div>
+    <div class="portal-tools">
+      <a class="btn" href="recruitment.html" target="_blank" rel="noopener">View public page ↗</a>
+      <button id="logoutBtn" class="btn" type="button">Sign out</button>
+    </div>
+  </div>
+</section><section class="card structure-admin officer-module-panel" id="recruitment-ownership">
+  <h2>Recruitment Ownership</h2>
+  <p class="help">
+    New applications are assigned automatically from their verified gameplay role.
+    New, Under Review and Interview remain with the relevant role lead. When an applicant
+    moves to <b>Trial</b>, ownership automatically passes to the <b>Raid Lead</b>.
+  </p>
+  <div id="recruitmentOwnershipMessage" class="notice" style="margin:14px 0" hidden></div>
+
+  <div class="form-grid structure-fields" id="recruitmentOwnershipFields">
+    <div class="field">
+      <label for="recruit-owner-tank-lead">Tank Lead</label>
+      <select id="recruit-owner-tank-lead" data-recruit-owner="tank-lead"><option value="">Unassigned</option></select>
+      <span class="field-help">New tank applications</span>
+    </div>
+    <div class="field">
+      <label for="recruit-owner-healer-lead">Healer Lead</label>
+      <select id="recruit-owner-healer-lead" data-recruit-owner="healer-lead"><option value="">Unassigned</option></select>
+      <span class="field-help">New healer applications</span>
+    </div>
+    <div class="field">
+      <label for="recruit-owner-melee-dps-lead">Melee DPS Lead</label>
+      <select id="recruit-owner-melee-dps-lead" data-recruit-owner="melee-dps-lead"><option value="">Unassigned</option></select>
+      <span class="field-help">New melee DPS applications</span>
+    </div>
+    <div class="field">
+      <label for="recruit-owner-ranged-dps-lead">Ranged DPS Lead</label>
+      <select id="recruit-owner-ranged-dps-lead" data-recruit-owner="ranged-dps-lead"><option value="">Unassigned</option></select>
+      <span class="field-help">New ranged DPS applications</span>
+    </div>
+    <div class="field">
+      <label for="recruit-owner-raid-leader">Raid Lead</label>
+      <select id="recruit-owner-raid-leader" data-recruit-owner="raid-leader"><option value="">Unassigned</option></select>
+      <span class="field-help">Takes ownership when an applicant moves to Trial</span>
+    </div>
+    <div class="field">
+      <label for="recruit-owner-recruit-lead">Recruitment & Roster Lead</label>
+      <select id="recruit-owner-recruit-lead" data-recruit-owner="recruit-lead"><option value="">Unassigned</option></select>
+      <span class="field-help">Fallback if the relevant role lead is vacant</span>
+    </div>
+  </div>
+
+  <div class="actions" style="justify-content:flex-start">
+    <button id="saveRecruitmentOwnership" class="btn primary" type="button">Save recruitment ownership</button>
+  </div>
+</section>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Officer access is restricted to authorised officers.</div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/officer-portal-shell.js"></script>
+<script src="assets/officer-recruitment-ownership.js"></script>
+</body>
+</html>

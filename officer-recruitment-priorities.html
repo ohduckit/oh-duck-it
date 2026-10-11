@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oh Duck It — Recruitment Priorities</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/tavern-v21.css">
+<link rel="stylesheet" href="assets/guild-management-v22.css">
+<link rel="stylesheet" href="assets/guild-management-v23.css">
+<link rel="stylesheet" href="assets/officer-portal-pages.css">
+
+</head>
+<body data-officer-page="recruitment-priorities" data-officer-permission="recruitment.priorities.manage">
+<nav class="sitebar">
+  <div class="sitebar-inner">
+    <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
+    <div class="site-links">
+      <a href="index.html">Home</a>
+      <a href="progression.html">Progression</a>
+      <a href="structure.html">Guild Structure</a>
+      <a href="recruitment.html">Recruitment</a>
+      <a href="resources.html">Resources</a>
+      <a class="officer-link active" href="officers.html">Officer Portal</a>
+    </div>
+  </div>
+</nav>
+<header class="page-head wrap">
+  <div class="page-sign">
+    <h1>RECRUITMENT PRIORITIES</h1>
+    <p>Public recruitment focus</p>
+  </div>
+</header>
+<main class="portal-wrap">
+<section id="authView" class="card auth-card">
+  <div class="eyebrow">Private area</div>
+  <h1 style="font-family:Georgia,serif">Officer Portal</h1>
+  <p id="authText">Sign in with Discord to access ODit officer tools.</p>
+  <div id="authNotice" class="notice info" style="margin:16px 0" hidden></div>
+  <div class="actions">
+    <button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button>
+    <button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button>
+  </div>
+  <div id="unauthorisedBox" hidden></div>
+</section>
+<section id="portalView" hidden>
+  <div class="tavern-shell officer-shell">
+    <aside id="officerNav" class="side-nav officer-side-nav" aria-label="Officer Portal navigation"></aside>
+    <div class="officer-content">
+<section class="panel officer-page-head">
+  <div class="portal-top">
+    <div>
+      <div class="eyebrow">Recruitment</div>
+      <h1>Recruitment Priorities</h1>
+      <p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p>
+    </div>
+    <div class="portal-tools">
+      <a class="btn" href="recruitment.html#overview" target="_blank" rel="noopener">View public page ↗</a>
+      <button id="logoutBtn" class="btn" type="button">Sign out</button>
+    </div>
+  </div>
+</section><section class="card structure-admin officer-module-panel" id="recruitment">
+  <div class="priority-admin-head">
+    <div>
+      <h2>Recruitment Priorities</h2>
+      <p class="help">
+        These entries drive the <b>Current Priorities</b> panel on the public Recruitment page.
+        Change the wording, reorder the rows, add new priorities or remove old ones without editing the website.
+      </p>
+    </div>
+    <div class="priority-admin-actions">
+      <button id="addRecruitmentPriority" class="btn" type="button">+ Add priority</button>
+      <a class="btn" href="recruitment.html#overview" target="_blank" rel="noopener">View recruitment page ↗</a>
+    </div>
+  </div>
+
+  <div id="recruitmentPriorityMessage" class="notice" style="margin:14px 0" hidden></div>
+  <div class="priority-admin-labels" aria-hidden="true">
+    <span>Icon</span><span>Priority</span><span>Public status / note</span><span></span>
+  </div>
+  <div id="recruitmentPriorityRows" class="priority-admin-list"></div>
+  <div class="actions" style="justify-content:flex-start">
+    <button id="saveRecruitmentPriorities" class="btn primary" type="button">Save recruitment priorities</button>
+  </div>
+</section>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Officer access is restricted to authorised officers.</div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/officer-portal-shell.js"></script>
+<script src="assets/officer-recruitment-priorities.js"></script>
+</body>
+</html>

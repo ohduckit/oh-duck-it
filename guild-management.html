@@ -1,168 +1,20 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Oh Duck It — Guild Management</title>
-<meta name="robots" content="noindex,nofollow">
-<link rel="stylesheet" href="assets/site.css">
-<link rel="stylesheet" href="assets/tavern-v21.css">
-<link rel="stylesheet" href="assets/guild-management-v22.css">
-<link rel="stylesheet" href="assets/guild-management-v23.css">
-<link rel="stylesheet" href="assets/guild-management-pages.css">
-
-</head>
-<body data-management-page="overview" data-management-permission="management.overview">
-<nav class="sitebar">
-  <div class="sitebar-inner">
-    <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
-    <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
-    <div class="site-links">
-      <a href="index.html">Home</a>
-      <a href="progression.html">Progression</a>
-      <a href="structure.html">Guild Structure</a>
-      <a href="recruitment.html">Recruitment</a>
-      <a href="resources.html">Resources</a>
-      <a class="officer-link" href="officers.html">Officer Portal</a>
-      <a class="officer-link active" href="guild-management.html">Guild Management</a>
-    </div>
-  </div>
-</nav>
-<header class="page-head wrap">
-  <div class="page-sign">
-    <h1>GUILD MANAGEMENT</h1>
-    <p>Roster, settings & administration</p>
-  </div>
-</header>
-<main class="portal-wrap">
-<section id="authView" class="card auth-card">
-  <div class="eyebrow">Private area</div>
-  <h1 style="font-family:Georgia,serif">Guild Management</h1>
-  <p id="authText">Sign in with Discord to access ODit guild management.</p>
-  <div id="authNotice" class="notice info" style="margin:16px 0" hidden></div>
-  <div class="actions">
-    <button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button>
-    <button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button>
-  </div>
-  <div id="unauthorisedBox" hidden>
-    <p class="help">This Discord account is not authorised as an ODit officer.</p>
-    <div id="userUid" class="uid-box"></div>
-  </div>
-</section>
-<section id="managementView" hidden>
-  <div class="tavern-shell management-shell">
-    <aside id="managementNav" class="side-nav management-side-nav" aria-label="Guild Management navigation"></aside>
-    <div class="management-content">
-<section class="panel management-page-head">
-  <div class="portal-top">
-    <div>
-      <div class="eyebrow">Guild management</div>
-      <h1>Guild Management</h1>
-      <p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p>
-    </div>
-    <div class="portal-tools">
-      <a class="btn" href="officers.html">← Officer Portal</a>
-      
-      <button id="logoutBtn" class="btn" type="button">Sign out</button>
-    </div>
-  </div>
-</section>
-<section class="panel management-dashboard-intro">
-  <div class="section-title"><h2>Management Modules</h2></div>
-  <p>
-    Guild Management is now split into focused modules. Open only the area you need instead of
-    loading every administrative tool on one long page.
-  </p>
-  <div class="notice info management-permission-note">
-    Each module already has its own permission key in the page structure. For now, all authorised
-    officers retain the same access as before. Granular permissions can be added later without
-    rebuilding the management layout.
-  </div>
-</section>
-<section class="management-module-grid">
-<a class="management-module-card live" href="guild-management-roles.html">
-  <div class="management-module-icon">♛</div>
-  <div class="management-module-body">
-    <div class="management-module-title-row"><h3>Role Assignments</h3><span class="nav-status">Live</span></div>
-    <p>Guild leadership roles and class/spec mentors.</p>
-  </div>
-  <span class="management-module-arrow">→</span>
-</a>
-<a class="management-module-card live" href="guild-management-recruitment-ownership.html">
-  <div class="management-module-icon">♟</div>
-  <div class="management-module-body">
-    <div class="management-module-title-row"><h3>Recruitment Ownership</h3><span class="nav-status">Live</span></div>
-    <p>Who owns new applications by gameplay role and the Trial handover.</p>
-  </div>
-  <span class="management-module-arrow">→</span>
-</a>
-<a class="management-module-card live" href="guild-management-progression.html">
-  <div class="management-module-icon">⚔</div>
-  <div class="management-module-body">
-    <div class="management-module-title-row"><h3>Progression</h3><span class="nav-status">Live</span></div>
-    <p>Season, raid schedule, AoTC status and Raider.IO automation.</p>
-  </div>
-  <span class="management-module-arrow">→</span>
-</a>
-<a class="management-module-card live" href="guild-management-recruitment.html">
-  <div class="management-module-icon">✉</div>
-  <div class="management-module-body">
-    <div class="management-module-title-row"><h3>Recruitment Priorities</h3><span class="nav-status">Live</span></div>
-    <p>Public-facing recruitment priorities shown on the recruitment page.</p>
-  </div>
-  <span class="management-module-arrow">→</span>
-</a>
-<a class="management-module-card live" href="guild-management-resources.html">
-  <div class="management-module-icon">🛠</div>
-  <div class="management-module-body">
-    <div class="management-module-title-row"><h3>Resources</h3><span class="nav-status">Live</span></div>
-    <p>Maintain the public Resources page without editing HTML.</p>
-  </div>
-  <span class="management-module-arrow">→</span>
-</a>
-<a class="management-module-card planned" href="guild-management-permissions.html">
-  <div class="management-module-icon">⚙</div>
-  <div class="management-module-body">
-    <div class="management-module-title-row"><h3>Permissions</h3><span class="nav-status">Planned</span></div>
-    <p>Future officer roles and module-level access controls.</p>
-  </div>
-  <span class="management-module-arrow">→</span>
-</a>
-<a class="management-module-card planned" href="guild-management-guild-info.html">
-  <div class="management-module-icon">📜</div>
-  <div class="management-module-body">
-    <div class="management-module-title-row"><h3>Guild Information</h3><span class="nav-status">Planned</span></div>
-    <p>Central guild-wide information for reuse across public pages.</p>
-  </div>
-  <span class="management-module-arrow">→</span>
-</a>
-<a class="management-module-card planned" href="guild-management-logs.html">
-  <div class="management-module-icon">☷</div>
-  <div class="management-module-body">
-    <div class="management-module-title-row"><h3>Logs & Reports</h3><span class="nav-status">Planned</span></div>
-    <p>Audit history, officer actions and management reporting.</p>
-  </div>
-  <span class="management-module-arrow">→</span>
-</a>
-<a class="management-module-card planned" href="guild-management-settings.html">
-  <div class="management-module-icon">🔧</div>
-  <div class="management-module-body">
-    <div class="management-module-title-row"><h3>Settings</h3><span class="nav-status">Planned</span></div>
-    <p>Site-wide configuration reserved for authorised officers.</p>
-  </div>
-  <span class="management-module-arrow">→</span>
-</a>
-</section>
-
-    </div>
-  </div>
-</section>
-</main>
-<footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Guild management is restricted to authorised officers.</div></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/supabase-config.js"></script>
-<script src="assets/site.js"></script>
-<script src="assets/guild-management-shell.js"></script>
-
-</body>
-</html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="robots" content="noindex,nofollow">
+<meta http-equiv="refresh" content="0;url=officers.html">
+<title>Oh Duck It — Officer Portal</title>
+<script>const map={
+  '#overview':'officers.html',
+  '#roles':'officer-roles.html',
+  '#recruitment-ownership':'officer-recruitment-ownership.html',
+  '#progression':'officer-progression.html',
+  '#recruitment':'officer-recruitment-priorities.html',
+  '#resources':'officer-resources.html',
+  '#permissions':'officer-permissions.html',
+  '#guild-info':'officer-guild-info.html',
+  '#logs':'officer-logs.html',
+  '#settings':'officer-settings.html'
+}; location.replace(map[location.hash] || 'officers.html');</script>
+</head><body>
+<p>Guild Management has moved into the <a href="officers.html">Officer Portal</a>.</p>
+</body></html>
