@@ -10,6 +10,9 @@
     mythic_plus_night: 'Monday',
     warcraft_logs_url: '',
     raider_io_url: '',
+    auto_sync_enabled: false,
+    sync_last_success_at: null,
+    sync_last_changed_at: null,
     updated_at: null,
     raids: [
       {
@@ -158,7 +161,11 @@
       : '<div class="notice">No raids are currently listed for this season.</div>';
 
     const updated = $('progressUpdated');
-    if (merged.updated_at) {
+    if (merged.sync_last_success_at) {
+      const d = new Date(merged.sync_last_success_at);
+      updated.textContent =
+        `Progress data: Raider.IO • synced ${d.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}`;
+    } else if (merged.updated_at) {
       const d = new Date(merged.updated_at);
       updated.textContent = `Updated ${d.toLocaleDateString([], { dateStyle: 'medium' })}`;
     } else {

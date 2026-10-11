@@ -274,3 +274,112 @@
     grid-column:auto;
   }
 }
+
+
+/* Progression Automation v2 */
+
+.progression-automation-card {
+  margin: 0 0 20px;
+  padding: 16px;
+  border: 1px solid #65461f;
+  border-radius: 10px;
+  background: linear-gradient(180deg,rgba(39,24,14,.96),rgba(22,14,9,.96));
+}
+
+.progression-automation-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:14px;
+}
+
+.progression-automation-head h3 {
+  margin:3px 0 5px;
+  font-family:Georgia,"Times New Roman",serif;
+  color:#f0ce75;
+}
+
+.progression-automation-grid {
+  grid-template-columns:1.2fr .65fr 1fr 1fr;
+  margin-bottom:10px;
+}
+
+.progression-sync-status {
+  padding:10px 12px;
+  border:1px solid #4f351c;
+  border-radius:8px;
+  background:#17100b;
+  color:#c9b99e;
+  font-size:12px;
+  line-height:1.45;
+}
+
+.progression-sync-status .sync-error {
+  color:#e7a895;
+}
+
+.progression-raid-labels,
+.progression-raid-admin-row {
+  grid-template-columns:
+    minmax(160px,1.25fr)
+    95px
+    68px
+    68px
+    68px
+    68px
+    minmax(130px,.9fr)
+    minmax(150px,1fr)
+    62px
+    auto;
+}
+
+.progression-raid-auto {
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  border:1px solid #60451f;
+  border-radius:8px;
+  background:#25160d;
+  color:#ead5ab;
+  font-size:11px;
+  font-weight:800;
+}
+
+.progression-raid-auto input {
+  width:16px;
+  height:16px;
+  accent-color:#d6a23d;
+}
+
+.progression-raid-admin-row.auto-synced
+  :is(.progression-raid-bosses,.progression-raid-normal,.progression-raid-heroic,.progression-raid-mythic) {
+  opacity:.58;
+  cursor:not-allowed;
+}
+
+@media(max-width:1180px) {
+  .progression-automation-grid {
+    grid-template-columns:1fr 1fr;
+  }
+
+  .progression-raid-sync-slug-field {
+    grid-column:span 2;
+  }
+}
+
+@media(max-width:760px) {
+  .progression-automation-head {
+    flex-direction:column;
+  }
+
+  .progression-automation-grid {
+    grid-template-columns:1fr;
+  }
+
+  .progression-raid-sync-slug-field {
+    grid-column:1/-1;
+  }
+}
