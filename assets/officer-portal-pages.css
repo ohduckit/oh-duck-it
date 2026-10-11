@@ -1,0 +1,178 @@
+/* ODit Guild Management — split module pages v1 */
+
+.officer-shell {
+  align-items:start;
+}
+
+.officer-side-nav {
+  position:sticky;
+  top:82px;
+  align-self:start;
+}
+
+.officer-content {
+  min-width:0;
+}
+
+.officer-page-head {
+  margin-bottom:14px;
+}
+
+.officer-module-panel {
+  margin-top:0;
+}
+
+.officer-dashboard-intro {
+  margin-bottom:14px;
+}
+
+.officer-permission-note {
+  margin-top:14px;
+}
+
+.officer-module-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.officer-module-card {
+  min-height:118px;
+  display:grid;
+  grid-template-columns:46px minmax(0,1fr) auto;
+  gap:13px;
+  align-items:center;
+  padding:16px;
+  border:1px solid #65461f;
+  border-radius:11px;
+  background:linear-gradient(180deg,rgba(40,24,15,.97),rgba(22,14,9,.97));
+  box-shadow:0 7px 18px rgba(0,0,0,.22);
+  text-decoration:none;
+  color:#e9ddc8;
+  transition:border-color .15s ease, transform .15s ease, background .15s ease;
+}
+
+.officer-module-card:hover {
+  transform:translateY(-1px);
+  border-color:#9b6e2c;
+  background:linear-gradient(180deg,rgba(51,31,17,.98),rgba(25,15,9,.98));
+}
+
+.officer-module-card.planned {
+  opacity:.78;
+}
+
+.officer-module-icon {
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border:1px solid #725126;
+  border-radius:50%;
+  background:#24170d;
+  color:#e4c66f;
+  font-size:20px;
+}
+
+.officer-module-title-row {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.officer-module-title-row h3 {
+  margin:0;
+  font-family:Georgia,"Times New Roman",serif;
+  color:#f0ce75;
+  font-size:18px;
+}
+
+.officer-module-body p {
+  margin:6px 0 0;
+  color:#bbaa8d;
+  font-size:12px;
+  line-height:1.45;
+}
+
+.officer-module-arrow {
+  color:#c89a45;
+  font-size:22px;
+}
+
+.officer-side-nav a {
+  text-decoration:none;
+}
+
+.officer-side-nav a.active {
+  border-color:#9b6e2c;
+  background:rgba(76,48,22,.72);
+  color:#f1d27d;
+}
+
+.officer-side-nav a.active .ico {
+  color:#f1c95f;
+}
+
+.officer-module-panel .portal-section-head {
+  margin-bottom:12px;
+}
+
+/* Keep individual module pages compact and readable. */
+.officer-module-panel .structure-fields {
+  margin-top:14px;
+}
+
+@media(max-width:960px) {
+  .officer-side-nav {
+    position:static;
+  }
+
+  .officer-module-grid {
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:680px) {
+  .officer-module-card {
+    grid-template-columns:40px minmax(0,1fr);
+  }
+
+  .officer-module-arrow {
+    display:none;
+  }
+}
+
+
+/* Unified Officer Portal navigation groups */
+.officer-nav-group {
+  margin:12px 10px 5px;
+  color:#8f806a;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+
+.officer-side-nav .officer-nav-group:first-of-type {
+  margin-top:14px;
+}
+
+.officer-side-nav a {
+  min-height:40px;
+}
+
+/* The applications workspace is intentionally wide inside its module. */
+#applications .portal-grid {
+  margin-top:14px;
+}
+
+/* Keep the Officer Portal dashboard visually distinct from public pages. */
+.officer-dashboard-intro .section-title h2 {
+  margin-bottom:4px;
+}
+
+@media(max-width:960px) {
+  .officer-nav-group {
+    display:none;
+  }
+}
