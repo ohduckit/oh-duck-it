@@ -801,13 +801,13 @@
 }
 
 
-/* Recruitment v2.4.2 — visual readability pass
-   - Larger typography in Current Recruitment
-   - Spec icons reduced by roughly 1/4 from the current larger pass
-   - Priority pills slightly larger and easier to read */
+/* Recruitment v2.4.3 — corrected visual sizing
+   Previous large icon size: 52px
+   Requested reduction: 25%
+   Correct resulting size: 39px */
 
 #overview #looking .recruit-board-head h3 {
-  font-size:18px;
+  font-size:20px;
   line-height:1.15;
 }
 
@@ -816,12 +816,8 @@
   line-height:1.45;
 }
 
-#overview #looking .recruit-board-legend {
-  gap:8px;
-}
-
 #overview #looking .recruit-class-public {
-  grid-template-columns:102px minmax(0,1fr);
+  grid-template-columns:105px minmax(0,1fr);
   gap:9px;
   padding:8px;
 }
@@ -838,17 +834,17 @@
 }
 
 #overview #looking .recruit-spec-chip {
-  grid-template-columns:20px minmax(0,1fr) auto;
-  min-height:32px;
+  grid-template-columns:39px minmax(0,1fr) auto;
+  min-height:49px;
   padding:5px 7px;
   gap:7px;
   border-radius:6px;
 }
 
 #overview #looking .recruit-spec-chip img {
-  width:20px;
-  height:20px;
-  border-radius:4px;
+  width:39px;
+  height:39px;
+  border-radius:5px;
 }
 
 #overview #looking .recruit-spec-chip-name {
@@ -857,11 +853,18 @@
 }
 
 #overview #looking .recruit-spec-chip .recruit-priority-pill {
-  min-width:46px;
-  min-height:20px;
-  padding:2px 7px;
-  font-size:7.5px;
+  min-width:48px;
+  min-height:22px;
+  padding:3px 7px;
+  font-size:8px;
   letter-spacing:.07em;
+}
+
+#overview #looking .recruit-board-legend .recruit-priority-pill {
+  min-width:54px;
+  min-height:24px;
+  padding:4px 8px;
+  font-size:9px;
 }
 
 #overview #looking .recruit-exceptional {
@@ -871,7 +874,7 @@
 
 @media(max-width:1180px) and (min-width:901px) {
   #overview #looking .recruit-class-public {
-    grid-template-columns:95px minmax(0,1fr);
+    grid-template-columns:98px minmax(0,1fr);
   }
 }
 
@@ -880,7 +883,16 @@
     grid-template-columns:1fr;
   }
 
-  #overview #looking .recruit-class-public-name {
-    font-size:14px;
+  #overview #looking .recruit-class-spec-list {
+    grid-template-columns:1fr;
+  }
+
+  #overview #looking .recruit-spec-chip {
+    grid-template-columns:36px minmax(0,1fr) auto;
+  }
+
+  #overview #looking .recruit-spec-chip img {
+    width:36px;
+    height:36px;
   }
 }
