@@ -10,9 +10,10 @@
 <link rel="stylesheet" href="assets/guild-management-v22.css">
 <link rel="stylesheet" href="assets/guild-management-v23.css">
 <link rel="stylesheet" href="assets/officer-portal-pages.css">
-
+<link rel="stylesheet" href="assets/roster-v1.css">
 </head>
 <body data-officer-page="roster" data-officer-permission="roster.manage">
+
 <nav class="sitebar">
   <div class="sitebar-inner">
     <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
@@ -27,12 +28,14 @@
     </div>
   </div>
 </nav>
+
 <header class="page-head wrap">
   <div class="page-sign">
     <h1>ROSTER</h1>
-    <p>Raid roster & availability</p>
+    <p>Raid team, trials & roster health</p>
   </div>
 </header>
+
 <main class="portal-wrap">
 <section id="authView" class="card auth-card">
   <div class="eyebrow">Private area</div>
@@ -45,42 +48,159 @@
   </div>
   <div id="unauthorisedBox" hidden></div>
 </section>
+
 <section id="portalView" hidden>
   <div class="tavern-shell officer-shell">
     <aside id="officerNav" class="side-nav officer-side-nav" aria-label="Officer Portal navigation"></aside>
     <div class="officer-content">
-<section class="panel officer-page-head">
-  <div class="portal-top">
-    <div>
-      <div class="eyebrow">Raiding</div>
-      <h1>Roster</h1>
-      <p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p>
-    </div>
-    <div class="portal-tools">
-      
-      <button id="logoutBtn" class="btn" type="button">Sign out</button>
-    </div>
-  </div>
-</section>
-<section class="panel officer-module-panel">
-  <div class="portal-section-head">
-    <div><div class="kicker">Raiding</div><h2>Roster</h2></div>
-    <span class="badge-planned">Planned module</span>
-  </div>
-  <div class="portal-placeholder">
-    <h3>Roster workspace</h3>
-    <p>Reserved for raid roster views, role coverage, member availability and future roster decisions.</p>
-  </div>
-</section>
+      <section class="panel officer-page-head">
+        <div class="portal-top">
+          <div>
+            <div class="eyebrow">Raiding</div>
+            <h1>Roster</h1>
+            <p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p>
+          </div>
+          <div class="portal-tools">
+            <a class="btn" href="roster.html" target="_blank" rel="noopener">View Raid Team ↗</a>
+            <button id="rosterSyncBtn" class="btn" type="button">Sync Raider.IO</button>
+            <button id="addRosterMember" class="btn primary" type="button">+ Add member</button>
+            <button id="logoutBtn" class="btn" type="button">Sign out</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="rosterMessage" class="notice" style="margin:14px 0" hidden></div>
+
+      <section class="panel officer-module-panel">
+        <div class="section-title"><h2>Raid Roster</h2></div>
+        <p>
+          Officers decide who is Core, Trial, Reserve or outside the raid team.
+          Character profile facts can be refreshed from Raider.IO once a realm is set.
+        </p>
+
+        <div id="officerRosterStats" class="roster-overview-grid" style="margin-top:14px"></div>
+
+        <div class="officer-roster-toolbar">
+          <div class="field">
+            <label for="rosterSearch">Search</label>
+            <input id="rosterSearch" type="search" placeholder="Player or character…">
+          </div>
+          <div class="field">
+            <label for="rosterStatusFilter">Status</label>
+            <select id="rosterStatusFilter">
+              <option value="">All statuses</option>
+              <option value="core">Core</option>
+              <option value="trial">Trial</option>
+              <option value="reserve">Reserve</option>
+              <option value="inactive">Inactive</option>
+              <option value="not_raiding">Not raiding</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rosterRoleFilter">Role</label>
+            <select id="rosterRoleFilter">
+              <option value="">All roles</option>
+              <option>Tank</option>
+              <option>Healer</option>
+              <option>Melee DPS</option>
+              <option>Ranged DPS</option>
+              <option>Flexible</option>
+            </select>
+          </div>
+          <button id="rosterRefreshBtn" class="btn" type="button">Refresh</button>
+        </div>
+
+        <div id="officerRosterList" class="officer-roster-list">
+          <div class="roster-empty">Loading roster…</div>
+        </div>
+      </section>
     </div>
   </div>
 </section>
 </main>
+
+<dialog id="rosterDialog" class="roster-dialog">
+  <form id="rosterForm" class="roster-dialog-shell">
+    <div class="roster-dialog-head">
+      <div>
+        <div class="eyebrow">Raid roster</div>
+        <h2 id="rosterDialogTitle">Add member</h2>
+      </div>
+      <button id="rosterDialogClose" class="roster-dialog-close" type="button" aria-label="Close">×</button>
+    </div>
+
+    <input id="rosterMemberId" type="hidden">
+    <input id="rosterCharacterId" type="hidden">
+
+    <div class="roster-form-grid">
+      <div class="field"><label for="rosterPlayerName">Player name *</label><input id="rosterPlayerName" maxlength="80" required></div>
+      <div class="field"><label for="rosterCharacterName">Raid character *</label><input id="rosterCharacterName" maxlength="50" required></div>
+
+      <div class="field">
+        <label for="rosterStatus">Raid status *</label>
+        <select id="rosterStatus" required>
+          <option value="core">Core Raider</option>
+          <option value="trial">Trial</option>
+          <option value="reserve">Reserve / Flex</option>
+          <option value="inactive">Inactive</option>
+          <option value="not_raiding">Not in raid team</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="rosterRole">Raid role *</label>
+        <select id="rosterRole" required>
+          <option>Tank</option><option>Healer</option><option>Melee DPS</option><option>Ranged DPS</option><option>Flexible</option>
+        </select>
+      </div>
+
+      <div class="field"><label for="rosterClass">Class *</label><select id="rosterClass" required></select></div>
+      <div class="field"><label for="rosterSpec">Spec *</label><select id="rosterSpec" required></select></div>
+
+      <div class="field"><label for="rosterRace">Race</label><input id="rosterRace" maxlength="60"></div>
+      <div class="field"><label for="rosterRealm">Realm</label><input id="rosterRealm" maxlength="80" placeholder="Required for Raider.IO sync"></div>
+
+      <div class="field">
+        <label for="rosterRegion">Region</label>
+        <select id="rosterRegion"><option value="EU">EU</option><option value="US">US</option><option value="KR">KR</option><option value="TW">TW</option></select>
+      </div>
+      <div class="field"><label for="rosterSortOrder">Display order</label><input id="rosterSortOrder" type="number" min="0" max="9999" value="100"></div>
+
+      <div class="field"><label for="rosterLevel">Level</label><input id="rosterLevel" type="number" min="1" max="999"></div>
+      <div class="field"><label for="rosterItemLevel">Equipped ilvl</label><input id="rosterItemLevel" type="number" step="0.01" min="1" max="9999"></div>
+
+      <div class="field"><label for="rosterMplusScore">Mythic+ score</label><input id="rosterMplusScore" type="number" step="0.01" min="0" max="99999"></div>
+      <div class="field"><label for="rosterAvatarUrl">Avatar URL</label><input id="rosterAvatarUrl" type="url" maxlength="1000"></div>
+
+      <div class="field"><label for="rosterRaiderIoUrl">Raider.IO URL</label><input id="rosterRaiderIoUrl" type="url" maxlength="1000"></div>
+      <div class="field"><label for="rosterArmoryUrl">Armory URL</label><input id="rosterArmoryUrl" type="url" maxlength="1000"></div>
+
+      <div class="full">
+        <label class="roster-check">
+          <input id="rosterPublicVisible" type="checkbox" checked>
+          <span>Display this player on the public raid roster</span>
+        </label>
+      </div>
+
+      <div class="field full"><label for="rosterOfficerNote">Officer note</label><textarea id="rosterOfficerNote" maxlength="1500" placeholder="Private — never shown publicly"></textarea></div>
+    </div>
+
+    <div class="actions" style="justify-content:space-between;margin-top:16px">
+      <button id="deleteRosterMember" class="btn danger" type="button" hidden>Delete member</button>
+      <div class="actions">
+        <button id="cancelRosterMember" class="btn" type="button">Cancel</button>
+        <button id="saveRosterMember" class="btn primary" type="submit">Save member</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Officer access is restricted to authorised officers.</div></footer>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/supabase-config.js"></script>
 <script src="assets/site.js"></script>
 <script src="assets/officer-portal-shell.js"></script>
-
+<script src="assets/recruitment-spec-data.js"></script>
+<script src="assets/officer-roster.js"></script>
 </body>
 </html>

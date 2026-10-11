@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="assets/site.css">
 <link rel="stylesheet" href="assets/tavern-v21.css">
 <link rel="stylesheet" href="assets/progression-v1.css">
+<link rel="stylesheet" href="assets/roster-v1.css">
 </head><body>
 
 <nav class="sitebar">
@@ -52,18 +53,9 @@
   </div>
 
   <div class="stat-grid progression-stat-grid" style="margin-top:12px">
-    <div class="stat-card">
-      <label>Current Season</label>
-      <b id="statSeason">Midnight Season 2</b>
-    </div>
-    <div class="stat-card">
-      <label>Raid Progress</label>
-      <b id="statRaidProgress">Heroic 0 / 8</b>
-    </div>
-    <div class="stat-card">
-      <label>Mythic+ Night</label>
-      <b id="statMplusNight">Monday</b>
-    </div>
+    <div class="stat-card"><label>Current Season</label><b id="statSeason">Midnight Season 2</b></div>
+    <div class="stat-card"><label>Raid Progress</label><b id="statRaidProgress">Heroic 0 / 8</b></div>
+    <div class="stat-card"><label>Mythic+ Night</label><b id="statMplusNight">Monday</b></div>
   </div>
 </section>
 
@@ -105,12 +97,15 @@
 <section class="panel anchor-section" id="roster">
   <div class="section-title">
     <h2>Raid Roster</h2>
-    <span class="badge-planned">Council build-out</span>
+    <span class="nav-status">Live</span>
   </div>
-  <p>
-    The progression roster will be published here as recruitment settles.
-    The aim is a reliable, role-balanced team rather than a bench built around favourites.
-  </p>
+  <p>Core raiders, current trials and role balance for the progression team.</p>
+  <div id="progressionRosterSummary" class="progression-roster-summary">
+    <div class="progression-loading">Loading roster…</div>
+  </div>
+  <div class="actions" style="justify-content:flex-start">
+    <a class="btn primary" href="roster.html">View Raid Team →</a>
+  </div>
 </section>
 
 <section class="panel anchor-section" id="schedule">
@@ -138,4 +133,6 @@
 <script src="assets/supabase-config.js"></script>
 <script src="assets/site.js"></script>
 <script src="assets/progression-public.js"></script>
+<script src="assets/recruitment-spec-data.js"></script>
+<script src="assets/roster-public.js"></script>
 </body></html>
