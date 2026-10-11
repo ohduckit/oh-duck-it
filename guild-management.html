@@ -1,296 +1,168 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Oh Duck It — Guild Management</title><meta name="robots" content="noindex,nofollow">
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css"><link rel="stylesheet" href="assets/guild-management-v22.css"><link rel="stylesheet" href="assets/guild-management-v23.css"><link rel="stylesheet" href="assets/resources-management.css"><link rel="stylesheet" href="assets/progression-v1.css">
-</head><body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oh Duck It — Guild Management</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/tavern-v21.css">
+<link rel="stylesheet" href="assets/guild-management-v22.css">
+<link rel="stylesheet" href="assets/guild-management-v23.css">
+<link rel="stylesheet" href="assets/guild-management-pages.css">
 
+</head>
+<body data-management-page="overview" data-management-permission="management.overview">
 <nav class="sitebar">
   <div class="sitebar-inner">
     <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
     <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
     <div class="site-links">
-      <a  href="index.html">Home</a>
-      <a  href="progression.html">Progression</a>
-      <a  href="structure.html">Guild Structure</a>
-      <a  href="recruitment.html">Recruitment</a>
-      <a  href="resources.html">Resources</a>
-      <a class="officer-link " href="officers.html">Officer Portal</a>
+      <a href="index.html">Home</a>
+      <a href="progression.html">Progression</a>
+      <a href="structure.html">Guild Structure</a>
+      <a href="recruitment.html">Recruitment</a>
+      <a href="resources.html">Resources</a>
+      <a class="officer-link" href="officers.html">Officer Portal</a>
+      <a class="officer-link active" href="guild-management.html">Guild Management</a>
     </div>
   </div>
 </nav>
-
-<header class="page-head wrap"><div class="page-sign"><h1>GUILD MANAGEMENT</h1><p>Roster, settings & administration</p></div></header>
+<header class="page-head wrap">
+  <div class="page-sign">
+    <h1>GUILD MANAGEMENT</h1>
+    <p>Roster, settings & administration</p>
+  </div>
+</header>
 <main class="portal-wrap">
 <section id="authView" class="card auth-card">
-<div class="eyebrow">Private area</div><h1 style="font-family:Georgia,serif">Guild Management</h1>
-<p id="authText">Sign in with Discord to manage ODit guild structure assignments.</p>
-<div id="authNotice" class="notice info" style="margin:16px 0" hidden></div>
-<div class="actions"><button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button><button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button></div>
-<div id="unauthorisedBox" hidden><p class="help">This Discord account is not authorised as an ODit officer.</p><div id="userUid" class="uid-box"></div></div>
+  <div class="eyebrow">Private area</div>
+  <h1 style="font-family:Georgia,serif">Guild Management</h1>
+  <p id="authText">Sign in with Discord to access ODit guild management.</p>
+  <div id="authNotice" class="notice info" style="margin:16px 0" hidden></div>
+  <div class="actions">
+    <button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button>
+    <button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button>
+  </div>
+  <div id="unauthorisedBox" hidden>
+    <p class="help">This Discord account is not authorised as an ODit officer.</p>
+    <div id="userUid" class="uid-box"></div>
+  </div>
 </section>
-
 <section id="managementView" hidden>
-<div class="tavern-shell">
-<aside class="side-nav" aria-label="Guild Management navigation">
-<a href="#overview"><span class="ico">⌂</span><span>Overview</span></a>
-<a href="#roles"><span class="ico">♛</span><span>Role Assignments</span><span class="nav-status">Live</span></a>
-<a href="#progression"><span class="ico">⚔</span><span>Progression</span><span class="nav-status">Live</span></a>
-<a href="#recruitment"><span class="ico">✉</span><span>Recruitment Priorities</span><span class="nav-status">Live</span></a>
-<a href="#resources"><span class="ico">🛠</span><span>Resources</span><span class="nav-status">Live</span></a>
-<a href="#permissions"><span class="ico">⚙</span><span>Permissions</span><span class="nav-status">Planned</span></a>
-<a href="#guild-info"><span class="ico">📜</span><span>Guild Information</span><span class="nav-status">Planned</span></a>
-<a href="#logs"><span class="ico">☷</span><span>Logs & Reports</span><span class="nav-status">Planned</span></a>
-<a href="#settings"><span class="ico">🔧</span><span>Settings</span><span class="nav-status">Planned</span></a>
-</aside>
-<div>
-<section class="panel anchor-section" id="overview">
-<div class="portal-top"><div><div class="eyebrow">Guild management</div><h1>Guild Management</h1><p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p></div><div class="portal-tools"><a class="btn" href="officers.html">← Officer Portal</a><a class="btn" href="structure.html" target="_blank" rel="noopener">View public page ↗</a><button id="logoutBtn" class="btn">Sign out</button></div></div>
-<p>Manage the live public-facing guild structure, progression, recruitment settings and Resources page here. Planned administration modules are shown below so the management area has a clear, stable structure as the site grows.</p>
-</section>
-
-<section class="card structure-admin anchor-section" id="roles">
-<h2>Role Assignments</h2>
-<p class="help">Changes here update the public Guild Structure page for everyone. This page is available only to authorised officers.</p>
-<div id="structureMessage" class="notice" style="margin:14px 0" hidden></div>
-<div class="form-grid structure-fields">
-<div class="field"><label>Raid Leader</label><input data-structure-owner="raid-leader"></div>
-<div class="field"><label>Tank Lead</label><input data-structure-owner="tank-lead"></div>
-<div class="field"><label>Healer Lead</label><input data-structure-owner="healer-lead"></div>
-<div class="field"><label>DPS Lead</label><input data-structure-owner="dps-lead"></div>
-<div class="field"><label>Mythic+ Lead</label><input data-structure-owner="mplus-lead"></div>
-<div class="field"><label>Recruitment & Roster Lead</label><input data-structure-owner="recruit-lead"></div>
-<div class="field"><label>Community Lead</label><input data-structure-owner="community-lead"></div>
-</div>
-<div class="mentor-admin-head"><div><h3>Class / Spec Mentors</h3><p class="help">Mentors appear on the public Guild Structure page.</p></div><button id="addStructureMentor" class="btn" type="button">+ Add mentor</button></div>
-<div id="structureMentors" class="mentor-admin-list"></div>
-<div class="actions" style="justify-content:flex-start"><button id="saveGuildStructure" class="btn primary" type="button">Save guild structure</button></div>
-</section>
-
-
-<section class="card structure-admin anchor-section" id="progression">
-  <div class="progression-admin-head">
+  <div class="tavern-shell management-shell">
+    <aside id="managementNav" class="side-nav management-side-nav" aria-label="Guild Management navigation"></aside>
+    <div class="management-content">
+<section class="panel management-page-head">
+  <div class="portal-top">
     <div>
-      <h2>Progression</h2>
-      <p class="help">
-        Control the current expansion and season, raid progression, AoTC status,
-        raid schedule, Mythic+ night and public progression links.
-      </p>
+      <div class="eyebrow">Guild management</div>
+      <h1>Guild Management</h1>
+      <p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p>
     </div>
-    <div class="progression-admin-actions">
-      <button id="addProgressionRaid" class="btn" type="button">+ Add raid</button>
-      <a class="btn" href="progression.html" target="_blank" rel="noopener">View Progression page ↗</a>
+    <div class="portal-tools">
+      <a class="btn" href="officers.html">← Officer Portal</a>
+      
+      <button id="logoutBtn" class="btn" type="button">Sign out</button>
     </div>
-  </div>
-
-  <div id="progressionMessage" class="notice" style="margin:14px 0" hidden></div>
-
-  <div class="form-grid progression-settings-grid">
-    <div class="field">
-      <label for="progressionExpansion">Expansion</label>
-      <input id="progressionExpansion" maxlength="80" placeholder="e.g. Midnight">
-    </div>
-    <div class="field">
-      <label for="progressionSeason">Current season</label>
-      <input id="progressionSeason" maxlength="100" placeholder="e.g. Midnight Season 2">
-    </div>
-    <div class="field">
-      <label for="progressionRaidNights">Raid nights</label>
-      <input id="progressionRaidNights" maxlength="100" placeholder="Wednesday & Thursday">
-    </div>
-    <div class="field">
-      <label for="progressionRaidTime">Raid time</label>
-      <input id="progressionRaidTime" maxlength="100" placeholder="Time TBC">
-    </div>
-    <div class="field">
-      <label for="progressionMplusNight">Mythic+ night</label>
-      <input id="progressionMplusNight" maxlength="100" placeholder="Monday">
-    </div>
-    <div class="field progression-check-field">
-      <label>Ahead of the Curve</label>
-      <label class="progression-check">
-        <input id="progressionAotc" type="checkbox">
-        <span>AoTC achieved this season</span>
-      </label>
-    </div>
-    <div class="field">
-      <label for="progressionWcl">Warcraft Logs URL</label>
-      <input id="progressionWcl" type="url" maxlength="500" placeholder="https://www.warcraftlogs.com/guild/...">
-    </div>
-    <div class="field">
-      <label for="progressionRaiderIo">Raider.IO URL</label>
-      <input id="progressionRaiderIo" type="url" maxlength="500" placeholder="https://raider.io/guilds/...">
-    </div>
-  </div>
-
-  <div class="progression-raid-head">
-    <div>
-      <h3>Raids</h3>
-      <p class="help">
-        Add every raid that belongs to the season. Upcoming raids can be listed before they open.
-        Kill values are capped automatically at the raid's boss count.
-      </p>
-    </div>
-  </div>
-
-  <div class="progression-raid-labels" aria-hidden="true">
-    <span>Raid</span>
-    <span>Status</span>
-    <span>Bosses</span>
-    <span>Normal</span>
-    <span>Heroic</span>
-    <span>Mythic</span>
-    <span>Public note</span>
-    <span></span>
-  </div>
-
-  <div id="progressionRaidRows" class="progression-raid-list"></div>
-
-  <div class="actions" style="justify-content:flex-start">
-    <button id="saveProgression" class="btn primary" type="button">Save progression</button>
   </div>
 </section>
-
-<section class="card structure-admin anchor-section" id="recruitment">
-  <div class="priority-admin-head">
-    <div>
-      <h2>Recruitment Priorities</h2>
-      <p class="help">
-        These entries drive the <b>Current Priorities</b> panel on the public Recruitment page.
-        Change the wording, reorder the rows, add new priorities or remove old ones without editing the website.
-      </p>
-    </div>
-    <div class="priority-admin-actions">
-      <button id="addRecruitmentPriority" class="btn" type="button">+ Add priority</button>
-      <a class="btn" href="recruitment.html#overview" target="_blank" rel="noopener">View recruitment page ↗</a>
-    </div>
-  </div>
-
-  <div id="recruitmentPriorityMessage" class="notice" style="margin:14px 0" hidden></div>
-
-  <div class="priority-admin-labels" aria-hidden="true">
-    <span>Icon</span><span>Priority</span><span>Public status / note</span><span></span>
-  </div>
-
-  <div id="recruitmentPriorityRows" class="priority-admin-list"></div>
-
-  <div class="actions" style="justify-content:flex-start">
-    <button id="saveRecruitmentPriorities" class="btn primary" type="button">Save recruitment priorities</button>
+<section class="panel management-dashboard-intro">
+  <div class="section-title"><h2>Management Modules</h2></div>
+  <p>
+    Guild Management is now split into focused modules. Open only the area you need instead of
+    loading every administrative tool on one long page.
+  </p>
+  <div class="notice info management-permission-note">
+    Each module already has its own permission key in the page structure. For now, all authorised
+    officers retain the same access as before. Granular permissions can be added later without
+    rebuilding the management layout.
   </div>
 </section>
-
-
-<section class="card structure-admin anchor-section" id="resources">
-  <div class="resource-admin-head">
-    <div>
-      <h2>Resources</h2>
-      <p class="help">
-        Populate and maintain the public Resources page. Add links, guides and guild tools,
-        choose which section they appear in, and control their display order without editing HTML.
-      </p>
-    </div>
-    <div class="resource-admin-actions">
-      <button id="addResourceItem" class="btn" type="button">+ Add resource</button>
-      <a class="btn" href="resources.html" target="_blank" rel="noopener">View Resources page ↗</a>
-    </div>
+<section class="management-module-grid">
+<a class="management-module-card live" href="guild-management-roles.html">
+  <div class="management-module-icon">♛</div>
+  <div class="management-module-body">
+    <div class="management-module-title-row"><h3>Role Assignments</h3><span class="nav-status">Live</span></div>
+    <p>Guild leadership roles and class/spec mentors.</p>
   </div>
-
-  <div id="resourceMessage" class="notice" style="margin:14px 0" hidden></div>
-
-  <div class="resource-admin-toolbar">
-    <label for="resourceSectionFilter">Edit section</label>
-    <select id="resourceSectionFilter">
-      <option value="class">Class Guides</option>
-      <option value="raid">Raid Guides</option>
-      <option value="mplus">Mythic+ Guides</option>
-      <option value="addons">Addons & UI</option>
-      <option value="external">External Links</option>
-      <option value="community">Community Tools</option>
-    </select>
+  <span class="management-module-arrow">→</span>
+</a>
+<a class="management-module-card live" href="guild-management-recruitment-ownership.html">
+  <div class="management-module-icon">♟</div>
+  <div class="management-module-body">
+    <div class="management-module-title-row"><h3>Recruitment Ownership</h3><span class="nav-status">Live</span></div>
+    <p>Who owns new applications by gameplay role and the Trial handover.</p>
   </div>
-
-  <div class="resource-admin-labels" aria-hidden="true">
-    <span>Icon</span><span>Title</span><span>Description</span><span>URL</span><span></span>
+  <span class="management-module-arrow">→</span>
+</a>
+<a class="management-module-card live" href="guild-management-progression.html">
+  <div class="management-module-icon">⚔</div>
+  <div class="management-module-body">
+    <div class="management-module-title-row"><h3>Progression</h3><span class="nav-status">Live</span></div>
+    <p>Season, raid schedule, AoTC status and Raider.IO automation.</p>
   </div>
-
-  <div id="resourceRows" class="resource-admin-list"></div>
-
-  <div class="actions" style="justify-content:flex-start">
-    <button id="saveResources" class="btn primary" type="button">Save Resources page</button>
+  <span class="management-module-arrow">→</span>
+</a>
+<a class="management-module-card live" href="guild-management-recruitment.html">
+  <div class="management-module-icon">✉</div>
+  <div class="management-module-body">
+    <div class="management-module-title-row"><h3>Recruitment Priorities</h3><span class="nav-status">Live</span></div>
+    <p>Public-facing recruitment priorities shown on the recruitment page.</p>
   </div>
+  <span class="management-module-arrow">→</span>
+</a>
+<a class="management-module-card live" href="guild-management-resources.html">
+  <div class="management-module-icon">🛠</div>
+  <div class="management-module-body">
+    <div class="management-module-title-row"><h3>Resources</h3><span class="nav-status">Live</span></div>
+    <p>Maintain the public Resources page without editing HTML.</p>
+  </div>
+  <span class="management-module-arrow">→</span>
+</a>
+<a class="management-module-card planned" href="guild-management-permissions.html">
+  <div class="management-module-icon">⚙</div>
+  <div class="management-module-body">
+    <div class="management-module-title-row"><h3>Permissions</h3><span class="nav-status">Planned</span></div>
+    <p>Future officer roles and module-level access controls.</p>
+  </div>
+  <span class="management-module-arrow">→</span>
+</a>
+<a class="management-module-card planned" href="guild-management-guild-info.html">
+  <div class="management-module-icon">📜</div>
+  <div class="management-module-body">
+    <div class="management-module-title-row"><h3>Guild Information</h3><span class="nav-status">Planned</span></div>
+    <p>Central guild-wide information for reuse across public pages.</p>
+  </div>
+  <span class="management-module-arrow">→</span>
+</a>
+<a class="management-module-card planned" href="guild-management-logs.html">
+  <div class="management-module-icon">☷</div>
+  <div class="management-module-body">
+    <div class="management-module-title-row"><h3>Logs & Reports</h3><span class="nav-status">Planned</span></div>
+    <p>Audit history, officer actions and management reporting.</p>
+  </div>
+  <span class="management-module-arrow">→</span>
+</a>
+<a class="management-module-card planned" href="guild-management-settings.html">
+  <div class="management-module-icon">🔧</div>
+  <div class="management-module-body">
+    <div class="management-module-title-row"><h3>Settings</h3><span class="nav-status">Planned</span></div>
+    <p>Site-wide configuration reserved for authorised officers.</p>
+  </div>
+  <span class="management-module-arrow">→</span>
+</a>
 </section>
 
-
-<section class="panel anchor-section" id="permissions">
-  <div class="portal-section-head">
-    <div>
-      <div class="kicker">Administration</div>
-      <h2>Permissions</h2>
     </div>
-    <span class="badge-planned">Planned module</span>
   </div>
-  <div class="portal-placeholder">
-    <h3>Officer access & permissions</h3>
-    <p>
-      Reserved for managing officer access levels and future role-based permissions.
-      Authentication remains enforced by Supabase while this module is being designed.
-    </p>
-  </div>
-</section>
-
-<section class="panel anchor-section" id="guild-info">
-  <div class="portal-section-head">
-    <div>
-      <div class="kicker">Public content</div>
-      <h2>Guild Information</h2>
-    </div>
-    <span class="badge-planned">Planned module</span>
-  </div>
-  <div class="portal-placeholder">
-    <h3>Guild-wide information</h3>
-    <p>
-      Reserved for editable guild details that should appear across the public website,
-      without requiring manual HTML changes.
-    </p>
-  </div>
-</section>
-
-<section class="panel anchor-section" id="logs">
-  <div class="portal-section-head">
-    <div>
-      <div class="kicker">Audit</div>
-      <h2>Logs & Reports</h2>
-    </div>
-    <span class="badge-planned">Planned module</span>
-  </div>
-  <div class="portal-placeholder">
-    <h3>Administrative history</h3>
-    <p>
-      Reserved for change history, officer actions and future management reporting.
-    </p>
-  </div>
-</section>
-
-<section class="panel anchor-section" id="settings">
-  <div class="portal-section-head">
-    <div>
-      <div class="kicker">Configuration</div>
-      <h2>Settings</h2>
-    </div>
-    <span class="badge-planned">Planned module</span>
-  </div>
-  <div class="portal-placeholder">
-    <h3>Website & guild settings</h3>
-    <p>
-      Reserved for site-wide configuration that should only be available to authorised officers.
-    </p>
-  </div>
-</section>
-
-</div>
-</div>
 </section>
 </main>
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Guild management is restricted to authorised officers.</div></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/site.js"></script><script src="assets/guild-management.js"></script><script src="assets/progression-management.js"></script><script src="assets/recruitment-auto-assignment-admin.js"></script>
-</body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/guild-management-shell.js"></script>
+
+</body>
+</html>

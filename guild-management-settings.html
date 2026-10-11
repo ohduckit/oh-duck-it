@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oh Duck It — Settings</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/tavern-v21.css">
+<link rel="stylesheet" href="assets/guild-management-v22.css">
+<link rel="stylesheet" href="assets/guild-management-v23.css">
+<link rel="stylesheet" href="assets/guild-management-pages.css">
+
+</head>
+<body data-management-page="settings" data-management-permission="settings.manage">
+<nav class="sitebar">
+  <div class="sitebar-inner">
+    <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
+    <div class="site-links">
+      <a href="index.html">Home</a>
+      <a href="progression.html">Progression</a>
+      <a href="structure.html">Guild Structure</a>
+      <a href="recruitment.html">Recruitment</a>
+      <a href="resources.html">Resources</a>
+      <a class="officer-link" href="officers.html">Officer Portal</a>
+      <a class="officer-link active" href="guild-management.html">Guild Management</a>
+    </div>
+  </div>
+</nav>
+<header class="page-head wrap">
+  <div class="page-sign">
+    <h1>SETTINGS</h1>
+    <p>Website & guild configuration</p>
+  </div>
+</header>
+<main class="portal-wrap">
+<section id="authView" class="card auth-card">
+  <div class="eyebrow">Private area</div>
+  <h1 style="font-family:Georgia,serif">Guild Management</h1>
+  <p id="authText">Sign in with Discord to access ODit guild management.</p>
+  <div id="authNotice" class="notice info" style="margin:16px 0" hidden></div>
+  <div class="actions">
+    <button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button>
+    <button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button>
+  </div>
+  <div id="unauthorisedBox" hidden>
+    <p class="help">This Discord account is not authorised as an ODit officer.</p>
+    <div id="userUid" class="uid-box"></div>
+  </div>
+</section>
+<section id="managementView" hidden>
+  <div class="tavern-shell management-shell">
+    <aside id="managementNav" class="side-nav management-side-nav" aria-label="Guild Management navigation"></aside>
+    <div class="management-content">
+<section class="panel management-page-head">
+  <div class="portal-top">
+    <div>
+      <div class="eyebrow">Guild management</div>
+      <h1>Settings</h1>
+      <p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p>
+    </div>
+    <div class="portal-tools">
+      <a class="btn" href="officers.html">← Officer Portal</a>
+      
+      <button id="logoutBtn" class="btn" type="button">Sign out</button>
+    </div>
+  </div>
+</section>
+<section class="panel management-module-panel">
+  <div class="portal-section-head">
+    <div><div class="kicker">Configuration</div><h2>Settings</h2></div>
+    <span class="badge-planned">Planned module</span>
+  </div>
+  <div class="portal-placeholder">
+    <h3>Website & guild settings</h3>
+    <p>Reserved for site-wide configuration that should only be available to authorised officers.</p>
+  </div>
+</section>
+
+    </div>
+  </div>
+</section>
+</main>
+<footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Guild management is restricted to authorised officers.</div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/guild-management-shell.js"></script>
+
+</body>
+</html>
