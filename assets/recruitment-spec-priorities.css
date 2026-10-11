@@ -896,3 +896,88 @@
     height:36px;
   }
 }
+
+
+/* Recruitment v2.4.4 — cleaner icon-led spec display
+   Spec names are hidden visually to remove the cramped/truncated text.
+   Full spec names remain available as hover tooltips / accessible labels. */
+
+#overview #looking .recruit-class-public {
+  grid-template-columns:88px minmax(0,1fr);
+  gap:7px;
+  padding:8px 7px;
+}
+
+#overview #looking .recruit-class-public-name {
+  padding:7px 3px;
+  font-size:15px;
+  line-height:1.12;
+}
+
+#overview #looking .recruit-class-spec-list {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:7px;
+  padding:0;
+}
+
+#overview #looking .recruit-spec-chip {
+  display:grid;
+  grid-template-columns:39px auto;
+  align-items:center;
+  justify-content:start;
+  gap:7px;
+  min-width:102px;
+  min-height:49px;
+  padding:5px 7px;
+  border-radius:6px;
+  flex:0 0 auto;
+}
+
+#overview #looking .recruit-spec-chip img {
+  width:39px;
+  height:39px;
+  border-radius:5px;
+}
+
+#overview #looking .recruit-spec-chip-name {
+  /* Kept in the DOM for accessibility/future use, hidden visually. */
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+}
+
+#overview #looking .recruit-spec-chip .recruit-priority-pill {
+  min-width:49px;
+  min-height:22px;
+  padding:3px 7px;
+  font-size:8px;
+}
+
+@media(max-width:1180px) and (min-width:901px) {
+  #overview #looking .recruit-class-public {
+    grid-template-columns:84px minmax(0,1fr);
+  }
+
+  #overview #looking .recruit-spec-chip {
+    min-width:100px;
+  }
+}
+
+@media(max-width:520px) {
+  #overview #looking .recruit-class-public {
+    grid-template-columns:1fr;
+  }
+
+  #overview #looking .recruit-class-spec-list {
+    display:flex;
+    flex-wrap:wrap;
+  }
+}

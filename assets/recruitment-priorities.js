@@ -206,7 +206,11 @@
 
               <div class="recruit-class-spec-list">
                 ${group.specs.map(item => `
-                  <div class="recruit-spec-chip ${esc(item.priority)}">
+                  <div
+                    class="recruit-spec-chip ${esc(item.priority)}"
+                    title="${esc(item.name)} — ${priorityLabel(item.priority)} priority"
+                    aria-label="${esc(item.name)} — ${priorityLabel(item.priority)} priority"
+                  >
                     <img src="${esc(item.icon)}" alt="" loading="lazy">
                     <span class="recruit-spec-chip-name">${esc(item.name)}</span>
                     <span class="recruit-priority-pill ${esc(item.priority)}">${priorityLabel(item.priority)}</span>
