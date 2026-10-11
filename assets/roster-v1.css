@@ -461,3 +461,65 @@
     width:30px;
   }
 }
+
+
+/* Roster v1.2 — grouped officer roster by raid role */
+.officer-roster-list {
+  display:grid;
+  gap:16px;
+}
+
+.officer-roster-group {
+  display:grid;
+  gap:8px;
+}
+
+.officer-roster-group-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 2px;
+}
+
+.officer-roster-group-head h3 {
+  margin:0;
+  color:#f0ce75;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:18px;
+}
+
+.officer-roster-group-meta {
+  display:inline-flex;
+  align-items:center;
+  padding:4px 8px;
+  border:1px solid #5b4323;
+  border-radius:999px;
+  color:#bba98d;
+  background:rgba(23,16,11,.72);
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  white-space:nowrap;
+}
+
+.officer-roster-group-list {
+  display:grid;
+  gap:8px;
+}
+
+@media(max-width:760px) {
+  .officer-roster-group-head {
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .officer-roster-group-head h3 {
+    font-size:17px;
+  }
+
+  .officer-roster-group-meta {
+    white-space:normal;
+  }
+}

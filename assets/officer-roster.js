@@ -92,6 +92,57 @@
     }).sort(rowSort);
   }
 
+  function renderRow(row) {
+    const ch = row.character || {};
+    const image = ch.avatar_url || iconFor(ch.class_name, ch.spec_name);
+    const classColor = CLASS_COLORS[ch.class_name] || '#b88635';
+
+    return `
+      <article class="officer-roster-row" data-member-id="${esc(row.id)}" style="--class-color:${esc(classColor)}">
+        ${image ? `<img src="${esc(image)}" alt="">` : '<div></div>'}
+        <div>
+          <b>${esc(row.player_name)}</b>
+          <small>${esc(ch.character_name || 'No raid character')} • ${esc(ch.spec_name || '')} ${esc(ch.class_name || '')}</small>
+        </div>
+        <div class="officer-roster-cell officer-roster-role">${esc(row.raid_role)}</div>
+        <div class="officer-roster-cell officer-roster-status">
+          <span class="roster-status ${esc(row.raid_status)}">${esc(STATUS_LABEL[row.raid_status] || row.raid_status)}</span>
+        </div>
+        <div class="officer-roster-cell officer-roster-ilvl">
+          ${Number(ch.item_level) > 0 ? `${Number(ch.item_level).toFixed(1)} ilvl` : '—'}
+        </div>
+        <div class="officer-roster-actions">
+          <button class="btn roster-move-up" type="button" data-id="${esc(row.id)}" title="Move up within ${esc(row.raid_role)}">↑</button>
+          <button class="btn roster-move-down" type="button" data-id="${esc(row.id)}" title="Move down within ${esc(row.raid_role)}">↓</button>
+          <button class="btn roster-edit" type="button" data-id="${esc(row.id)}">Edit</button>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderRoleSection(role, roleRows) {
+    const coreCount = roleRows.filter(row => row.raid_status === 'core').length;
+    const trialCount = roleRows.filter(row => row.raid_status === 'trial').length;
+    const reserveCount = roleRows.filter(row => row.raid_status === 'reserve').length;
+
+    const summaryBits = [`${roleRows.length} member${roleRows.length === 1 ? '' : 's'}`];
+    if (coreCount) summaryBits.push(`${coreCount} core`);
+    if (trialCount) summaryBits.push(`${trialCount} trial`);
+    if (reserveCount) summaryBits.push(`${reserveCount} reserve`);
+
+    return `
+      <section class="officer-roster-group" data-role="${esc(role)}">
+        <div class="officer-roster-group-head">
+          <h3>${esc(role)}</h3>
+          <span class="officer-roster-group-meta">${esc(summaryBits.join(' • '))}</span>
+        </div>
+        <div class="officer-roster-group-list">
+          ${roleRows.map(renderRow).join('')}
+        </div>
+      </section>
+    `;
+  }
+
   function renderList() {
     const filtered = filteredRows();
 
@@ -100,33 +151,19 @@
       return;
     }
 
-    list.innerHTML = filtered.map(row => {
-      const ch = row.character || {};
-      const image = ch.avatar_url || iconFor(ch.class_name, ch.spec_name);
-      const classColor = CLASS_COLORS[ch.class_name] || '#b88635';
+    const groupedMarkup = ROLE_ORDER
+      .map(role => {
+        const roleRows = filtered.filter(row => row.raid_role === role);
+        if (!roleRows.length) return '';
+        return renderRoleSection(role, roleRows);
+      })
+      .filter(Boolean)
+      .join('');
 
-      return `
-        <article class="officer-roster-row" data-member-id="${esc(row.id)}" style="--class-color:${esc(classColor)}">
-          ${image ? `<img src="${esc(image)}" alt="">` : '<div></div>'}
-          <div>
-            <b>${esc(row.player_name)}</b>
-            <small>${esc(ch.character_name || 'No raid character')} • ${esc(ch.spec_name || '')} ${esc(ch.class_name || '')}</small>
-          </div>
-          <div class="officer-roster-cell officer-roster-role">${esc(row.raid_role)}</div>
-          <div class="officer-roster-cell officer-roster-status">
-            <span class="roster-status ${esc(row.raid_status)}">${esc(STATUS_LABEL[row.raid_status] || row.raid_status)}</span>
-          </div>
-          <div class="officer-roster-cell officer-roster-ilvl">
-            ${Number(ch.item_level) > 0 ? `${Number(ch.item_level).toFixed(1)} ilvl` : '—'}
-          </div>
-          <div class="officer-roster-actions">
-            <button class="btn roster-move-up" type="button" data-id="${esc(row.id)}" title="Move up within ${esc(row.raid_role)}">↑</button>
-            <button class="btn roster-move-down" type="button" data-id="${esc(row.id)}" title="Move down within ${esc(row.raid_role)}">↓</button>
-            <button class="btn roster-edit" type="button" data-id="${esc(row.id)}">Edit</button>
-          </div>
-        </article>
-      `;
-    }).join('');
+    const otherRows = filtered.filter(row => !ROLE_ORDER.includes(row.raid_role));
+    const otherMarkup = otherRows.length ? renderRoleSection('Other', otherRows) : '';
+
+    list.innerHTML = groupedMarkup + otherMarkup;
 
     list.querySelectorAll('.roster-edit').forEach(button => {
       button.addEventListener('click', () => openEditor(button.dataset.id));
