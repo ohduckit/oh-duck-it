@@ -18,6 +18,49 @@
   const priorityLabel = priority =>
     ({ high:'High', medium:'Medium', low:'Low', closed:'Closed' }[priority] || 'Closed');
 
+  function arrangeRecruitmentPage() {
+    const overview = document.getElementById('overview');
+    const looking = document.getElementById('looking');
+    const philosophy = document.getElementById('philosophy');
+    const trial = document.getElementById('trial');
+    const faq = document.getElementById('faq');
+
+    if (!overview || !looking || !philosophy || !trial || !faq) return;
+
+    // Keep the recruitment board in the right-hand column, as in the original
+    // ODit layout. Move the supporting information into a left-hand stack so
+    // Philosophy / Trial / FAQ are visible immediately instead of being pushed
+    // below a large spec board.
+    let left = overview.querySelector('.recruit-info-stack');
+    if (!left) {
+      left = document.createElement('div');
+      left.className = 'recruit-info-stack';
+
+      const intro = [...overview.children].find(el =>
+        el.classList?.contains('parchment') && el.id !== 'looking'
+      );
+
+      if (intro) {
+        overview.insertBefore(left, intro);
+        left.appendChild(intro);
+      } else {
+        overview.insertBefore(left, looking);
+      }
+    }
+
+    [philosophy, trial, faq].forEach(section => {
+      if (section.parentElement !== left) left.appendChild(section);
+    });
+
+    // Make the side navigation match what the section now actually represents.
+    const lookingLink = document.querySelector('.side-nav a[href="#looking"]');
+    if (lookingLink) {
+      lookingLink.innerHTML = '<span class="ico">◎</span>Current Recruitment';
+    }
+  }
+
+  arrangeRecruitmentPage();
+
   function loadSpecData() {
     return new Promise((resolve, reject) => {
       if (window.ODIT_RECRUITMENT_SPEC_DATA) {

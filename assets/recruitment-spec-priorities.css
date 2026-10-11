@@ -5,7 +5,47 @@
 }
 
 #overview.recruit-layout {
+  grid-template-columns:minmax(0,1fr) minmax(350px,420px);
+  align-items:start;
+}
+
+.recruit-info-stack {
+  display:grid;
+  gap:14px;
+  min-width:0;
+}
+
+.recruit-info-stack > .panel,
+.recruit-info-stack > .parchment {
+  margin:0;
+}
+
+#overview #looking {
+  min-width:0;
+}
+
+/* The public recruitment board is deliberately a compact right rail.
+   One spec per row is much easier to scan at this width than squeezing
+   the desktop three-column board into the sidebar. */
+#overview #looking .recruit-spec-public-grid {
   grid-template-columns:1fr;
+}
+
+#overview #looking .recruit-board-head {
+  flex-direction:column;
+  gap:10px;
+}
+
+#overview #looking .recruit-board-legend {
+  justify-content:flex-start;
+}
+
+#overview #looking .recruit-spec-public {
+  grid-template-columns:36px minmax(0,1fr) auto;
+}
+
+#apply {
+  margin-top:14px;
 }
 
 .recruit-spec-board .recruit-board-head {
@@ -423,5 +463,22 @@
     position:static;
     align-items:flex-start;
     flex-direction:column;
+  }
+}
+
+
+@media(max-width:1050px) {
+  #overview.recruit-layout {
+    grid-template-columns:minmax(0,1fr) minmax(320px,360px);
+  }
+}
+
+@media(max-width:900px) {
+  #overview.recruit-layout {
+    grid-template-columns:1fr;
+  }
+
+  #overview #looking {
+    order:2;
   }
 }
