@@ -3,7 +3,8 @@
     'raid-leader':'Duckie',
     'tank-lead':'Duckie',
     'healer-lead':'Phae',
-    'dps-lead':'To be appointed',
+    'melee-dps-lead':'To be appointed',
+    'ranged-dps-lead':'To be appointed',
     'mplus-lead':'To be appointed',
     'recruit-lead':'Council interim',
     'community-lead':'Council interim'
@@ -62,7 +63,20 @@
       return;
     }
 
-    const assignments = { ...defaults, ...(data?.assignments || {}) };
+    const stored = data?.assignments || {};
+    const legacyDps =
+      typeof stored['dps-lead'] === 'string' && stored['dps-lead'].trim()
+        ? stored['dps-lead'].trim()
+        : '';
+
+    const assignments = {
+      ...defaults,
+      ...stored,
+      'melee-dps-lead':
+        stored['melee-dps-lead'] || legacyDps || defaults['melee-dps-lead'],
+      'ranged-dps-lead':
+        stored['ranged-dps-lead'] || defaults['ranged-dps-lead']
+    };
 
     document.querySelectorAll('[data-structure-owner]').forEach(input => {
       input.value = assignments[input.dataset.structureOwner] || '';

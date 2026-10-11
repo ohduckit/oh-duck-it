@@ -1,55 +1,38 @@
-/* ODit Recruitment Spec Matrix v2 */
+/* ODit recruitment priorities — consolidated live stylesheet. */
+/* Replaces the accumulated v2.x override stack with one canonical cascade. */
 
 .recruit-spec-board {
-  width:100%;
+width:100%;
 }
 
 #overview.recruit-layout {
-  grid-template-columns:minmax(0,1fr) minmax(350px,420px);
+grid-template-columns:minmax(0,1fr) minmax(350px,420px);
   align-items:start;
-}
-
-.recruit-info-stack {
-  display:grid;
-  gap:14px;
-  min-width:0;
 }
 
 .recruit-info-stack > .panel,
 .recruit-info-stack > .parchment {
-  margin:0;
+margin:0;
 }
 
 #overview #looking {
-  min-width:0;
+min-width:0;
 }
 
-/* The public recruitment board is deliberately a compact right rail.
-   One spec per row is much easier to scan at this width than squeezing
-   the desktop three-column board into the sidebar. */
 #overview #looking .recruit-spec-public-grid {
-  grid-template-columns:1fr;
-}
-
-#overview #looking .recruit-board-head {
-  flex-direction:column;
-  gap:10px;
+grid-template-columns:1fr;
 }
 
 #overview #looking .recruit-board-legend {
-  justify-content:flex-start;
+justify-content:flex-start;
 }
 
 #overview #looking .recruit-spec-public {
-  grid-template-columns:36px minmax(0,1fr) auto;
-}
-
-#apply {
-  margin-top:14px;
+grid-template-columns:36px minmax(0,1fr) auto;
 }
 
 .recruit-spec-board .recruit-board-head {
-  display:flex;
+display:flex;
   align-items:flex-start;
   justify-content:space-between;
   gap:18px;
@@ -57,39 +40,39 @@
 }
 
 .recruit-spec-board .recruit-board-head h3 {
-  margin:0 0 5px;
+margin:0 0 5px;
 }
 
 .recruit-board-note {
-  margin:0;
+margin:0;
   color:#654a2b;
   line-height:1.45;
 }
 
 .recruit-board-legend {
-  display:flex;
+display:flex;
   flex-wrap:wrap;
   gap:7px;
   justify-content:flex-end;
 }
 
 .recruit-role-sections {
-  display:grid;
+display:grid;
   gap:13px;
 }
 
 .recruit-role-section {
-  border-top:1px solid rgba(91,59,22,.28);
+border-top:1px solid rgba(91,59,22,.28);
   padding-top:13px;
 }
 
 .recruit-role-section:first-child {
-  border-top:0;
+border-top:0;
   padding-top:0;
 }
 
 .recruit-role-head {
-  display:flex;
+display:flex;
   align-items:center;
   justify-content:space-between;
   gap:10px;
@@ -97,24 +80,24 @@
 }
 
 .recruit-role-head h4 {
-  margin:0;
+margin:0;
   color:#38230f;
   font-family:Georgia,"Times New Roman",serif;
   font-size:16px;
 }
 
 .recruit-role-head small {
-  color:#775c39;
+color:#775c39;
 }
 
 .recruit-spec-public-grid {
-  display:grid;
+display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:8px;
 }
 
 .recruit-spec-public {
-  --class-color:#d3a34b;
+--class-color:#d3a34b;
   display:grid;
   grid-template-columns:38px minmax(0,1fr) auto;
   align-items:center;
@@ -129,7 +112,7 @@
 
 .recruit-spec-public img,
 .recruit-spec-admin-icon {
-  width:36px;
+width:36px;
   height:36px;
   border-radius:6px;
   object-fit:cover;
@@ -137,20 +120,20 @@
 }
 
 .recruit-spec-public b {
-  display:block;
+display:block;
   color:#39230f;
   line-height:1.15;
 }
 
 .recruit-spec-public small {
-  display:block;
+display:block;
   margin-top:3px;
   color:#755b39;
   line-height:1.2;
 }
 
 .recruit-priority-pill {
-  display:inline-flex;
+display:inline-flex;
   align-items:center;
   justify-content:center;
   min-width:58px;
@@ -166,31 +149,31 @@
 }
 
 .recruit-priority-pill.high {
-  color:#fff0db;
+color:#fff0db;
   background:#8f301f;
   border-color:#aa472f;
 }
 
 .recruit-priority-pill.medium {
-  color:#3f2a0e;
+color:#3f2a0e;
   background:#e7bd62;
   border-color:#b88732;
 }
 
 .recruit-priority-pill.low {
-  color:#20330f;
+color:#20330f;
   background:#c8d996;
   border-color:#849958;
 }
 
 .recruit-priority-pill.closed {
-  color:#9b8e7b;
+color:#9b8e7b;
   background:#2b241d;
   border-color:#514536;
 }
 
 .recruit-exceptional {
-  margin-top:15px;
+margin-top:15px;
   padding:11px 13px;
   border:1px solid rgba(111,77,33,.38);
   border-radius:8px;
@@ -200,15 +183,14 @@
 }
 
 .recruit-no-openings {
-  padding:14px;
+padding:14px;
   border:1px dashed rgba(91,59,22,.4);
   border-radius:8px;
   color:#6d5331;
 }
 
-/* Application context badge */
 .recruit-fit {
-  grid-column:1/-1;
+grid-column:1/-1;
   margin-top:2px;
   padding:10px 12px;
   border-radius:8px;
@@ -219,21 +201,31 @@
 }
 
 .recruit-fit[hidden] {
-  display:none;
+display:none;
 }
 
 .recruit-fit strong {
-  color:#f0ce75;
+color:#f0ce75;
 }
 
-.recruit-fit.high { border-color:#9f4b32; }
-.recruit-fit.medium { border-color:#a27a34; }
-.recruit-fit.low { border-color:#708146; }
-.recruit-fit.closed { border-color:#514536; }
+.recruit-fit.high {
+border-color:#9f4b32;
+}
 
-/* Officer matrix */
+.recruit-fit.medium {
+border-color:#a27a34;
+}
+
+.recruit-fit.low {
+border-color:#708146;
+}
+
+.recruit-fit.closed {
+border-color:#514536;
+}
+
 .recruit-matrix-toolbar {
-  display:grid;
+display:grid;
   grid-template-columns:minmax(220px,1.3fr) 180px auto;
   gap:10px;
   align-items:end;
@@ -241,14 +233,14 @@
 }
 
 .recruit-matrix-summary {
-  display:grid;
+display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
   gap:8px;
   margin:12px 0 16px;
 }
 
 .recruit-matrix-stat {
-  padding:10px;
+padding:10px;
   border:1px solid #55401f;
   border-radius:8px;
   background:#1b120c;
@@ -256,25 +248,25 @@
 }
 
 .recruit-matrix-stat b {
-  display:block;
+display:block;
   color:#f0ce75;
   font-size:18px;
 }
 
 .recruit-matrix-stat span {
-  color:#aa9a81;
+color:#aa9a81;
   font-size:10px;
   text-transform:uppercase;
   letter-spacing:.06em;
 }
 
 .recruit-class-grid {
-  display:grid;
+display:grid;
   gap:12px;
 }
 
 .recruit-class-card {
-  --class-color:#d3a34b;
+--class-color:#d3a34b;
   padding:13px;
   border:1px solid #57401f;
   border-left:4px solid var(--class-color);
@@ -283,24 +275,24 @@
 }
 
 .recruit-class-card[hidden] {
-  display:none;
+display:none;
 }
 
 .recruit-class-title {
-  margin:0 0 10px;
+margin:0 0 10px;
   color:var(--class-color);
   font-family:Georgia,"Times New Roman",serif;
   font-size:17px;
 }
 
 .recruit-admin-spec-grid {
-  display:grid;
+display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:8px;
 }
 
 .recruit-admin-spec {
-  display:grid;
+display:grid;
   grid-template-columns:38px minmax(0,1fr);
   gap:9px;
   align-items:center;
@@ -312,29 +304,29 @@
 }
 
 .recruit-admin-spec[hidden] {
-  display:none;
+display:none;
 }
 
 .recruit-admin-spec.active-priority {
-  border-color:#80602a;
+border-color:#80602a;
   background:#23180e;
 }
 
 .recruit-admin-spec-name b {
-  display:block;
+display:block;
   color:#eadbc3;
   line-height:1.15;
 }
 
 .recruit-admin-spec-name small {
-  display:block;
+display:block;
   margin-top:3px;
   color:#9f917c;
   font-size:10px;
 }
 
 .recruit-admin-priority {
-  grid-column:1/-1;
+grid-column:1/-1;
   display:grid;
   grid-template-columns:repeat(4,1fr);
   border:1px solid #574326;
@@ -343,7 +335,7 @@
 }
 
 .recruit-admin-priority button {
-  min-height:31px;
+min-height:31px;
   padding:5px 4px;
   border:0;
   border-right:1px solid #574326;
@@ -356,42 +348,42 @@
 }
 
 .recruit-admin-priority button:last-child {
-  border-right:0;
+border-right:0;
 }
 
 .recruit-admin-priority button:hover {
-  background:#3a2c1d;
+background:#3a2c1d;
 }
 
 .recruit-admin-priority button.selected[data-priority="closed"] {
-  background:#4a4238;
+background:#4a4238;
   color:#fff;
 }
 
 .recruit-admin-priority button.selected[data-priority="low"] {
-  background:#536635;
+background:#536635;
   color:#f4ffe5;
 }
 
 .recruit-admin-priority button.selected[data-priority="medium"] {
-  background:#8e6825;
+background:#8e6825;
   color:#fff2cf;
 }
 
 .recruit-admin-priority button.selected[data-priority="high"] {
-  background:#8f301f;
+background:#8f301f;
   color:#fff0db;
 }
 
 .recruit-priority-settings {
-  display:grid;
+display:grid;
   grid-template-columns:1fr 1.3fr;
   gap:12px;
   margin:16px 0;
 }
 
 .recruit-exceptional-toggle {
-  min-height:44px;
+min-height:44px;
   display:flex;
   align-items:center;
   gap:9px;
@@ -402,13 +394,13 @@
 }
 
 .recruit-exceptional-toggle input {
-  width:18px;
+width:18px;
   height:18px;
   accent-color:#d6a23d;
 }
 
 .recruit-savebar {
-  position:sticky;
+position:sticky;
   bottom:10px;
   z-index:4;
   display:flex;
@@ -424,126 +416,119 @@
 }
 
 .recruit-unsaved {
-  color:#d5bd91;
+color:#d5bd91;
   font-size:12px;
 }
 
 .recruit-unsaved.clean {
-  color:#8f9d79;
+color:#8f9d79;
 }
 
-@media(max-width:1100px) {
-  .recruit-spec-public-grid,
+@media (max-width:1100px) {
+.recruit-spec-public-grid,
   .recruit-admin-spec-grid {
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
 }
 
-@media(max-width:760px) {
-  .recruit-board-head {
-    flex-direction:column;
-  }
+@media (max-width:760px) {
+.recruit-board-head {
+flex-direction:column;
+}
 
-  .recruit-board-legend {
-    justify-content:flex-start;
-  }
+.recruit-board-legend {
+justify-content:flex-start;
+}
 
-  .recruit-spec-public-grid,
+.recruit-spec-public-grid,
   .recruit-admin-spec-grid,
   .recruit-matrix-toolbar,
   .recruit-priority-settings {
-    grid-template-columns:1fr;
-  }
+grid-template-columns:1fr;
+}
 
-  .recruit-matrix-summary {
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
+.recruit-matrix-summary {
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
 
-  .recruit-savebar {
-    position:static;
+.recruit-savebar {
+position:static;
     align-items:flex-start;
     flex-direction:column;
-  }
+}
 }
 
-
-@media(max-width:1050px) {
-  #overview.recruit-layout {
-    grid-template-columns:minmax(0,1fr) minmax(320px,360px);
-  }
+@media (max-width:1050px) {
+#overview.recruit-layout {
+grid-template-columns:minmax(0,1fr) minmax(320px,360px);
+}
 }
 
-@media(max-width:900px) {
-  #overview.recruit-layout {
-    grid-template-columns:1fr;
-  }
-
-  #overview #looking {
-    order:2;
-  }
+@media (max-width:900px) {
+#overview.recruit-layout {
+grid-template-columns:1fr;
 }
 
-
-/* Recruitment public layout v2.2
-   Left: Join ODit -> Philosophy -> Trial Process -> FAQ
-   Right: compact class-grouped recruitment board */
+#overview #looking {
+order:2;
+}
+}
 
 #overview.recruit-layout.recruit-overview-v22 {
-  grid-template-columns:minmax(0,1fr) minmax(370px,430px);
+grid-template-columns:minmax(0,1fr) minmax(370px,430px);
   gap:14px;
   align-items:start;
 }
 
 #overview.recruit-overview-v22 > .recruit-info-stack {
-  grid-column:1;
+grid-column:1;
   grid-row:1;
 }
 
 #overview.recruit-overview-v22 > #looking {
-  grid-column:2;
+grid-column:2;
   grid-row:1;
 }
 
 .recruit-info-stack {
-  display:grid;
+display:grid;
   gap:14px;
 }
 
 .recruit-info-stack > #philosophy,
 .recruit-info-stack > #trial,
 .recruit-info-stack > #faq {
-  margin:0;
+margin:0;
 }
 
-/* Public board: one row per class, specs combined underneath. */
 #overview #looking .recruit-role-sections {
-  gap:11px;
+gap:11px;
 }
 
 #overview #looking .recruit-role-section {
-  padding-top:11px;
+padding-top:11px;
 }
 
 #overview #looking .recruit-role-head {
-  margin-bottom:7px;
+margin-bottom:7px;
 }
 
 #overview #looking .recruit-role-head h4 {
-  font-size:15px;
+font-size:15px;
 }
 
 #overview #looking .recruit-role-head small {
-  font-size:10px;
+font-size:10px;
   white-space:nowrap;
 }
 
 .recruit-class-public-list {
-  display:grid;
+display:grid;
   gap:7px;
 }
 
 .recruit-class-public {
-  --class-color:#d3a34b;
+--class-color:#d3a34b;
   border:1px solid rgba(83,54,22,.34);
   border-left:3px solid var(--class-color);
   border-radius:8px;
@@ -552,7 +537,7 @@
 }
 
 .recruit-class-public-name {
-  padding:7px 9px 5px;
+padding:7px 9px 5px;
   color:#39230f;
   font-family:Georgia,"Times New Roman",serif;
   font-size:13px;
@@ -560,14 +545,14 @@
 }
 
 .recruit-class-spec-list {
-  display:flex;
+display:flex;
   flex-wrap:wrap;
   gap:5px;
   padding:0 7px 7px;
 }
 
 .recruit-spec-chip {
-  min-width:0;
+min-width:0;
   display:grid;
   grid-template-columns:24px minmax(0,1fr) auto;
   align-items:center;
@@ -580,7 +565,7 @@
 }
 
 .recruit-spec-chip img {
-  width:24px;
+width:24px;
   height:24px;
   border-radius:4px;
   object-fit:cover;
@@ -588,7 +573,7 @@
 }
 
 .recruit-spec-chip-name {
-  min-width:0;
+min-width:0;
   color:#3d2813;
   font-size:11px;
   font-weight:800;
@@ -596,326 +581,169 @@
 }
 
 .recruit-spec-chip .recruit-priority-pill {
-  min-width:42px;
+min-width:42px;
   min-height:20px;
   padding:2px 6px;
   font-size:7.5px;
 }
 
 #overview #looking .recruit-board-head {
-  margin-bottom:12px;
+margin-bottom:12px;
 }
 
-#overview #looking .recruit-board-note {
-  font-size:12px;
-}
-
-#overview #looking .recruit-exceptional {
-  margin-top:11px;
-  padding:9px 10px;
-  font-size:11px;
-}
-
-/* The full application remains below the two-column introduction area. */
 #apply {
-  margin-top:14px !important;
+margin-top:14px !important;
 }
 
-@media(max-width:1100px) {
-  #overview.recruit-layout.recruit-overview-v22 {
-    grid-template-columns:minmax(0,1fr) minmax(340px,390px);
-  }
+@media (max-width:1100px) {
+#overview.recruit-layout.recruit-overview-v22 {
+grid-template-columns:minmax(0,1fr) minmax(340px,390px);
+}
 }
 
-@media(max-width:900px) {
-  #overview.recruit-layout.recruit-overview-v22 {
-    grid-template-columns:1fr;
-  }
+@media (max-width:900px) {
+#overview.recruit-layout.recruit-overview-v22 {
+grid-template-columns:1fr;
+}
 
-  #overview.recruit-overview-v22 > .recruit-info-stack,
+#overview.recruit-overview-v22 > .recruit-info-stack,
   #overview.recruit-overview-v22 > #looking {
-    grid-column:1;
+grid-column:1;
     grid-row:auto;
-  }
-
-  #overview.recruit-overview-v22 > #looking {
-    order:2;
-  }
 }
 
-@media(max-width:520px) {
-  .recruit-spec-chip {
-    flex-basis:100%;
-  }
+#overview.recruit-overview-v22 > #looking {
+order:2;
+}
+}
 
-  #overview #looking .recruit-role-head {
-    align-items:flex-start;
+@media (max-width:520px) {
+.recruit-spec-chip {
+flex-basis:100%;
+}
+
+#overview #looking .recruit-role-head {
+align-items:flex-start;
     flex-direction:column;
     gap:2px;
-  }
+}
 }
 
-
-/* Recruitment v2.3 — compact class rows */
+@media (max-width:1180px) and (min-width:901px) {
 #overview #looking .recruit-class-public {
-  display:grid;
-  grid-template-columns:88px minmax(0,1fr);
-  gap:7px;
-  align-items:start;
-  padding:6px;
+grid-template-columns:78px minmax(0,1fr);
+}
 }
 
-#overview #looking .recruit-class-public-name {
-  padding:5px 4px;
-  font-size:12px;
-  line-height:1.15;
+@media (max-width:520px) {
+#overview #looking .recruit-class-public {
+grid-template-columns:1fr;
 }
 
 #overview #looking .recruit-class-spec-list {
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:5px;
-  padding:0;
+grid-template-columns:1fr 1fr;
+}
 }
 
-#overview #looking .recruit-spec-chip {
-  display:grid;
-  grid-template-columns:20px minmax(0,1fr) auto;
-  gap:5px;
-  align-items:center;
-  min-width:0;
-  padding:4px 5px;
-  border-radius:5px;
-  flex:none;
-}
-
-#overview #looking .recruit-spec-chip img {
-  width:20px;
-  height:20px;
-  border-radius:3px;
-}
-
-#overview #looking .recruit-spec-chip-name {
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  font-size:9.5px;
-}
-
-#overview #looking .recruit-spec-chip .recruit-priority-pill {
-  min-width:34px;
-  min-height:17px;
-  padding:1px 4px;
-  font-size:6.5px;
-}
-
-@media(max-width:1180px) and (min-width:901px) {
-  #overview #looking .recruit-class-public {
-    grid-template-columns:78px minmax(0,1fr);
-  }
-}
-
-@media(max-width:520px) {
-  #overview #looking .recruit-class-public {
-    grid-template-columns:1fr;
-  }
-
-  #overview #looking .recruit-class-spec-list {
-    grid-template-columns:1fr 1fr;
-  }
-}
-
-
-/* Recruitment v2.4 — unified class list, priority-led ordering */
-
-/* Role sections are no longer shown publicly. Recruitment is presented as one
-   class-led list, ordered by the strongest currently-open spec in each class. */
 #overview #looking .recruit-role-section,
 #overview #looking .recruit-role-head {
-  display:none !important;
+display:none !important;
 }
 
 .recruit-priority-class-section {
-  margin-top:2px;
+margin-top:2px;
 }
 
 .recruit-priority-class-list {
-  display:grid;
+display:grid;
   gap:7px;
 }
 
-/* Slightly larger than v2.3: enough visual identity without dominating. */
-#overview #looking .recruit-spec-chip {
-  grid-template-columns:26px minmax(0,1fr) auto;
-  min-height:34px;
-  padding:4px 6px;
-  gap:6px;
-}
-
-#overview #looking .recruit-spec-chip img {
-  width:26px;
-  height:26px;
-  border-radius:4px;
-}
-
-#overview #looking .recruit-spec-chip-name {
-  font-size:10px;
-}
-
-/* Keep two specs side-by-side where space allows. */
-#overview #looking .recruit-class-spec-list {
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:6px;
-}
-
-/* Give the class label enough room now that the spec tiles are a touch larger. */
-#overview #looking .recruit-class-public {
-  grid-template-columns:92px minmax(0,1fr);
-  gap:8px;
-  padding:6px;
-}
-
-/* Priority itself carries the visual hierarchy. */
 #overview #looking .recruit-spec-chip.high {
-  border-color:rgba(143,48,31,.48);
+border-color:rgba(143,48,31,.48);
   background:rgba(143,48,31,.07);
 }
 
 #overview #looking .recruit-spec-chip.medium {
-  border-color:rgba(142,104,37,.42);
+border-color:rgba(142,104,37,.42);
 }
 
 #overview #looking .recruit-spec-chip.low {
-  border-color:rgba(83,102,53,.42);
+border-color:rgba(83,102,53,.42);
   opacity:.9;
 }
 
-@media(max-width:520px) {
-  #overview #looking .recruit-class-public {
-    grid-template-columns:1fr;
-  }
-
-  #overview #looking .recruit-class-spec-list {
-    grid-template-columns:1fr 1fr;
-  }
+@media (max-width:520px) {
+#overview #looking .recruit-class-public {
+grid-template-columns:1fr;
 }
 
-
-/* Recruitment v2.4.3 — corrected visual sizing
-   Previous large icon size: 52px
-   Requested reduction: 25%
-   Correct resulting size: 39px */
+#overview #looking .recruit-class-spec-list {
+grid-template-columns:1fr 1fr;
+}
+}
 
 #overview #looking .recruit-board-head h3 {
-  font-size:20px;
+font-size:20px;
   line-height:1.15;
 }
 
 #overview #looking .recruit-board-note {
-  font-size:13px;
+font-size:13px;
   line-height:1.45;
 }
 
-#overview #looking .recruit-class-public {
-  grid-template-columns:105px minmax(0,1fr);
-  gap:9px;
-  padding:8px;
-}
-
-#overview #looking .recruit-class-public-name {
-  padding:6px 5px;
-  font-size:15px;
-  line-height:1.15;
-}
-
-#overview #looking .recruit-class-spec-list {
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:7px;
-}
-
-#overview #looking .recruit-spec-chip {
-  grid-template-columns:39px minmax(0,1fr) auto;
-  min-height:49px;
-  padding:5px 7px;
-  gap:7px;
-  border-radius:6px;
-}
-
-#overview #looking .recruit-spec-chip img {
-  width:39px;
-  height:39px;
-  border-radius:5px;
-}
-
-#overview #looking .recruit-spec-chip-name {
-  font-size:12px;
-  line-height:1.15;
-}
-
-#overview #looking .recruit-spec-chip .recruit-priority-pill {
-  min-width:48px;
-  min-height:22px;
-  padding:3px 7px;
-  font-size:8px;
-  letter-spacing:.07em;
-}
-
 #overview #looking .recruit-board-legend .recruit-priority-pill {
-  min-width:54px;
+min-width:54px;
   min-height:24px;
   padding:4px 8px;
   font-size:9px;
 }
 
 #overview #looking .recruit-exceptional {
-  font-size:12px;
+font-size:12px;
   line-height:1.45;
 }
 
-@media(max-width:1180px) and (min-width:901px) {
-  #overview #looking .recruit-class-public {
-    grid-template-columns:98px minmax(0,1fr);
-  }
+@media (max-width:1180px) and (min-width:901px) {
+#overview #looking .recruit-class-public {
+grid-template-columns:98px minmax(0,1fr);
+}
 }
 
-@media(max-width:520px) {
-  #overview #looking .recruit-class-public {
-    grid-template-columns:1fr;
-  }
+@media (max-width:520px) {
+#overview #looking .recruit-class-public {
+grid-template-columns:1fr;
+}
 
-  #overview #looking .recruit-class-spec-list {
-    grid-template-columns:1fr;
-  }
+#overview #looking .recruit-class-spec-list {
+grid-template-columns:1fr;
+}
 
-  #overview #looking .recruit-spec-chip {
-    grid-template-columns:36px minmax(0,1fr) auto;
-  }
+#overview #looking .recruit-spec-chip {
+grid-template-columns:36px minmax(0,1fr) auto;
+}
 
-  #overview #looking .recruit-spec-chip img {
-    width:36px;
+#overview #looking .recruit-spec-chip img {
+width:36px;
     height:36px;
-  }
 }
-
-
-/* Recruitment v2.4.4 — cleaner icon-led spec display
-   Spec names are hidden visually to remove the cramped/truncated text.
-   Full spec names remain available as hover tooltips / accessible labels. */
+}
 
 #overview #looking .recruit-class-public {
-  grid-template-columns:88px minmax(0,1fr);
+grid-template-columns:88px minmax(0,1fr);
   gap:7px;
   padding:8px 7px;
 }
 
 #overview #looking .recruit-class-public-name {
-  padding:7px 3px;
+padding:7px 3px;
   font-size:15px;
   line-height:1.12;
 }
 
 #overview #looking .recruit-class-spec-list {
-  display:flex;
+display:flex;
   flex-wrap:wrap;
   align-items:center;
   gap:7px;
@@ -923,7 +751,7 @@
 }
 
 #overview #looking .recruit-spec-chip {
-  display:grid;
+display:grid;
   grid-template-columns:39px auto;
   align-items:center;
   justify-content:start;
@@ -936,14 +764,13 @@
 }
 
 #overview #looking .recruit-spec-chip img {
-  width:39px;
+width:39px;
   height:39px;
   border-radius:5px;
 }
 
 #overview #looking .recruit-spec-chip-name {
-  /* Kept in the DOM for accessibility/future use, hidden visually. */
-  position:absolute !important;
+position:absolute !important;
   width:1px !important;
   height:1px !important;
   padding:0 !important;
@@ -955,29 +782,37 @@
 }
 
 #overview #looking .recruit-spec-chip .recruit-priority-pill {
-  min-width:49px;
+min-width:49px;
   min-height:22px;
   padding:3px 7px;
   font-size:8px;
 }
 
-@media(max-width:1180px) and (min-width:901px) {
-  #overview #looking .recruit-class-public {
-    grid-template-columns:84px minmax(0,1fr);
-  }
-
-  #overview #looking .recruit-spec-chip {
-    min-width:100px;
-  }
+@media (max-width:1180px) and (min-width:901px) {
+#overview #looking .recruit-class-public {
+grid-template-columns:84px minmax(0,1fr);
 }
 
-@media(max-width:520px) {
-  #overview #looking .recruit-class-public {
-    grid-template-columns:1fr;
-  }
+#overview #looking .recruit-spec-chip {
+min-width:100px;
+}
+}
 
-  #overview #looking .recruit-class-spec-list {
-    display:flex;
+@media (max-width:520px) {
+#overview #looking .recruit-class-public {
+grid-template-columns:1fr;
+}
+
+#overview #looking .recruit-class-spec-list {
+display:flex;
     flex-wrap:wrap;
-  }
+}
+}
+
+.recruit-spec-board[aria-busy="true"] {
+  min-height:220px;
+}
+
+.recruit-spec-board[aria-busy="true"] .recruit-no-openings {
+  margin-top:12px;
 }

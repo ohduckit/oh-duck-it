@@ -3,13 +3,6 @@
   const looking = document.getElementById('looking');
   if (!looking) return;
 
-  const cssHref = 'assets/recruitment-spec-priorities.css';
-  if (![...document.styleSheets].some(s => s.href?.endsWith(cssHref))) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = cssHref;
-    document.head.appendChild(link);
-  }
 
   const esc = (s='') => String(s).replace(/[&<>'"]/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
@@ -18,68 +11,6 @@
   const priorityLabel = priority =>
     ({ high:'High', medium:'Medium', low:'Low', closed:'Closed' }[priority] || 'Closed');
 
-  function arrangeRecruitmentPage() {
-    const overview = document.getElementById('overview');
-    const looking = document.getElementById('looking');
-    const philosophy = document.getElementById('philosophy');
-    const trial = document.getElementById('trial');
-    const faq = document.getElementById('faq');
-
-    if (!overview || !looking || !philosophy || !trial || !faq) return;
-
-    overview.classList.add('recruit-overview-v22');
-
-    let left = overview.querySelector(':scope > .recruit-info-stack');
-    if (!left) {
-      left = document.createElement('div');
-      left.className = 'recruit-info-stack';
-
-      const intro = [...overview.children].find(el =>
-        el.classList?.contains('parchment') && el.id !== 'looking'
-      );
-
-      overview.insertBefore(left, looking);
-
-      if (intro) {
-        left.appendChild(intro);
-      }
-    }
-
-    // These sections must live in the left stack, directly under Join Oh Duck It.
-    // Re-appending is intentional: it makes the layout self-healing if an older
-    // cached layout or another script has left them elsewhere in the page.
-    [philosophy, trial, faq].forEach(section => left.appendChild(section));
-
-    // Recruitment is always the right-hand column.
-    if (looking.parentElement !== overview) {
-      overview.appendChild(looking);
-    }
-
-    const lookingLink = document.querySelector('.side-nav a[href="#looking"]');
-    if (lookingLink) {
-      lookingLink.innerHTML = '<span class="ico">◎</span>Current Recruitment';
-    }
-  }
-
-  // Run immediately and once again after the browser has completed its first
-  // layout pass. This avoids any stale DOM ordering from the previous layout.
-  arrangeRecruitmentPage();
-  requestAnimationFrame(arrangeRecruitmentPage);
-
-  function loadSpecData() {
-    return new Promise((resolve, reject) => {
-      if (window.ODIT_RECRUITMENT_SPEC_DATA) {
-        resolve(window.ODIT_RECRUITMENT_SPEC_DATA);
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = 'assets/recruitment-spec-data.js';
-      script.onload = () => resolve(window.ODIT_RECRUITMENT_SPEC_DATA);
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
-  }
 
   function allSpecs(data) {
     return data.classes.flatMap(cls =>
@@ -256,20 +187,28 @@
       ` : ''}
     `;
 
+    looking.setAttribute('aria-busy', 'false');
     ensureApplicationFit(priorities, settings?.exceptional_open !== false);
-    arrangeRecruitmentPage();
   }
 
-  function fallbackLegacy() {
-    // Keep the existing HTML untouched when v2 is not deployed yet.
+  function renderUnavailable(message='Current recruitment could not be loaded.') {
+    looking.setAttribute('aria-busy', 'false');
+    looking.className = 'parchment recruit-spec-board';
+    looking.innerHTML = `
+      <div class="recruit-board-head">
+        <div>
+          <h3>Current Recruitment</h3>
+          <p class="recruit-board-note">${esc(message)}</p>
+        </div>
+      </div>
+      <div class="recruit-no-openings">Please try again shortly.</div>
+    `;
   }
 
   async function init() {
-    let specData;
-    try {
-      specData = await loadSpecData();
-    } catch {
-      fallbackLegacy();
+    const specData = window.ODIT_RECRUITMENT_SPEC_DATA;
+    if (!specData?.classes) {
+      renderUnavailable('Recruitment data is unavailable.');
       return;
     }
 
@@ -277,7 +216,7 @@
       renderBoard(specData, {
         spec_priorities:specData.defaults,
         exceptional_open:true,
-        recruitment_note:'Our current focus is strengthening and balancing the DPS roster.'
+        recruitment_note:'Current class and specialisation recruitment priorities.'
       });
       return;
     }
@@ -289,8 +228,8 @@
       .eq('id', 1)
       .maybeSingle();
 
-    if (error || !data || !data.spec_priorities) {
-      fallbackLegacy();
+    if (error || !data?.spec_priorities) {
+      renderUnavailable('Current recruitment priorities are temporarily unavailable.');
       return;
     }
 
