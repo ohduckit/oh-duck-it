@@ -10,14 +10,21 @@
     return page || 'index.html';
   }
 
+  function isOfficerPortalPage(page = currentPage()) {
+    return page === 'officers.html' || page.startsWith('officer-');
+  }
+
   function removeOfficerLinks() {
-    document.querySelectorAll('.site-links .officer-link, .site-links .management-link')
-      .forEach(link => link.remove());
+    document.querySelectorAll(
+      '.site-links .officer-link, .site-links .management-link'
+    ).forEach(link => link.remove());
   }
 
   function addOfficerLinks() {
     document.querySelectorAll('.site-links').forEach(nav => {
-      nav.querySelectorAll('.officer-link, .management-link').forEach(link => link.remove());
+      // Remove any old/private navigation inserted by previous versions first.
+      nav.querySelectorAll('.officer-link, .management-link')
+        .forEach(link => link.remove());
 
       const page = currentPage();
 
@@ -25,21 +32,14 @@
       officer.href = 'officers.html';
       officer.textContent = 'Officer Portal';
       officer.className = 'officer-link';
-      if (page === 'officers.html') {
+
+      // Every module within the unified portal belongs to the same top-level area.
+      if (isOfficerPortalPage(page)) {
         officer.classList.add('active');
         officer.setAttribute('aria-current', 'page');
       }
 
-      const management = document.createElement('a');
-      management.href = 'guild-management.html';
-      management.textContent = 'Guild Management';
-      management.className = 'management-link';
-      if (page === 'guild-management.html') {
-        management.classList.add('active');
-        management.setAttribute('aria-current', 'page');
-      }
-
-      nav.append(officer, management);
+      nav.append(officer);
     });
   }
 
@@ -50,12 +50,16 @@
         return;
       }
 
-      const existing = [...document.scripts].find(s => s.src === new URL(src, location.href).href);
+      const absoluteSrc = new URL(src, location.href).href;
+      const existing = [...document.scripts]
+        .find(script => script.src === absoluteSrc);
+
       if (existing) {
-        if (!marker || window[marker]) resolve();
-        else {
-          existing.addEventListener('load', resolve, { once: true });
-          existing.addEventListener('error', reject, { once: true });
+        if (!marker || window[marker]) {
+          resolve();
+        } else {
+          existing.addEventListener('load', resolve, { once:true });
+          existing.addEventListener('error', reject, { once:true });
         }
         return;
       }
@@ -63,8 +67,8 @@
       const script = document.createElement('script');
       script.src = src;
       script.async = false;
-      script.addEventListener('load', resolve, { once: true });
-      script.addEventListener('error', reject, { once: true });
+      script.addEventListener('load', resolve, { once:true });
+      script.addEventListener('error', reject, { once:true });
       document.head.appendChild(script);
     });
   }
@@ -87,6 +91,7 @@
 
   async function signOutForExpiry(client) {
     sessionStorage.removeItem(DAY_KEY);
+
     try {
       await client.auth.signOut();
     } catch (error) {
@@ -95,8 +100,9 @@
 
     removeOfficerLinks();
 
-    const page = currentPage();
-    if (page === 'officers.html' || page === 'guild-management.html') {
+    // Any page in the unified Officer Portal must immediately fall back to its
+    // signed-out state when the officer session expires.
+    if (isOfficerPortalPage()) {
       location.reload();
     }
   }
@@ -126,7 +132,11 @@
     const cfg = window.ODIT_SUPABASE;
     const client = window.supabase.createClient(cfg.url, cfg.key);
 
-    const { data: { session }, error: sessionError } = await client.auth.getSession();
+    const {
+      data: { session },
+      error: sessionError
+    } = await client.auth.getSession();
+
     if (sessionError || !session) return;
 
     const storedDay = sessionStorage.getItem(DAY_KEY);
@@ -137,7 +147,11 @@
       return;
     }
 
-    const { data: isOfficer, error: officerError } = await client.rpc('is_officer');
+    const {
+      data: isOfficer,
+      error: officerError
+    } = await client.rpc('is_officer');
+
     if (officerError || !isOfficer) {
       removeOfficerLinks();
       return;
@@ -150,7 +164,7 @@
     addOfficerLinks();
     scheduleUtcMidnight(client);
 
-    client.auth.onAuthStateChange((event) => {
+    client.auth.onAuthStateChange(event => {
       if (event === 'SIGNED_OUT') {
         sessionStorage.removeItem(DAY_KEY);
         removeOfficerLinks();
