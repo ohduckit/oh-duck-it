@@ -27,11 +27,9 @@
 
     if (!overview || !looking || !philosophy || !trial || !faq) return;
 
-    // Keep the recruitment board in the right-hand column, as in the original
-    // ODit layout. Move the supporting information into a left-hand stack so
-    // Philosophy / Trial / FAQ are visible immediately instead of being pushed
-    // below a large spec board.
-    let left = overview.querySelector('.recruit-info-stack');
+    overview.classList.add('recruit-overview-v22');
+
+    let left = overview.querySelector(':scope > .recruit-info-stack');
     if (!left) {
       left = document.createElement('div');
       left.className = 'recruit-info-stack';
@@ -40,26 +38,33 @@
         el.classList?.contains('parchment') && el.id !== 'looking'
       );
 
+      overview.insertBefore(left, looking);
+
       if (intro) {
-        overview.insertBefore(left, intro);
         left.appendChild(intro);
-      } else {
-        overview.insertBefore(left, looking);
       }
     }
 
-    [philosophy, trial, faq].forEach(section => {
-      if (section.parentElement !== left) left.appendChild(section);
-    });
+    // These sections must live in the left stack, directly under Join Oh Duck It.
+    // Re-appending is intentional: it makes the layout self-healing if an older
+    // cached layout or another script has left them elsewhere in the page.
+    [philosophy, trial, faq].forEach(section => left.appendChild(section));
 
-    // Make the side navigation match what the section now actually represents.
+    // Recruitment is always the right-hand column.
+    if (looking.parentElement !== overview) {
+      overview.appendChild(looking);
+    }
+
     const lookingLink = document.querySelector('.side-nav a[href="#looking"]');
     if (lookingLink) {
       lookingLink.innerHTML = '<span class="ico">◎</span>Current Recruitment';
     }
   }
 
+  // Run immediately and once again after the browser has completed its first
+  // layout pass. This avoids any stale DOM ordering from the previous layout.
   arrangeRecruitmentPage();
+  requestAnimationFrame(arrangeRecruitmentPage);
 
   function loadSpecData() {
     return new Promise((resolve, reject) => {
@@ -164,22 +169,48 @@
       const roleItems = items.filter(item => item.role === role);
       if (!roleItems.length) return '';
 
+      const byClass = new Map();
+
+      roleItems.forEach(item => {
+        if (!byClass.has(item.className)) {
+          byClass.set(item.className, {
+            className:item.className,
+            classColor:item.classColor,
+            specs:[]
+          });
+        }
+        byClass.get(item.className).specs.push(item);
+      });
+
+      const classGroups = [...byClass.values()].sort((a,b) =>
+        a.className.localeCompare(b.className)
+      );
+
       return `
         <section class="recruit-role-section">
           <div class="recruit-role-head">
             <h4>${esc(role)}</h4>
-            <small>${roleItems.length} open ${roleItems.length === 1 ? 'spec' : 'specs'}</small>
+            <small>
+              ${classGroups.length} ${classGroups.length === 1 ? 'class' : 'classes'}
+              • ${roleItems.length} ${roleItems.length === 1 ? 'spec' : 'specs'}
+            </small>
           </div>
-          <div class="recruit-spec-public-grid">
-            ${roleItems.map(item => `
-              <div class="recruit-spec-public" style="--class-color:${esc(item.classColor)}">
-                <img src="${esc(item.icon)}" alt="" loading="lazy">
-                <div>
-                  <b>${esc(item.name)}</b>
-                  <small>${esc(item.className)}</small>
+
+          <div class="recruit-class-public-list">
+            ${classGroups.map(group => `
+              <article class="recruit-class-public" style="--class-color:${esc(group.classColor)}">
+                <div class="recruit-class-public-name">${esc(group.className)}</div>
+
+                <div class="recruit-class-spec-list">
+                  ${group.specs.map(item => `
+                    <div class="recruit-spec-chip ${esc(item.priority)}">
+                      <img src="${esc(item.icon)}" alt="" loading="lazy">
+                      <span class="recruit-spec-chip-name">${esc(item.name)}</span>
+                      <span class="recruit-priority-pill ${esc(item.priority)}">${priorityLabel(item.priority)}</span>
+                    </div>
+                  `).join('')}
                 </div>
-                <span class="recruit-priority-pill ${esc(item.priority)}">${priorityLabel(item.priority)}</span>
-              </div>
+              </article>
             `).join('')}
           </div>
         </section>
@@ -218,6 +249,7 @@
     `;
 
     ensureApplicationFit(priorities, settings?.exceptional_open !== false);
+    arrangeRecruitmentPage();
   }
 
   function fallbackLegacy() {

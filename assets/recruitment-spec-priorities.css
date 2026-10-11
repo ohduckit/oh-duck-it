@@ -482,3 +482,175 @@
     order:2;
   }
 }
+
+
+/* Recruitment public layout v2.2
+   Left: Join ODit -> Philosophy -> Trial Process -> FAQ
+   Right: compact class-grouped recruitment board */
+
+#overview.recruit-layout.recruit-overview-v22 {
+  grid-template-columns:minmax(0,1fr) minmax(370px,430px);
+  gap:14px;
+  align-items:start;
+}
+
+#overview.recruit-overview-v22 > .recruit-info-stack {
+  grid-column:1;
+  grid-row:1;
+}
+
+#overview.recruit-overview-v22 > #looking {
+  grid-column:2;
+  grid-row:1;
+}
+
+.recruit-info-stack {
+  display:grid;
+  gap:14px;
+}
+
+.recruit-info-stack > #philosophy,
+.recruit-info-stack > #trial,
+.recruit-info-stack > #faq {
+  margin:0;
+}
+
+/* Public board: one row per class, specs combined underneath. */
+#overview #looking .recruit-role-sections {
+  gap:11px;
+}
+
+#overview #looking .recruit-role-section {
+  padding-top:11px;
+}
+
+#overview #looking .recruit-role-head {
+  margin-bottom:7px;
+}
+
+#overview #looking .recruit-role-head h4 {
+  font-size:15px;
+}
+
+#overview #looking .recruit-role-head small {
+  font-size:10px;
+  white-space:nowrap;
+}
+
+.recruit-class-public-list {
+  display:grid;
+  gap:7px;
+}
+
+.recruit-class-public {
+  --class-color:#d3a34b;
+  border:1px solid rgba(83,54,22,.34);
+  border-left:3px solid var(--class-color);
+  border-radius:8px;
+  background:rgba(255,250,234,.31);
+  overflow:hidden;
+}
+
+.recruit-class-public-name {
+  padding:7px 9px 5px;
+  color:#39230f;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:13px;
+  font-weight:800;
+}
+
+.recruit-class-spec-list {
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  padding:0 7px 7px;
+}
+
+.recruit-spec-chip {
+  min-width:0;
+  display:grid;
+  grid-template-columns:24px minmax(0,1fr) auto;
+  align-items:center;
+  gap:6px;
+  padding:5px 6px;
+  border:1px solid rgba(83,54,22,.28);
+  border-radius:6px;
+  background:rgba(255,255,255,.24);
+  flex:1 1 165px;
+}
+
+.recruit-spec-chip img {
+  width:24px;
+  height:24px;
+  border-radius:4px;
+  object-fit:cover;
+  box-shadow:0 1px 3px rgba(0,0,0,.28);
+}
+
+.recruit-spec-chip-name {
+  min-width:0;
+  color:#3d2813;
+  font-size:11px;
+  font-weight:800;
+  line-height:1.15;
+}
+
+.recruit-spec-chip .recruit-priority-pill {
+  min-width:42px;
+  min-height:20px;
+  padding:2px 6px;
+  font-size:7.5px;
+}
+
+#overview #looking .recruit-board-head {
+  margin-bottom:12px;
+}
+
+#overview #looking .recruit-board-note {
+  font-size:12px;
+}
+
+#overview #looking .recruit-exceptional {
+  margin-top:11px;
+  padding:9px 10px;
+  font-size:11px;
+}
+
+/* The full application remains below the two-column introduction area. */
+#apply {
+  margin-top:14px !important;
+}
+
+@media(max-width:1100px) {
+  #overview.recruit-layout.recruit-overview-v22 {
+    grid-template-columns:minmax(0,1fr) minmax(340px,390px);
+  }
+}
+
+@media(max-width:900px) {
+  #overview.recruit-layout.recruit-overview-v22 {
+    grid-template-columns:1fr;
+  }
+
+  #overview.recruit-overview-v22 > .recruit-info-stack,
+  #overview.recruit-overview-v22 > #looking {
+    grid-column:1;
+    grid-row:auto;
+  }
+
+  #overview.recruit-overview-v22 > #looking {
+    order:2;
+  }
+}
+
+@media(max-width:520px) {
+  .recruit-spec-chip {
+    flex-basis:100%;
+  }
+
+  #overview #looking .recruit-role-head {
+    align-items:flex-start;
+    flex-direction:column;
+    gap:2px;
+  }
+}
