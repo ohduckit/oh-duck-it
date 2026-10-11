@@ -1,0 +1,143 @@
+/* ODit Guild Management — split module pages v1 */
+
+.management-shell {
+  align-items:start;
+}
+
+.management-side-nav {
+  position:sticky;
+  top:82px;
+  align-self:start;
+}
+
+.management-content {
+  min-width:0;
+}
+
+.management-page-head {
+  margin-bottom:14px;
+}
+
+.management-module-panel {
+  margin-top:0;
+}
+
+.management-dashboard-intro {
+  margin-bottom:14px;
+}
+
+.management-permission-note {
+  margin-top:14px;
+}
+
+.management-module-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.management-module-card {
+  min-height:118px;
+  display:grid;
+  grid-template-columns:46px minmax(0,1fr) auto;
+  gap:13px;
+  align-items:center;
+  padding:16px;
+  border:1px solid #65461f;
+  border-radius:11px;
+  background:linear-gradient(180deg,rgba(40,24,15,.97),rgba(22,14,9,.97));
+  box-shadow:0 7px 18px rgba(0,0,0,.22);
+  text-decoration:none;
+  color:#e9ddc8;
+  transition:border-color .15s ease, transform .15s ease, background .15s ease;
+}
+
+.management-module-card:hover {
+  transform:translateY(-1px);
+  border-color:#9b6e2c;
+  background:linear-gradient(180deg,rgba(51,31,17,.98),rgba(25,15,9,.98));
+}
+
+.management-module-card.planned {
+  opacity:.78;
+}
+
+.management-module-icon {
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border:1px solid #725126;
+  border-radius:50%;
+  background:#24170d;
+  color:#e4c66f;
+  font-size:20px;
+}
+
+.management-module-title-row {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.management-module-title-row h3 {
+  margin:0;
+  font-family:Georgia,"Times New Roman",serif;
+  color:#f0ce75;
+  font-size:18px;
+}
+
+.management-module-body p {
+  margin:6px 0 0;
+  color:#bbaa8d;
+  font-size:12px;
+  line-height:1.45;
+}
+
+.management-module-arrow {
+  color:#c89a45;
+  font-size:22px;
+}
+
+.management-side-nav a {
+  text-decoration:none;
+}
+
+.management-side-nav a.active {
+  border-color:#9b6e2c;
+  background:rgba(76,48,22,.72);
+  color:#f1d27d;
+}
+
+.management-side-nav a.active .ico {
+  color:#f1c95f;
+}
+
+.management-module-panel .portal-section-head {
+  margin-bottom:12px;
+}
+
+/* Keep individual module pages compact and readable. */
+.management-module-panel .structure-fields {
+  margin-top:14px;
+}
+
+@media(max-width:960px) {
+  .management-side-nav {
+    position:static;
+  }
+
+  .management-module-grid {
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:680px) {
+  .management-module-card {
+    grid-template-columns:40px minmax(0,1fr);
+  }
+
+  .management-module-arrow {
+    display:none;
+  }
+}
