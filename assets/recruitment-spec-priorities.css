@@ -1,0 +1,427 @@
+/* ODit Recruitment Spec Matrix v2 */
+
+.recruit-spec-board {
+  width:100%;
+}
+
+#overview.recruit-layout {
+  grid-template-columns:1fr;
+}
+
+.recruit-spec-board .recruit-board-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:16px;
+}
+
+.recruit-spec-board .recruit-board-head h3 {
+  margin:0 0 5px;
+}
+
+.recruit-board-note {
+  margin:0;
+  color:#654a2b;
+  line-height:1.45;
+}
+
+.recruit-board-legend {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  justify-content:flex-end;
+}
+
+.recruit-role-sections {
+  display:grid;
+  gap:13px;
+}
+
+.recruit-role-section {
+  border-top:1px solid rgba(91,59,22,.28);
+  padding-top:13px;
+}
+
+.recruit-role-section:first-child {
+  border-top:0;
+  padding-top:0;
+}
+
+.recruit-role-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:9px;
+}
+
+.recruit-role-head h4 {
+  margin:0;
+  color:#38230f;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:16px;
+}
+
+.recruit-role-head small {
+  color:#775c39;
+}
+
+.recruit-spec-public-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
+
+.recruit-spec-public {
+  --class-color:#d3a34b;
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr) auto;
+  align-items:center;
+  gap:9px;
+  min-height:57px;
+  padding:8px 9px;
+  border:1px solid rgba(83,54,22,.35);
+  border-left:3px solid var(--class-color);
+  border-radius:8px;
+  background:rgba(255,250,234,.35);
+}
+
+.recruit-spec-public img,
+.recruit-spec-admin-icon {
+  width:36px;
+  height:36px;
+  border-radius:6px;
+  object-fit:cover;
+  box-shadow:0 1px 4px rgba(0,0,0,.35);
+}
+
+.recruit-spec-public b {
+  display:block;
+  color:#39230f;
+  line-height:1.15;
+}
+
+.recruit-spec-public small {
+  display:block;
+  margin-top:3px;
+  color:#755b39;
+  line-height:1.2;
+}
+
+.recruit-priority-pill {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:58px;
+  min-height:24px;
+  padding:4px 8px;
+  border-radius:999px;
+  border:1px solid rgba(69,45,19,.45);
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.recruit-priority-pill.high {
+  color:#fff0db;
+  background:#8f301f;
+  border-color:#aa472f;
+}
+
+.recruit-priority-pill.medium {
+  color:#3f2a0e;
+  background:#e7bd62;
+  border-color:#b88732;
+}
+
+.recruit-priority-pill.low {
+  color:#20330f;
+  background:#c8d996;
+  border-color:#849958;
+}
+
+.recruit-priority-pill.closed {
+  color:#9b8e7b;
+  background:#2b241d;
+  border-color:#514536;
+}
+
+.recruit-exceptional {
+  margin-top:15px;
+  padding:11px 13px;
+  border:1px solid rgba(111,77,33,.38);
+  border-radius:8px;
+  background:rgba(236,211,157,.36);
+  color:#4e3417;
+  line-height:1.4;
+}
+
+.recruit-no-openings {
+  padding:14px;
+  border:1px dashed rgba(91,59,22,.4);
+  border-radius:8px;
+  color:#6d5331;
+}
+
+/* Application context badge */
+.recruit-fit {
+  grid-column:1/-1;
+  margin-top:2px;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid #5d4a33;
+  background:#21170f;
+  color:#cbb99c;
+  line-height:1.4;
+}
+
+.recruit-fit[hidden] {
+  display:none;
+}
+
+.recruit-fit strong {
+  color:#f0ce75;
+}
+
+.recruit-fit.high { border-color:#9f4b32; }
+.recruit-fit.medium { border-color:#a27a34; }
+.recruit-fit.low { border-color:#708146; }
+.recruit-fit.closed { border-color:#514536; }
+
+/* Officer matrix */
+.recruit-matrix-toolbar {
+  display:grid;
+  grid-template-columns:minmax(220px,1.3fr) 180px auto;
+  gap:10px;
+  align-items:end;
+  margin:15px 0;
+}
+
+.recruit-matrix-summary {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+  margin:12px 0 16px;
+}
+
+.recruit-matrix-stat {
+  padding:10px;
+  border:1px solid #55401f;
+  border-radius:8px;
+  background:#1b120c;
+  text-align:center;
+}
+
+.recruit-matrix-stat b {
+  display:block;
+  color:#f0ce75;
+  font-size:18px;
+}
+
+.recruit-matrix-stat span {
+  color:#aa9a81;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+
+.recruit-class-grid {
+  display:grid;
+  gap:12px;
+}
+
+.recruit-class-card {
+  --class-color:#d3a34b;
+  padding:13px;
+  border:1px solid #57401f;
+  border-left:4px solid var(--class-color);
+  border-radius:10px;
+  background:rgba(15,10,7,.72);
+}
+
+.recruit-class-card[hidden] {
+  display:none;
+}
+
+.recruit-class-title {
+  margin:0 0 10px;
+  color:var(--class-color);
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:17px;
+}
+
+.recruit-admin-spec-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
+
+.recruit-admin-spec {
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr);
+  gap:9px;
+  align-items:center;
+  min-height:103px;
+  padding:9px;
+  border:1px solid #4c3a22;
+  border-radius:8px;
+  background:#1b130d;
+}
+
+.recruit-admin-spec[hidden] {
+  display:none;
+}
+
+.recruit-admin-spec.active-priority {
+  border-color:#80602a;
+  background:#23180e;
+}
+
+.recruit-admin-spec-name b {
+  display:block;
+  color:#eadbc3;
+  line-height:1.15;
+}
+
+.recruit-admin-spec-name small {
+  display:block;
+  margin-top:3px;
+  color:#9f917c;
+  font-size:10px;
+}
+
+.recruit-admin-priority {
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border:1px solid #574326;
+  border-radius:6px;
+  overflow:hidden;
+}
+
+.recruit-admin-priority button {
+  min-height:31px;
+  padding:5px 4px;
+  border:0;
+  border-right:1px solid #574326;
+  background:#2b241d;
+  color:#c0b39f;
+  font:inherit;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.recruit-admin-priority button:last-child {
+  border-right:0;
+}
+
+.recruit-admin-priority button:hover {
+  background:#3a2c1d;
+}
+
+.recruit-admin-priority button.selected[data-priority="closed"] {
+  background:#4a4238;
+  color:#fff;
+}
+
+.recruit-admin-priority button.selected[data-priority="low"] {
+  background:#536635;
+  color:#f4ffe5;
+}
+
+.recruit-admin-priority button.selected[data-priority="medium"] {
+  background:#8e6825;
+  color:#fff2cf;
+}
+
+.recruit-admin-priority button.selected[data-priority="high"] {
+  background:#8f301f;
+  color:#fff0db;
+}
+
+.recruit-priority-settings {
+  display:grid;
+  grid-template-columns:1fr 1.3fr;
+  gap:12px;
+  margin:16px 0;
+}
+
+.recruit-exceptional-toggle {
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:9px 11px;
+  border:1px solid #594221;
+  border-radius:8px;
+  background:#1c130d;
+}
+
+.recruit-exceptional-toggle input {
+  width:18px;
+  height:18px;
+  accent-color:#d6a23d;
+}
+
+.recruit-savebar {
+  position:sticky;
+  bottom:10px;
+  z-index:4;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:15px;
+  padding:10px;
+  border:1px solid #765425;
+  border-radius:9px;
+  background:rgba(27,17,10,.96);
+  box-shadow:0 7px 18px rgba(0,0,0,.35);
+}
+
+.recruit-unsaved {
+  color:#d5bd91;
+  font-size:12px;
+}
+
+.recruit-unsaved.clean {
+  color:#8f9d79;
+}
+
+@media(max-width:1100px) {
+  .recruit-spec-public-grid,
+  .recruit-admin-spec-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
+@media(max-width:760px) {
+  .recruit-board-head {
+    flex-direction:column;
+  }
+
+  .recruit-board-legend {
+    justify-content:flex-start;
+  }
+
+  .recruit-spec-public-grid,
+  .recruit-admin-spec-grid,
+  .recruit-matrix-toolbar,
+  .recruit-priority-settings {
+    grid-template-columns:1fr;
+  }
+
+  .recruit-matrix-summary {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .recruit-savebar {
+    position:static;
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
