@@ -424,3 +424,40 @@
 
   .roster-form-grid .full { grid-column:auto; }
 }
+
+
+/* Roster v1.1 — officer-controlled visual ordering */
+.officer-roster-actions {
+  display:grid;
+  grid-template-columns:34px 34px auto;
+  gap:5px;
+  justify-content:end;
+  align-items:center;
+}
+
+.officer-roster-actions .roster-move-up,
+.officer-roster-actions .roster-move-down {
+  min-width:34px;
+  width:34px;
+  padding:6px 0;
+  font-weight:900;
+  text-align:center;
+}
+
+.officer-roster-actions .roster-move-up:disabled,
+.officer-roster-actions .roster-move-down:disabled {
+  opacity:.32;
+  cursor:not-allowed;
+}
+
+@media(max-width:760px) {
+  .officer-roster-actions {
+    grid-template-columns:30px 30px auto;
+  }
+
+  .officer-roster-actions .roster-move-up,
+  .officer-roster-actions .roster-move-down {
+    min-width:30px;
+    width:30px;
+  }
+}

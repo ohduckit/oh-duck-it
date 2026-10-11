@@ -14,6 +14,8 @@
     inactive:'Inactive', not_raiding:'Not raiding'
   };
 
+  const ROLE_ORDER = ['Tank','Healer','Melee DPS','Ranged DPS','Flexible'];
+
   const esc = (s='') => String(s).replace(/[&<>'"]/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
   }[c]));
@@ -42,6 +44,15 @@
     return Number.isFinite(n) ? n : null;
   }
 
+  function rowSort(a, b) {
+    const roleA = ROLE_ORDER.indexOf(a.raid_role);
+    const roleB = ROLE_ORDER.indexOf(b.raid_role);
+
+    return (roleA === -1 ? 999 : roleA) - (roleB === -1 ? 999 : roleB) ||
+      Number(a.sort_order || 0) - Number(b.sort_order || 0) ||
+      String(a.player_name || '').localeCompare(String(b.player_name || ''));
+  }
+
   function hydrateRows() {
     rows = members.map(member => {
       const character =
@@ -49,7 +60,7 @@
         characters.find(c => c.member_id === member.id) ||
         null;
       return { ...member, character };
-    });
+    }).sort(rowSort);
   }
 
   function renderStats() {
@@ -78,7 +89,7 @@
       return (!search || haystack.includes(search)) &&
         (!status || row.raid_status === status) &&
         (!role || row.raid_role === role);
-    });
+    }).sort(rowSort);
   }
 
   function renderList() {
@@ -95,7 +106,7 @@
       const classColor = CLASS_COLORS[ch.class_name] || '#b88635';
 
       return `
-        <article class="officer-roster-row" style="--class-color:${esc(classColor)}">
+        <article class="officer-roster-row" data-member-id="${esc(row.id)}" style="--class-color:${esc(classColor)}">
           ${image ? `<img src="${esc(image)}" alt="">` : '<div></div>'}
           <div>
             <b>${esc(row.player_name)}</b>
@@ -109,6 +120,8 @@
             ${Number(ch.item_level) > 0 ? `${Number(ch.item_level).toFixed(1)} ilvl` : '—'}
           </div>
           <div class="officer-roster-actions">
+            <button class="btn roster-move-up" type="button" data-id="${esc(row.id)}" title="Move up within ${esc(row.raid_role)}">↑</button>
+            <button class="btn roster-move-down" type="button" data-id="${esc(row.id)}" title="Move down within ${esc(row.raid_role)}">↓</button>
             <button class="btn roster-edit" type="button" data-id="${esc(row.id)}">Edit</button>
           </div>
         </article>
@@ -118,6 +131,96 @@
     list.querySelectorAll('.roster-edit').forEach(button => {
       button.addEventListener('click', () => openEditor(button.dataset.id));
     });
+
+    list.querySelectorAll('.roster-move-up').forEach(button => {
+      button.addEventListener('click', () => moveMember(button.dataset.id, -1));
+    });
+
+    list.querySelectorAll('.roster-move-down').forEach(button => {
+      button.addEventListener('click', () => moveMember(button.dataset.id, 1));
+    });
+
+    updateMoveButtonState();
+  }
+
+  function updateMoveButtonState() {
+    const searchActive = Boolean(String(document.getElementById('rosterSearch').value || '').trim());
+    const statusActive = Boolean(document.getElementById('rosterStatusFilter').value);
+    const roleActive = Boolean(document.getElementById('rosterRoleFilter').value);
+    const filtered = searchActive || statusActive || roleActive;
+
+    list.querySelectorAll('.roster-move-up,.roster-move-down').forEach(button => {
+      button.disabled = filtered;
+      if (filtered) {
+        button.title = 'Clear roster filters before reordering.';
+      }
+    });
+
+    if (filtered) return;
+
+    for (const role of ROLE_ORDER) {
+      const roleRows = rows.filter(row => row.raid_role === role).sort(rowSort);
+
+      roleRows.forEach((row, index) => {
+        const article = list.querySelector(`.officer-roster-row[data-member-id="${CSS.escape(row.id)}"]`);
+        if (!article) return;
+
+        const up = article.querySelector('.roster-move-up');
+        const down = article.querySelector('.roster-move-down');
+
+        if (up) up.disabled = index === 0;
+        if (down) down.disabled = index === roleRows.length - 1;
+      });
+    }
+  }
+
+  async function moveMember(memberId, direction) {
+    hideMessage();
+
+    const row = rows.find(item => item.id === memberId);
+    if (!row) return;
+
+    const roleRows = rows
+      .filter(item => item.raid_role === row.raid_role)
+      .sort(rowSort);
+
+    const index = roleRows.findIndex(item => item.id === memberId);
+    const targetIndex = index + direction;
+
+    if (index < 0 || targetIndex < 0 || targetIndex >= roleRows.length) return;
+
+    const target = roleRows[targetIndex];
+    const currentOrder = Number(row.sort_order || 0);
+    const targetOrder = Number(target.sort_order || 0);
+
+    // If legacy data happens to contain matching sort values, create deterministic
+    // temporary positions before normalising both rows.
+    const rowOrder = currentOrder === targetOrder ? (index + 1) * 10 : currentOrder;
+    const swapOrder = currentOrder === targetOrder ? (targetIndex + 1) * 10 : targetOrder;
+
+    const buttons = list.querySelectorAll('.roster-move-up,.roster-move-down');
+    buttons.forEach(button => button.disabled = true);
+
+    try {
+      const { error:firstError } = await client
+        .from('raid_roster_members')
+        .update({ sort_order: swapOrder })
+        .eq('id', row.id);
+
+      if (firstError) throw firstError;
+
+      const { error:secondError } = await client
+        .from('raid_roster_members')
+        .update({ sort_order: rowOrder })
+        .eq('id', target.id);
+
+      if (secondError) throw secondError;
+
+      await load();
+    } catch (error) {
+      show(`Could not reorder roster: ${error?.message || error}`, 'error');
+      await load();
+    }
   }
 
   async function load() {
@@ -183,7 +286,6 @@
     setField('rosterRace', ch.race_name || '');
     setField('rosterRealm', ch.realm || '');
     setField('rosterRegion', ch.region || 'EU');
-    setField('rosterSortOrder', row?.sort_order ?? 100);
     setField('rosterLevel', ch.level ?? '');
     setField('rosterItemLevel', ch.item_level ?? '');
     setField('rosterMplusScore', ch.mplus_score ?? '');
@@ -198,6 +300,16 @@
     dialog.showModal();
   }
 
+  function nextSortOrder(role, excludeMemberId='') {
+    const roleRows = rows
+      .filter(item => item.raid_role === role && item.id !== excludeMemberId)
+      .sort(rowSort);
+
+    if (!roleRows.length) return 10;
+
+    return Math.max(...roleRows.map(item => Number(item.sort_order || 0))) + 10;
+  }
+
   async function save(event) {
     event.preventDefault();
     hideMessage();
@@ -205,12 +317,18 @@
     const memberId = document.getElementById('rosterMemberId').value;
     const characterId = document.getElementById('rosterCharacterId').value;
 
+    const selectedRole = document.getElementById('rosterRole').value;
+    const existingRow = memberId ? rows.find(item => item.id === memberId) : null;
+    const roleChanged = Boolean(existingRow && existingRow.raid_role !== selectedRole);
+
     const memberPayload = {
       player_name: document.getElementById('rosterPlayerName').value.trim(),
       raid_status: document.getElementById('rosterStatus').value,
-      raid_role: document.getElementById('rosterRole').value,
+      raid_role: selectedRole,
       public_visible: document.getElementById('rosterPublicVisible').checked,
-      sort_order: Number(document.getElementById('rosterSortOrder').value || 100),
+      sort_order: existingRow && !roleChanged
+        ? Number(existingRow.sort_order || 10)
+        : nextSortOrder(selectedRole, memberId),
       officer_note: document.getElementById('rosterOfficerNote').value.trim() || null
     };
 
