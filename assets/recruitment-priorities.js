@@ -156,66 +156,68 @@
       .map(spec => ({ ...spec, priority: priorities[spec.key] || 'closed' }))
       .filter(spec => spec.priority !== 'closed');
 
+    // Public recruitment is class-led, not role-led.
+    // Sort classes by their strongest current recruitment need, then by the
+    // number of higher-priority specs they contain. Within each class, specs
+    // are sorted High -> Medium -> Low.
     const priorityWeight = { high:3, medium:2, low:1, closed:0 };
-    items.sort((a,b) =>
-      priorityWeight[b.priority] - priorityWeight[a.priority] ||
-      a.className.localeCompare(b.className) ||
-      a.name.localeCompare(b.name)
-    );
 
-    const roleOrder = ['Tank','Healer','Melee DPS','Ranged DPS'];
+    const byClass = new Map();
 
-    const sections = roleOrder.map(role => {
-      const roleItems = items.filter(item => item.role === role);
-      if (!roleItems.length) return '';
+    items.forEach(item => {
+      if (!byClass.has(item.className)) {
+        byClass.set(item.className, {
+          className:item.className,
+          classColor:item.classColor,
+          specs:[]
+        });
+      }
+      byClass.get(item.className).specs.push(item);
+    });
 
-      const byClass = new Map();
-
-      roleItems.forEach(item => {
-        if (!byClass.has(item.className)) {
-          byClass.set(item.className, {
-            className:item.className,
-            classColor:item.classColor,
-            specs:[]
-          });
-        }
-        byClass.get(item.className).specs.push(item);
-      });
-
-      const classGroups = [...byClass.values()].sort((a,b) =>
-        a.className.localeCompare(b.className)
+    const classGroups = [...byClass.values()].map(group => {
+      group.specs.sort((a,b) =>
+        priorityWeight[b.priority] - priorityWeight[a.priority] ||
+        a.name.localeCompare(b.name)
       );
 
-      return `
-        <section class="recruit-role-section">
-          <div class="recruit-role-head">
-            <h4>${esc(role)}</h4>
-            <small>
-              ${classGroups.length} ${classGroups.length === 1 ? 'class' : 'classes'}
-              • ${roleItems.length} ${roleItems.length === 1 ? 'spec' : 'specs'}
-            </small>
-          </div>
+      group.maxPriority = Math.max(
+        ...group.specs.map(spec => priorityWeight[spec.priority] || 0)
+      );
+      group.highCount = group.specs.filter(spec => spec.priority === 'high').length;
+      group.mediumCount = group.specs.filter(spec => spec.priority === 'medium').length;
+      group.lowCount = group.specs.filter(spec => spec.priority === 'low').length;
 
-          <div class="recruit-class-public-list">
-            ${classGroups.map(group => `
-              <article class="recruit-class-public" style="--class-color:${esc(group.classColor)}">
-                <div class="recruit-class-public-name">${esc(group.className)}</div>
+      return group;
+    }).sort((a,b) =>
+      b.maxPriority - a.maxPriority ||
+      b.highCount - a.highCount ||
+      b.mediumCount - a.mediumCount ||
+      b.lowCount - a.lowCount ||
+      a.className.localeCompare(b.className)
+    );
 
-                <div class="recruit-class-spec-list">
-                  ${group.specs.map(item => `
-                    <div class="recruit-spec-chip ${esc(item.priority)}">
-                      <img src="${esc(item.icon)}" alt="" loading="lazy">
-                      <span class="recruit-spec-chip-name">${esc(item.name)}</span>
-                      <span class="recruit-priority-pill ${esc(item.priority)}">${priorityLabel(item.priority)}</span>
-                    </div>
-                  `).join('')}
-                </div>
-              </article>
-            `).join('')}
-          </div>
-        </section>
-      `;
-    }).join('');
+    const sections = `
+      <section class="recruit-priority-class-section">
+        <div class="recruit-priority-class-list">
+          ${classGroups.map(group => `
+            <article class="recruit-class-public" style="--class-color:${esc(group.classColor)}">
+              <div class="recruit-class-public-name">${esc(group.className)}</div>
+
+              <div class="recruit-class-spec-list">
+                ${group.specs.map(item => `
+                  <div class="recruit-spec-chip ${esc(item.priority)}">
+                    <img src="${esc(item.icon)}" alt="" loading="lazy">
+                    <span class="recruit-spec-chip-name">${esc(item.name)}</span>
+                    <span class="recruit-priority-pill ${esc(item.priority)}">${priorityLabel(item.priority)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </article>
+          `).join('')}
+        </div>
+      </section>
+    `;
 
     const high = items.filter(i => i.priority === 'high').length;
     const medium = items.filter(i => i.priority === 'medium').length;
@@ -238,7 +240,9 @@
       </div>
 
       <div class="recruit-role-sections">
-        ${sections || '<div class="recruit-no-openings">No specific class/spec priorities are currently listed.</div>'}
+        ${items.length
+          ? sections
+          : '<div class="recruit-no-openings">No specific class/spec priorities are currently listed.</div>'}
       </div>
 
       ${settings?.exceptional_open !== false ? `

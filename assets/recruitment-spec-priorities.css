@@ -724,3 +724,78 @@
     grid-template-columns:1fr 1fr;
   }
 }
+
+
+/* Recruitment v2.4 — unified class list, priority-led ordering */
+
+/* Role sections are no longer shown publicly. Recruitment is presented as one
+   class-led list, ordered by the strongest currently-open spec in each class. */
+#overview #looking .recruit-role-section,
+#overview #looking .recruit-role-head {
+  display:none !important;
+}
+
+.recruit-priority-class-section {
+  margin-top:2px;
+}
+
+.recruit-priority-class-list {
+  display:grid;
+  gap:7px;
+}
+
+/* Slightly larger than v2.3: enough visual identity without dominating. */
+#overview #looking .recruit-spec-chip {
+  grid-template-columns:26px minmax(0,1fr) auto;
+  min-height:34px;
+  padding:4px 6px;
+  gap:6px;
+}
+
+#overview #looking .recruit-spec-chip img {
+  width:26px;
+  height:26px;
+  border-radius:4px;
+}
+
+#overview #looking .recruit-spec-chip-name {
+  font-size:10px;
+}
+
+/* Keep two specs side-by-side where space allows. */
+#overview #looking .recruit-class-spec-list {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px;
+}
+
+/* Give the class label enough room now that the spec tiles are a touch larger. */
+#overview #looking .recruit-class-public {
+  grid-template-columns:92px minmax(0,1fr);
+  gap:8px;
+  padding:6px;
+}
+
+/* Priority itself carries the visual hierarchy. */
+#overview #looking .recruit-spec-chip.high {
+  border-color:rgba(143,48,31,.48);
+  background:rgba(143,48,31,.07);
+}
+
+#overview #looking .recruit-spec-chip.medium {
+  border-color:rgba(142,104,37,.42);
+}
+
+#overview #looking .recruit-spec-chip.low {
+  border-color:rgba(83,102,53,.42);
+  opacity:.9;
+}
+
+@media(max-width:520px) {
+  #overview #looking .recruit-class-public {
+    grid-template-columns:1fr;
+  }
+
+  #overview #looking .recruit-class-spec-list {
+    grid-template-columns:1fr 1fr;
+  }
+}
