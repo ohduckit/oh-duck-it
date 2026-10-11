@@ -801,18 +801,54 @@
 }
 
 
-/* Recruitment v2.4.1 — larger public spec icons */
-#overview #looking .recruit-spec-chip {
-  grid-template-columns:52px minmax(0,1fr) auto;
-  min-height:60px;
-  padding:6px 8px;
+/* Recruitment v2.4.2 — visual readability pass
+   - Larger typography in Current Recruitment
+   - Spec icons reduced by roughly 1/4 from the current larger pass
+   - Priority pills slightly larger and easier to read */
+
+#overview #looking .recruit-board-head h3 {
+  font-size:18px;
+  line-height:1.15;
+}
+
+#overview #looking .recruit-board-note {
+  font-size:13px;
+  line-height:1.45;
+}
+
+#overview #looking .recruit-board-legend {
   gap:8px;
 }
 
-#overview #looking .recruit-spec-chip img {
-  width:52px;
-  height:52px;
+#overview #looking .recruit-class-public {
+  grid-template-columns:102px minmax(0,1fr);
+  gap:9px;
+  padding:8px;
+}
+
+#overview #looking .recruit-class-public-name {
+  padding:6px 5px;
+  font-size:15px;
+  line-height:1.15;
+}
+
+#overview #looking .recruit-class-spec-list {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+}
+
+#overview #looking .recruit-spec-chip {
+  grid-template-columns:20px minmax(0,1fr) auto;
+  min-height:32px;
+  padding:5px 7px;
+  gap:7px;
   border-radius:6px;
+}
+
+#overview #looking .recruit-spec-chip img {
+  width:20px;
+  height:20px;
+  border-radius:4px;
 }
 
 #overview #looking .recruit-spec-chip-name {
@@ -820,10 +856,23 @@
   line-height:1.15;
 }
 
-#overview #looking .recruit-class-public {
-  grid-template-columns:110px minmax(0,1fr);
-  gap:10px;
-  padding:8px;
+#overview #looking .recruit-spec-chip .recruit-priority-pill {
+  min-width:46px;
+  min-height:20px;
+  padding:2px 7px;
+  font-size:7.5px;
+  letter-spacing:.07em;
+}
+
+#overview #looking .recruit-exceptional {
+  font-size:12px;
+  line-height:1.45;
+}
+
+@media(max-width:1180px) and (min-width:901px) {
+  #overview #looking .recruit-class-public {
+    grid-template-columns:95px minmax(0,1fr);
+  }
 }
 
 @media(max-width:520px) {
@@ -831,7 +880,7 @@
     grid-template-columns:1fr;
   }
 
-  #overview #looking .recruit-class-spec-list {
-    grid-template-columns:1fr;
+  #overview #looking .recruit-class-public-name {
+    font-size:14px;
   }
 }
