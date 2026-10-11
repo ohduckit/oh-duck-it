@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Oh Duck It — Page moved</title>
+<script>
+(() => {
+  const map = {
+    'guild-management.html':'officers.html',
+    'guild-management-roles.html':'officer-roles.html',
+    'guild-management-recruitment-ownership.html':'officer-recruitment-ownership.html',
+    'guild-management-progression.html':'officer-progression.html',
+    'guild-management-recruitment.html':'officer-recruitment-priorities.html',
+    'guild-management-resources.html':'officer-resources.html',
+    'guild-management-permissions.html':'officer-permissions.html',
+    'guild-management-guild-info.html':'officer-guild-info.html',
+    'guild-management-logs.html':'officer-logs.html',
+    'guild-management-settings.html':'officer-settings.html'
+  };
+
+  const file = location.pathname.split('/').pop();
+  const target = map[file];
+
+  if (target) {
+    const base = location.pathname.slice(0, location.pathname.lastIndexOf('/') + 1);
+    location.replace(base + target + location.search + location.hash);
+  }
+})();
+</script>
+<style>
+body{font-family:system-ui,sans-serif;background:#170e09;color:#eadbc3;margin:0;padding:40px}
+main{max-width:620px;margin:auto;padding:28px;border:1px solid #765222;border-radius:12px;background:#24160e}
+a{color:#f0ce75}
+</style>
+</head>
+<body>
+<main>
+<h1>That page has moved</h1>
+<p>The requested ODit page could not be found.</p>
+<p><a href="index.html">Return to Oh Duck It</a></p>
+</main>
+</body>
+</html>
