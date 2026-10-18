@@ -2,11 +2,12 @@
   const message = document.getElementById('structureMessage');
   const councilBox = document.getElementById('structureCouncil');
   const mentorsBox = document.getElementById('structureMentors');
-  const addCouncilBtn = document.getElementById('addCouncilMember');
+  const officerRankFilter = document.getElementById('officerRankFilter');
+  const mentorRankFilter = document.getElementById('mentorRankFilter');
   const addMentorBtn = document.getElementById('addStructureMentor');
   const saveBtn = document.getElementById('saveGuildStructure');
 
-  if (!message || !councilBox || !mentorsBox || !addCouncilBtn || !addMentorBtn || !saveBtn) return;
+  if (!message || !councilBox || !mentorsBox || !officerRankFilter || !mentorRankFilter || !addMentorBtn || !saveBtn) return;
 
   const specData = window.ODIT_RECRUITMENT_SPEC_DATA || { classes: [] };
   const esc = (s = '') => String(s).replace(/[&<>'"]/g, c => ({
@@ -19,12 +20,66 @@
   let loaded = false;
   let directory = [];
 
-  // Only guild ranks with "Officer" in their title are offered for new
-  // appointments (e.g. "Officer", "Officer Alt", "Senior Officer").
-  // Keep the full directory in memory so existing non-Officer assignments
-  // can be displayed and saved without being silently removed.
-  const isOfficerRank = character => /\bofficers?\b/i.test(String(character.guild_rank_text || ''));
-  const officerCharacters = () => directory.filter(isOfficerRank);
+  // ODit's agreed hierarchy is 1-based. Blizzard commonly numbers guild ranks
+  // from zero, so labels take precedence; numeric IDs are mapped carefully.
+  const RANKS = [
+    'The Big Duck', 'Wing Commander', 'Flight Leader', 'The Flock',
+    'Duckling', 'Pond Dweller', 'Decoy', 'Sitting Duck'
+  ];
+  const DEFAULT_OFFICER_FILTER = 'upto:2'; // Rank 2, Wing Commander and above
+  const DEFAULT_MENTOR_FILTER = 'upto:4';  // Rank 4, The Flock and above
+  let numericRankOffset = 1;
+
+  function rankOrdinal(character) {
+    const label = norm(character.guild_rank_text || '');
+    const byName = RANKS.findIndex(name => label === norm(name) ||
+      (label.includes(norm(name)) && !RANKS.some(other => other !== name &&
+        norm(other).includes(norm(name)))));
+    if (byName >= 0) return byName + 1;
+    const n = Number(character.guild_rank);
+    return character.guild_rank != null && Number.isInteger(n) && n + numericRankOffset >= 1 && n + numericRankOffset <= RANKS.length
+      ? n + numericRankOffset : null;
+  }
+
+  function detectNumbering() {
+    for (const c of directory) {
+      const nameIndex = RANKS.findIndex(name => norm(name) === norm(c.guild_rank_text || ''));
+      if (nameIndex !== -1 && c.guild_rank !== null && c.guild_rank !== undefined) {
+        const n = Number(c.guild_rank);
+        if (Number.isInteger(n) && (nameIndex + 1 - n === 0 || nameIndex + 1 - n === 1)) {
+          numericRankOffset = nameIndex + 1 - n;
+          return;
+        }
+      }
+    }
+    numericRankOffset = directory.some(c => c.guild_rank != null && Number(c.guild_rank) === 0) ? 1
+      : directory.some(c => c.guild_rank != null && Number(c.guild_rank) === 8) ? 0 : 1;
+  }
+
+  function matchesFilter(character, filter) {
+    if (filter === 'all') return true;
+    const ordinal = rankOrdinal(character);
+    if (ordinal === null) return false;
+    const [mode, n] = String(filter).split(':');
+    return mode === 'exact' ? ordinal === Number(n) : ordinal <= Number(n);
+  }
+
+  function filterOptions(defaultFilter) {
+    return [
+      ...RANKS.map((name, i) => {
+        const code = `upto:${i + 1}`;
+        return `<option value="${code}" ${code === defaultFilter ? 'selected' : ''}>Rank ${i + 1}: ${esc(name)} & above</option>`;
+      }),
+      '<option value="all">All guild ranks</option>',
+      ...RANKS.map((name, i) => `<option value="exact:${i + 1}">Only rank ${i + 1}: ${esc(name)}</option>`)
+    ].join('');
+  }
+
+  officerRankFilter.innerHTML = filterOptions(DEFAULT_OFFICER_FILTER);
+  mentorRankFilter.innerHTML = filterOptions(DEFAULT_MENTOR_FILTER);
+
+  const filterFor = select => select.classList.contains('mentor-character')
+    ? mentorRankFilter.value : officerRankFilter.value;
 
   const show = (text, kind = 'info') => {
     message.hidden = false;
@@ -66,19 +121,18 @@
     return `<option value="${esc(c.id)}" ${String(c.id) === selected ? 'selected' : ''}>${esc(label)}</option>`;
   }
 
-  function directoryOptions(value = null) {
+  function directoryOptions(value = null, filter = DEFAULT_OFFICER_FILTER) {
     const selected = resolveStored(value);
     const keepLegacy = !!value && !selected;
     const existingCharacter = selected ? directoryRecord(selected) : null;
     const options = ['<option value="">— Not appointed —</option>'];
 
-    // Existing assignments to a non-Officer remain visible in their current
-    // field, but non-Officers cannot be chosen for any new appointment.
-    if (existingCharacter && !isOfficerRank(existingCharacter)) {
-      options.push(characterOption(existingCharacter, selected, 'Current assignment (not Officer rank)'));
+    // Never discard an existing appointment just because its rank is currently
+    // hidden by the filter. The officer must explicitly remove or change it.
+    if (existingCharacter && !matchesFilter(existingCharacter, filter)) {
+      options.push(characterOption(existingCharacter, selected, 'Current selection (outside filter)'));
     }
-    options.push(...officerCharacters().map(c => characterOption(c, selected)));
-
+    options.push(...directory.filter(c => matchesFilter(c, filter)).map(c => characterOption(c, selected)));
     if (keepLegacy) {
       options.unshift(`<option value="__keep__" selected>Keep: ${esc(legacyLabel(value))}</option>`);
     }
@@ -87,7 +141,16 @@
 
   function applyLegacy(select, value) {
     select.dataset.legacy = value ? JSON.stringify(value) : '';
-    select.innerHTML = directoryOptions(value);
+    select.innerHTML = directoryOptions(value, filterFor(select));
+  }
+
+  function refreshCharacterOptions() {
+    document.querySelectorAll('[data-structure-owner],.mentor-character').forEach(select => {
+      const existing = getSelected(select);
+      applyLegacy(select, existing);
+    });
+    updateCouncilPreview();
+    updateHelp();
   }
 
   function getSelected(select) {
@@ -100,15 +163,43 @@
     return record ? { directory_character_id: String(record.id) } : null;
   }
 
-  function addCouncilRow(value = null) {
-    const row = document.createElement('div');
-    row.className = 'council-admin-row';
-    row.innerHTML = `
-      <div class="field"><label>Council character</label><select class="council-character"></select></div>
-      <button class="btn danger remove-council-member" type="button">Remove</button>`;
-    applyLegacy(row.querySelector('.council-character'), value);
-    row.querySelector('.remove-council-member')?.addEventListener('click', () => row.remove());
-    councilBox.appendChild(row);
+  // The Tavern Council IS the set of appointed officer-role holders.
+  // This is a read-only live preview; there is no second Council roster.
+  function councilFromSelections() {
+    const people = new Map();
+    document.querySelectorAll('[data-structure-owner]').forEach(select => {
+      const value = getSelected(select);
+      if (!value) return;
+      const key = value.directory_character_id ? `dir:${value.directory_character_id}`
+        : `legacy:${JSON.stringify(value)}`;
+      const label = select.closest('.field')?.querySelector('label')?.textContent?.trim() || 'Officer';
+      if (!people.has(key)) people.set(key, { value, roles: [] });
+      people.get(key).roles.push(label);
+    });
+    return [...people.values()];
+  }
+
+  function updateCouncilPreview() {
+    const entries = councilFromSelections();
+    if (!entries.length) {
+      councilBox.innerHTML = '<p class="help">No officer roles have been assigned yet. Council members will appear here as you appoint officers below.</p>';
+      return;
+    }
+    councilBox.innerHTML = entries.map(item => {
+      const record = item.value.directory_character_id
+        ? directoryRecord(item.value.directory_character_id) : null;
+      const name = record?.character_name || legacyLabel(item.value);
+      return `<div class="council-preview-entry"><strong>${esc(name)}</strong>
+        <span>${esc(item.roles.join(' · '))}</span></div>`;
+    }).join('');
+  }
+
+  function updateHelp() {
+    const el = document.querySelector('.structure-admin > p.help');
+    if (!el) return;
+    const officers = directory.filter(c => matchesFilter(c, officerRankFilter.value)).length;
+    const mentors = directory.filter(c => matchesFilter(c, mentorRankFilter.value)).length;
+    el.textContent = `${officers} characters match the officer rank filter; ${mentors} match the mentor filter (${directory.length} in the Guild Directory). Rank filters only change available choices, not saved appointments.`;
   }
 
   function classOptions(selected) {
@@ -170,10 +261,7 @@
       applyLegacy(select, assignments[key] ?? (key === 'melee-dps-lead' ? oldDps : null));
     });
 
-    councilBox.innerHTML = '';
-    const council = Array.isArray(structure?.council) ? structure.council : [];
-    council.forEach(addCouncilRow);
-    if (!council.length) addCouncilRow();
+    updateCouncilPreview();
 
     mentorsBox.innerHTML = '';
     const mentors = Array.isArray(structure?.mentors) ? structure.mentors : [];
@@ -194,6 +282,7 @@
       return;
     }
     directory = Array.isArray(dirResult.data) ? dirResult.data : [];
+    detectNumbering();
     if (!directory.length) {
       show('Guild Directory is empty. Run the guild-directory-sync Edge Function before editing roles.', 'info');
       return;
@@ -202,12 +291,9 @@
     loaded = true;
     saveBtn.disabled = false;
 
-    const help = document.querySelector('.structure-admin > p.help');
-    const officers = officerCharacters().length;
-    if (help) help.textContent =
-      `Select from ${officers} Officer-ranked characters (${directory.length} total in the Guild Directory). Existing appointments remain unchanged until edited.`;
-    if (!officers) {
-      show('No characters with an Officer guild rank were found. Check the guild rank labels in Guilds of WoW; existing appointments are preserved.', 'info');
+    updateHelp();
+    if (!directory.some(c => matchesFilter(c, DEFAULT_OFFICER_FILTER))) {
+      show('No characters match Wing Commander and above. Use the officer rank filter to inspect the imported guild ranks. Existing appointments are preserved.', 'info');
     }
   }
 
@@ -218,11 +304,7 @@
     document.querySelectorAll('[data-structure-owner]').forEach(select => {
       assignments[select.dataset.structureOwner] = getSelected(select);
     });
-    const council = [...councilBox.querySelectorAll('.council-character')]
-      .map(getSelected).filter(Boolean);
-    const uniqueCouncil = council.filter((value, index) =>
-      council.findIndex(other => JSON.stringify(other) === JSON.stringify(value)) === index
-    );
+    const uniqueCouncil = councilFromSelections().map(item => item.value);
     const mentors = [...mentorsBox.querySelectorAll('.mentor-admin-row')].map(row => {
       const existing = getSelected(row.querySelector('.mentor-character'));
       const item = {
@@ -249,7 +331,10 @@
     show('Guild structure saved using Guild Directory character links.', 'success');
   }
 
-  addCouncilBtn.addEventListener('click', () => addCouncilRow());
+  officerRankFilter.addEventListener('change', refreshCharacterOptions);
+  mentorRankFilter.addEventListener('change', refreshCharacterOptions);
+  document.querySelectorAll('[data-structure-owner]').forEach(select =>
+    select.addEventListener('change', updateCouncilPreview));
   addMentorBtn.addEventListener('click', () => addMentorRow());
   saveBtn.addEventListener('click', save);
 

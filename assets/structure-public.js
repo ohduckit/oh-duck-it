@@ -91,16 +91,36 @@
     });
   }
 
-  function renderCouncil(council, maps) {
+  // Council membership is derived from officer-role appointments — there
+  // is deliberately no separate Council list or manual Council allocation.
+  function renderCouncil(assignments, maps) {
     const box = $('#councilMembers');
     if (!box) return;
-    const people = (Array.isArray(council) ? council : [])
-      .map(v => resolve(v, maps)).filter(Boolean);
-    if (!people.length) {
-      box.innerHTML = '<div class="note" style="grid-column:1/-1">Council characters have not yet been assigned.</div>';
+    const unique = new Map();
+    const roleKeys = [
+      'raid-leader', 'tank-lead', 'healer-lead', 'melee-dps-lead',
+      'ranged-dps-lead', 'mplus-lead', 'recruit-lead', 'community-lead'
+    ];
+    const all = roleKeys.map(key => [key, assignments?.[key]]);
+    if (assignments && assignments['melee-dps-lead'] == null && assignments['dps-lead']) {
+      all.push(['melee-dps-lead', assignments['dps-lead']]);
+    }
+    all.forEach(([key, reference]) => {
+      if (key === 'dps-lead') return; // old alias, never an extra seat
+      const person = resolve(reference, maps);
+      if (!person) return;
+      const uniqueId = person.directory_character_id ? `dir:${person.directory_character_id}`
+        : person.character_id ? `char:${person.character_id}`
+        : person.member_id ? `member:${person.member_id}`
+        : `${person.character_name || person.player_name}`;
+      if (!unique.has(uniqueId)) unique.set(uniqueId, person);
+    });
+    if (!unique.size) {
+      box.innerHTML = '<div class="note" style="grid-column:1/-1">Council officers have not yet been appointed.</div>';
       return;
     }
-    box.innerHTML = people.map(p => `<div class="council-member-card">${personMarkup(p)}</div>`).join('');
+    box.innerHTML = [...unique.values()]
+      .map(p => `<div class="council-member-card">${personMarkup(p)}</div>`).join('');
   }
 
   function renderMentors(mentors, maps) {
@@ -155,7 +175,7 @@
     const maps = mapPeople(oldRows, dirRows);
     const data = structureResult.data;
     renderOwners(data.assignments || {}, maps);
-    renderCouncil(data.council || [], maps);
+    renderCouncil(data.assignments || {}, maps);
     renderMentors(data.mentors || [], maps);
   }
 
