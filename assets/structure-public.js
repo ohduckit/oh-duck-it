@@ -1,201 +1,165 @@
 (() => {
-  const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const $ = (s, root = document) => root.querySelector(s);
+  const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+  const cfg = window.ODIT_SUPABASE || {};
+  const specData = window.ODIT_RECRUITMENT_SPEC_DATA || { classes: [] };
+  const esc = (s = '') => String(s).replace(/[&<>'"]/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+  }[c]));
+  const classColors = Object.fromEntries((specData.classes || []).map(c => [c.name, c.color]));
+  const safeUrl = value => {
+    try {
+      const url = new URL(value);
+      return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
+    } catch { return ''; }
+  };
 
-  $$('.role').forEach(card => card.addEventListener('click', () => card.classList.toggle('open')));
-
+  $$('.role').forEach(card => card.addEventListener('click', e => {
+    // Following a character profile link should not expand/collapse the role.
+    if (e.target.closest('a')) return;
+    card.classList.toggle('open');
+  }));
   $('#expandBtn')?.addEventListener('click', () => {
     const roles = $$('.role');
-    const allOpen = roles.every(role => role.classList.contains('open'));
-    roles.forEach(role => role.classList.toggle('open', !allOpen));
-    $('#expandBtn').textContent = allOpen ? 'Expand all' : 'Collapse all';
+    const all = roles.every(r => r.classList.contains('open'));
+    roles.forEach(r => r.classList.toggle('open', !all));
+    $('#expandBtn').textContent = all ? 'Expand all' : 'Collapse all';
   });
 
-  const cfg = window.ODIT_SUPABASE || {};
-  const configured = cfg.url && cfg.key && !cfg.url.startsWith('YOUR_') && !cfg.key.startsWith('YOUR_') && window.supabase?.createClient;
-  const specData = window.ODIT_RECRUITMENT_SPEC_DATA || { classes: [] };
-  const classColors = Object.fromEntries((specData.classes || []).map(cls => [cls.name, cls.color || '#b88635']));
-
-  const esc = (s = '') => String(s).replace(/[&<>'"]/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
-  }[c]));
-
   function specIcon(className, specName) {
-    const cls = (specData.classes || []).find(item => item.name === className);
-    return cls?.specs?.find(spec => spec.name === specName)?.icon || '';
+    const cls = (specData.classes || []).find(c => c.name === className);
+    return cls?.specs?.find(s => s.name === specName)?.icon || '';
   }
 
-  function personMaps(rows = []) {
-    const byCharacter = new Map();
+  function mapPeople(oldRows, dirRows) {
     const byMember = new Map();
-
-    rows.forEach(row => {
-      if (row.character_id) byCharacter.set(String(row.character_id), row);
-      if (row.member_id && !byMember.has(String(row.member_id))) byMember.set(String(row.member_id), row);
+    const byCharacter = new Map();
+    const byDirectory = new Map();
+    oldRows.forEach(c => {
+      if (c.member_id && !byMember.has(String(c.member_id))) byMember.set(String(c.member_id), c);
+      if (c.character_id) byCharacter.set(String(c.character_id), c);
     });
-
-    return { byCharacter, byMember };
+    dirRows.forEach(c => {
+      if (c.directory_character_id) byDirectory.set(String(c.directory_character_id), c);
+    });
+    return { byMember, byCharacter, byDirectory };
   }
 
-  function resolvePerson(reference, maps) {
-    if (!reference || typeof reference !== 'object') return null;
-
-    const characterId = String(reference.character_id || '');
-    const memberId = String(reference.member_id || '');
-
-    return (characterId ? maps.byCharacter.get(characterId) : null) ||
-      (memberId ? maps.byMember.get(memberId) : null) ||
-      null;
-  }
-
-  function personMarkup(person, { compact = false, fallback = '' } = {}) {
-    if (!person) {
-      return fallback
-        ? `<span>${esc(fallback)}</span>`
-        : '<span class="structure-vacant">To be appointed</span>';
+  function resolve(value, maps) {
+    if (!value || typeof value !== 'object') return null;
+    if (value.directory_character_id) {
+      return maps.byDirectory.get(String(value.directory_character_id)) || null;
     }
+    if (value.character_id && maps.byCharacter.has(String(value.character_id))) {
+      return maps.byCharacter.get(String(value.character_id));
+    }
+    return value.member_id ? maps.byMember.get(String(value.member_id)) || null : null;
+  }
 
+  function personMarkup(person, fallback = 'To be appointed') {
+    if (!person) return `<span>${esc(fallback)}</span>`;
     const characterName = person.character_name || person.player_name || 'Guild member';
     const playerName = person.player_name && person.player_name !== characterName ? person.player_name : '';
-    const specText = [person.spec_name, person.class_name].filter(Boolean).join(' ');
-    const avatar = person.avatar_url || specIcon(person.class_name, person.spec_name);
-    const href = person.raiderio_url || person.armory_url || '';
-    const classColor = classColors[person.class_name] || '#b88635';
+    const meta = [playerName, person.spec_name, person.class_name].filter(Boolean).join(' ');
+    const rank = person.guild_rank_text || '';
+    const avatar = safeUrl(person.avatar_url || '') || safeUrl(specIcon(person.class_name, person.spec_name));
+    const href = safeUrl(person.raiderio_url || person.armory_url || '');
     const tag = href ? 'a' : 'div';
-    const linkAttrs = href ? ` href="${esc(href)}" target="_blank" rel="noopener"` : '';
-    const subline = [playerName, specText].filter(Boolean).join(' • ');
+    const attrs = href ? ` href="${esc(href)}" target="_blank" rel="noopener noreferrer"` : '';
+    const color = classColors[person.class_name] || '#b88635';
 
-    return `
-      <${tag} class="structure-person ${compact ? 'compact' : ''}" style="--class-color:${esc(classColor)}"${linkAttrs}>
-        ${avatar ? `<img class="structure-person-avatar" src="${esc(avatar)}" alt="" loading="lazy">` : '<div class="structure-person-avatar"></div>'}
-        <span class="structure-person-copy">
-          <b>${esc(characterName)}</b>
-          ${subline ? `<small>${esc(subline)}</small>` : ''}
-        </span>
-      </${tag}>
-    `;
+    return `<${tag} class="structure-person" style="--class-color:${esc(color)}"${attrs}>
+      ${avatar ? `<img class="structure-person-avatar" src="${esc(avatar)}" alt="" loading="lazy">`
+        : '<div class="structure-person-avatar"></div>'}
+      <span class="structure-person-copy">
+        <b>${esc(characterName)}</b>
+        ${meta ? `<small>${esc(meta)}</small>` : ''}
+        ${rank ? `<small>Guild rank: ${esc(rank)}</small>` : ''}
+      </span>
+    </${tag}>`;
   }
 
-  function legacyAssignment(value) {
-    return typeof value === 'string' && value.trim() ? value.trim() : '';
+  function ownerValue(value, maps) {
+    const person = resolve(value, maps);
+    return personMarkup(person, typeof value === 'string' && value.trim() ? value : 'To be appointed');
   }
 
-  function renderOwners(assignments = {}, maps) {
-    const legacyDps = legacyAssignment(assignments['dps-lead']);
-
+  function renderOwners(assignments, maps) {
+    const oldDps = assignments['dps-lead'];
     $$('[data-owner]').forEach(el => {
-      const key = el.dataset.owner;
-      const value = assignments[key] ?? (key === 'melee-dps-lead' ? legacyDps : null);
-      const person = resolvePerson(value, maps);
-      const fallback = legacyAssignment(value) || (key === 'melee-dps-lead' ? legacyDps : '');
-      el.innerHTML = personMarkup(person, { compact: true, fallback: fallback || 'To be appointed' });
+      const value = assignments[el.dataset.owner] ??
+        (el.dataset.owner === 'melee-dps-lead' ? oldDps : null);
+      el.innerHTML = ownerValue(value, maps);
     });
   }
 
-  function renderCouncil(council = [], maps) {
+  function renderCouncil(council, maps) {
     const box = $('#councilMembers');
     if (!box) return;
-
-    box.innerHTML = '';
-
     const people = (Array.isArray(council) ? council : [])
-      .map(item => resolvePerson(item, maps))
-      .filter(Boolean);
-
+      .map(v => resolve(v, maps)).filter(Boolean);
     if (!people.length) {
-      box.innerHTML = '<div class="note" style="grid-column:1/-1">Council members have not yet been linked to guild characters.</div>';
+      box.innerHTML = '<div class="note" style="grid-column:1/-1">Council characters have not yet been assigned.</div>';
       return;
     }
-
-    people.forEach(person => {
-      const card = document.createElement('div');
-      card.className = 'council-member-card';
-      card.innerHTML = personMarkup(person);
-      box.appendChild(card);
-    });
+    box.innerHTML = people.map(p => `<div class="council-member-card">${personMarkup(p)}</div>`).join('');
   }
 
-  function legacyMentorSpec(mentor) {
-    return mentor && typeof mentor.spec === 'string' ? mentor.spec.trim() : '';
-  }
-
-  function renderMentors(mentors = [], maps) {
-    const list = $('#mentorList');
-    if (!list) return;
-
-    list.innerHTML = '';
-
+  function renderMentors(mentors, maps) {
+    const box = $('#mentorList');
+    if (!box) return;
     if (!Array.isArray(mentors) || !mentors.length) {
-      list.innerHTML = '<div class="note" style="grid-column:1/-1">No class/spec mentors are currently appointed.</div>';
+      box.innerHTML = '<div class="note" style="grid-column:1/-1">No class/spec mentors appointed.</div>';
       return;
     }
-
-    mentors.forEach(mentor => {
-      const className = mentor?.class_name || '';
-      const specName = mentor?.spec_name || '';
-      const specLabel = className && specName ? `${specName} ${className}` : legacyMentorSpec(mentor) || 'Class / spec';
-      const icon = className && specName ? specIcon(className, specName) : '';
-      const person = resolvePerson(mentor, maps);
-      const legacyName = typeof mentor?.mentor === 'string' ? mentor.mentor.trim() : '';
-      const card = document.createElement('div');
-      card.className = 'mentor';
-
-      card.innerHTML = `
+    box.innerHTML = mentors.map(item => {
+      const label = item.class_name && item.spec_name
+        ? `${item.spec_name} ${item.class_name}`
+        : item.spec || 'Class / spec';
+      const icon = safeUrl(specIcon(item.class_name, item.spec_name));
+      const person = resolve(item, maps);
+      const legacy = typeof item.mentor === 'string' ? item.mentor : 'Vacant';
+      return `<div class="mentor">
         ${icon ? `<img class="mentor-spec-icon" src="${esc(icon)}" alt="" loading="lazy">` : ''}
         <div class="mentor-main">
-          <strong>${esc(specLabel)}</strong>
-          ${person
-            ? personMarkup(person, { compact: true })
-            : legacyName
-              ? `<div class="structure-vacant">Mentor: ${esc(legacyName)}</div>`
-              : '<div class="structure-vacant">Vacant</div>'
-          }
+          <strong>${esc(label)}</strong>
+          ${personMarkup(person, legacy)}
         </div>
-      `;
-
-      list.appendChild(card);
-    });
+      </div>`;
+    }).join('');
   }
 
-  function setUnavailable() {
+  function unavailable() {
     $$('[data-owner]').forEach(el => { el.textContent = 'Unavailable'; });
-
-    const council = $('#councilMembers');
-    if (council) council.innerHTML = '<div class="note" style="grid-column:1/-1">Council information is temporarily unavailable.</div>';
-
-    const mentors = $('#mentorList');
-    if (mentors) mentors.innerHTML = '<div class="note" style="grid-column:1/-1">Mentor information is temporarily unavailable.</div>';
+    if ($('#councilMembers')) $('#councilMembers').textContent = 'Council information unavailable.';
+    if ($('#mentorList')) $('#mentorList').textContent = 'Mentor information unavailable.';
   }
 
-  if (!configured) {
-    setUnavailable();
+  if (!cfg.url || !cfg.key || !window.supabase?.createClient) {
+    unavailable();
     return;
   }
-
   const client = window.supabase.createClient(cfg.url, cfg.key);
 
-  async function loadStructure() {
-    const [
-      { data: structure, error: structureError },
-      { data: people, error: peopleError }
-    ] = await Promise.all([
-      client.from('guild_structure')
-        .select('assignments,mentors,council')
-        .eq('id', 1)
-        .maybeSingle(),
+  async function load() {
+    const [structureResult, directoryResult, oldResult] = await Promise.all([
+      client.from('guild_structure').select('assignments,mentors,council').eq('id', 1).maybeSingle(),
+      client.rpc('get_public_guild_directory_characters'),
       client.rpc('get_public_structure_characters')
     ]);
-
-    if (structureError || !structure) {
-      setUnavailable();
+    if (structureResult.error || !structureResult.data) {
+      unavailable();
       return;
     }
-
-    const maps = personMaps(peopleError ? [] : (Array.isArray(people) ? people : []));
-    renderOwners(structure.assignments || {}, maps);
-    renderCouncil(structure.council || [], maps);
-    renderMentors(structure.mentors || [], maps);
+    // Legacy raid-linked assignments still work during migration.
+    const oldRows = !oldResult.error && Array.isArray(oldResult.data) ? oldResult.data : [];
+    const dirRows = !directoryResult.error && Array.isArray(directoryResult.data) ? directoryResult.data : [];
+    const maps = mapPeople(oldRows, dirRows);
+    const data = structureResult.data;
+    renderOwners(data.assignments || {}, maps);
+    renderCouncil(data.council || [], maps);
+    renderMentors(data.mentors || [], maps);
   }
 
-  loadStructure();
+  load();
 })();
