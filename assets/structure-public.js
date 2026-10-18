@@ -61,7 +61,6 @@
     const characterName = person.character_name || person.player_name || 'Guild member';
     const playerName = person.player_name && person.player_name !== characterName ? person.player_name : '';
     const meta = [playerName, person.spec_name, person.class_name].filter(Boolean).join(' ');
-    const rank = person.guild_rank_text || '';
     const avatar = safeUrl(person.avatar_url || '') || safeUrl(specIcon(person.class_name, person.spec_name));
     const href = safeUrl(person.raiderio_url || person.armory_url || '');
     const tag = href ? 'a' : 'div';
@@ -74,7 +73,6 @@
       <span class="structure-person-copy">
         <b>${esc(characterName)}</b>
         ${meta ? `<small>${esc(meta)}</small>` : ''}
-        ${rank ? `<small>Guild rank: ${esc(rank)}</small>` : ''}
       </span>
     </${tag}>`;
   }

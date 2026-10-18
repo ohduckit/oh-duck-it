@@ -19,6 +19,13 @@
   let loaded = false;
   let directory = [];
 
+  // Only guild ranks with "Officer" in their title are offered for new
+  // appointments (e.g. "Officer", "Officer Alt", "Senior Officer").
+  // Keep the full directory in memory so existing non-Officer assignments
+  // can be displayed and saved without being silently removed.
+  const isOfficerRank = character => /\bofficers?\b/i.test(String(character.guild_rank_text || ''));
+  const officerCharacters = () => directory.filter(isOfficerRank);
+
   const show = (text, kind = 'info') => {
     message.hidden = false;
     message.className = `notice ${kind}`;
@@ -51,20 +58,30 @@
     return 'Existing assignment';
   }
 
+  function characterOption(c, selected = '', prefix = '') {
+    const role = [c.spec_name, c.class_name].filter(Boolean).join(' ');
+    const rank = c.guild_rank_text || '';
+    const realm = c.realm || '';
+    const label = [prefix, c.character_name, role, rank, realm].filter(Boolean).join(' • ');
+    return `<option value="${esc(c.id)}" ${String(c.id) === selected ? 'selected' : ''}>${esc(label)}</option>`;
+  }
+
   function directoryOptions(value = null) {
     const selected = resolveStored(value);
     const keepLegacy = !!value && !selected;
-    const options = [
-      '<option value="">— Not appointed —</option>',
-      ...directory.map(c => {
-        const role = [c.spec_name, c.class_name].filter(Boolean).join(' ');
-        const rank = c.guild_rank_text || '';
-        const realm = c.realm || '';
-        const label = [c.character_name, role, rank, realm].filter(Boolean).join(' • ');
-        return `<option value="${esc(c.id)}" ${String(c.id) === selected ? 'selected' : ''}>${esc(label)}</option>`;
-      })
-    ];
-    if (keepLegacy) options.unshift(`<option value="__keep__" selected>Keep: ${esc(legacyLabel(value))}</option>`);
+    const existingCharacter = selected ? directoryRecord(selected) : null;
+    const options = ['<option value="">— Not appointed —</option>'];
+
+    // Existing assignments to a non-Officer remain visible in their current
+    // field, but non-Officers cannot be chosen for any new appointment.
+    if (existingCharacter && !isOfficerRank(existingCharacter)) {
+      options.push(characterOption(existingCharacter, selected, 'Current assignment (not Officer rank)'));
+    }
+    options.push(...officerCharacters().map(c => characterOption(c, selected)));
+
+    if (keepLegacy) {
+      options.unshift(`<option value="__keep__" selected>Keep: ${esc(legacyLabel(value))}</option>`);
+    }
     return options.join('');
   }
 
@@ -186,8 +203,12 @@
     saveBtn.disabled = false;
 
     const help = document.querySelector('.structure-admin > p.help');
+    const officers = officerCharacters().length;
     if (help) help.textContent =
-      `Select from ${directory.length} guild characters imported from Guilds of WoW. The Raid Team remains independent.`;
+      `Select from ${officers} Officer-ranked characters (${directory.length} total in the Guild Directory). Existing appointments remain unchanged until edited.`;
+    if (!officers) {
+      show('No characters with an Officer guild rank were found. Check the guild rank labels in Guilds of WoW; existing appointments are preserved.', 'info');
+    }
   }
 
   async function save() {
