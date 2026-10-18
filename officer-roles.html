@@ -12,12 +12,12 @@
 <link rel="stylesheet" href="assets/officer-portal-pages.css">
 <style>
 .structure-picker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:14px}
-.structure-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:24px}
+.structure-section-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:24px}
 .structure-section-head h3{margin:0 0 4px;font-family:Georgia,serif}
 .council-admin-list,.mentor-admin-list{display:grid;gap:10px;margin-top:12px}
 .council-admin-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;border:1px solid #302b24;border-radius:10px;padding:11px;background:#0e0d0b}
 .mentor-admin-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.35fr) auto;gap:10px;align-items:end;border:1px solid #302b24;border-radius:10px;padding:11px;background:#0e0d0b}
-.structure-linked-note{margin-top:10px;color:#9f9079;font-size:11px;line-height:1.5}
+.structure-rank-filter{display:flex;flex-direction:column;gap:5px;min-width:230px;font-size:11px;color:#c4ae85}.structure-rank-filter select{width:100%;max-width:320px}.council-preview-entry{border:1px solid #4c3824;border-radius:9px;padding:10px 13px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;background:rgba(12,8,6,.45)}.council-preview-entry strong{color:#f1d17d}.council-preview-entry span{font-size:11px;color:#bfa98b}.structure-linked-note{margin-top:10px;color:#9f9079;font-size:11px;line-height:1.5}
 @media(max-width:900px){.structure-picker-grid{grid-template-columns:1fr}.mentor-admin-row{grid-template-columns:1fr 1fr}.mentor-admin-row .remove-structure-mentor{grid-column:1/-1;justify-self:start}}
 @media(max-width:620px){.council-admin-row,.mentor-admin-row{grid-template-columns:1fr}.mentor-admin-row .remove-structure-mentor{grid-column:auto}}
 </style>
@@ -33,9 +33,9 @@
 <h2>Guild Structure</h2>
 <p class="help">Select existing guild characters rather than typing names manually. Character details come from the roster database and can be refreshed independently.</p>
 <div id="structureMessage" class="notice" style="margin:14px 0" hidden></div>
-<div class="structure-section-head"><div><h3>Tavern Council</h3><p class="help">Add the characters who currently sit on the Tavern Council.</p></div><button id="addCouncilMember" class="btn" type="button">+ Add Council member</button></div>
+<div class="structure-section-head"><div><h3>Tavern Council</h3><p class="help">Automatically formed from the people appointed to Officer Roles below. Each appointed character appears once, even when holding several roles.</p></div></div>
 <div id="structureCouncil" class="council-admin-list"></div>
-<div class="structure-section-head"><div><h3>Officer Roles</h3><p class="help">Each role links directly to a guild character.</p></div></div>
+<div class="structure-section-head"><div><h3>Officer Roles</h3><p class="help">Default eligibility: rank 2 (Wing Commander) and above. Change the filter to see other ranks when needed.</p></div><label class="structure-rank-filter" for="officerRankFilter">Filter officer candidates by guild rank<select id="officerRankFilter"></select></label></div>
 <div class="structure-picker-grid">
 <div class="field"><label>Raid Leader</label><select data-structure-owner="raid-leader"></select></div>
 <div class="field"><label>Tank Officer</label><select data-structure-owner="tank-lead"></select></div>
@@ -46,9 +46,9 @@
 <div class="field"><label>Recruitment Officer</label><select data-structure-owner="recruit-lead"></select></div>
 <div class="field"><label>Community Officer</label><select data-structure-owner="community-lead"></select></div>
 </div>
-<div class="structure-section-head"><div><h3>Class / Spec Mentors</h3><p class="help">Class and spec are selected from the same canonical WoW data used elsewhere on the site.</p></div><button id="addStructureMentor" class="btn" type="button">+ Add mentor</button></div>
+<div class="structure-section-head"><div><h3>Class / Spec Mentors</h3><p class="help">Default eligibility: rank 4 (The Flock) and above. Class and spec use the canonical WoW list.</p></div><label class="structure-rank-filter" for="mentorRankFilter">Filter mentor candidates by guild rank<select id="mentorRankFilter"></select></label><button id="addStructureMentor" class="btn" type="button">+ Add mentor</button></div>
 <div id="structureMentors" class="mentor-admin-list"></div>
-<div class="structure-linked-note">A character can hold more than one role. Mentors may be left vacant while keeping the class/spec listed.</div>
+<div class="structure-linked-note">The Council is generated from Officer Roles on Save. Rank filters affect only candidate choices. A person can hold more than one role; mentors may remain vacant.</div>
 <div class="actions" style="justify-content:flex-start"><button id="saveGuildStructure" class="btn primary" type="button">Save guild structure</button></div>
 </section>
 </div></div></section>
