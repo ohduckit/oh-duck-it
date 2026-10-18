@@ -10,92 +10,55 @@
 <link rel="stylesheet" href="assets/guild-management-v22.css">
 <link rel="stylesheet" href="assets/guild-management-v23.css">
 <link rel="stylesheet" href="assets/officer-portal-pages.css">
-
+<style>
+.structure-picker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:14px}
+.structure-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:24px}
+.structure-section-head h3{margin:0 0 4px;font-family:Georgia,serif}
+.council-admin-list,.mentor-admin-list{display:grid;gap:10px;margin-top:12px}
+.council-admin-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;border:1px solid #302b24;border-radius:10px;padding:11px;background:#0e0d0b}
+.mentor-admin-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.35fr) auto;gap:10px;align-items:end;border:1px solid #302b24;border-radius:10px;padding:11px;background:#0e0d0b}
+.structure-linked-note{margin-top:10px;color:#9f9079;font-size:11px;line-height:1.5}
+@media(max-width:900px){.structure-picker-grid{grid-template-columns:1fr}.mentor-admin-row{grid-template-columns:1fr 1fr}.mentor-admin-row .remove-structure-mentor{grid-column:1/-1;justify-self:start}}
+@media(max-width:620px){.council-admin-row,.mentor-admin-row{grid-template-columns:1fr}.mentor-admin-row .remove-structure-mentor{grid-column:auto}}
+</style>
 </head>
 <body data-officer-page="roles" data-officer-permission="structure.manage">
-<nav class="sitebar">
-  <div class="sitebar-inner">
-    <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
-    <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
-    <div class="site-links">
-      <a href="index.html">Home</a>
-      <a href="progression.html">Progression</a>
-      <a href="structure.html">Guild Structure</a>
-      <a href="recruitment.html">Recruitment</a>
-      <a href="resources.html">Resources</a>
-      <a class="officer-link active" href="officers.html">Officer Portal</a>
-    </div>
-  </div>
-</nav>
-<header class="page-head wrap">
-  <div class="page-sign">
-    <h1>ROLE ASSIGNMENTS</h1>
-    <p>Guild leadership & mentors</p>
-  </div>
-</header>
+<nav class="sitebar"><div class="sitebar-inner"><a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a><button class="menu-toggle" type="button" aria-expanded="false">Menu</button><div class="site-links"><a href="index.html">Home</a><a href="progression.html">Progression</a><a href="structure.html">Guild Structure</a><a href="recruitment.html">Recruitment</a><a href="resources.html">Resources</a><a class="officer-link active" href="officers.html">Officer Portal</a></div></div></nav>
+<header class="page-head wrap"><div class="page-sign"><h1>ROLE ASSIGNMENTS</h1><p>Guild leadership, Council & mentors</p></div></header>
 <main class="portal-wrap">
-<section id="authView" class="card auth-card">
-  <div class="eyebrow">Private area</div>
-  <h1 style="font-family:Georgia,serif">Officer Portal</h1>
-  <p id="authText">Sign in with Discord to access ODit officer tools.</p>
-  <div id="authNotice" class="notice info" style="margin:16px 0" hidden></div>
-  <div class="actions">
-    <button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button>
-    <button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button>
-  </div>
-  <div id="unauthorisedBox" hidden></div>
+<section id="authView" class="card auth-card"><div class="eyebrow">Private area</div><h1 style="font-family:Georgia,serif">Officer Portal</h1><p id="authText">Sign in with Discord to access ODit officer tools.</p><div id="authNotice" class="notice info" style="margin:16px 0" hidden></div><div class="actions"><button id="discordLogin" class="btn discord" type="button">Sign in with Discord</button><button id="logoutBtnAuth" class="btn" type="button" hidden>Sign out</button></div><div id="unauthorisedBox" hidden></div></section>
+<section id="portalView" hidden><div class="tavern-shell officer-shell"><aside id="officerNav" class="side-nav officer-side-nav" aria-label="Officer Portal navigation"></aside><div class="officer-content">
+<section class="panel officer-page-head"><div class="portal-top"><div><div class="eyebrow">Guild</div><h1>Role Assignments</h1><p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p></div><div class="portal-tools"><a class="btn" href="structure.html" target="_blank" rel="noopener">View public page ↗</a><button id="logoutBtn" class="btn" type="button">Sign out</button></div></div></section>
+<section class="card structure-admin officer-module-panel" id="roles">
+<h2>Guild Structure</h2>
+<p class="help">Select existing guild characters rather than typing names manually. Character details come from the roster database and can be refreshed independently.</p>
+<div id="structureMessage" class="notice" style="margin:14px 0" hidden></div>
+<div class="structure-section-head"><div><h3>Tavern Council</h3><p class="help">Add the characters who currently sit on the Tavern Council.</p></div><button id="addCouncilMember" class="btn" type="button">+ Add Council member</button></div>
+<div id="structureCouncil" class="council-admin-list"></div>
+<div class="structure-section-head"><div><h3>Officer Roles</h3><p class="help">Each role links directly to a guild character.</p></div></div>
+<div class="structure-picker-grid">
+<div class="field"><label>Raid Leader</label><select data-structure-owner="raid-leader"></select></div>
+<div class="field"><label>Tank Officer</label><select data-structure-owner="tank-lead"></select></div>
+<div class="field"><label>Healer Officer</label><select data-structure-owner="healer-lead"></select></div>
+<div class="field"><label>Melee DPS Lead</label><select data-structure-owner="melee-dps-lead"></select></div>
+<div class="field"><label>Ranged DPS Lead</label><select data-structure-owner="ranged-dps-lead"></select></div>
+<div class="field"><label>Mythic+ Officer</label><select data-structure-owner="mplus-lead"></select></div>
+<div class="field"><label>Recruitment Officer</label><select data-structure-owner="recruit-lead"></select></div>
+<div class="field"><label>Community Officer</label><select data-structure-owner="community-lead"></select></div>
+</div>
+<div class="structure-section-head"><div><h3>Class / Spec Mentors</h3><p class="help">Class and spec are selected from the same canonical WoW data used elsewhere on the site.</p></div><button id="addStructureMentor" class="btn" type="button">+ Add mentor</button></div>
+<div id="structureMentors" class="mentor-admin-list"></div>
+<div class="structure-linked-note">A character can hold more than one role. Mentors may be left vacant while keeping the class/spec listed.</div>
+<div class="actions" style="justify-content:flex-start"><button id="saveGuildStructure" class="btn primary" type="button">Save guild structure</button></div>
 </section>
-<section id="portalView" hidden>
-  <div class="tavern-shell officer-shell">
-    <aside id="officerNav" class="side-nav officer-side-nav" aria-label="Officer Portal navigation"></aside>
-    <div class="officer-content">
-<section class="panel officer-page-head">
-  <div class="portal-top">
-    <div>
-      <div class="eyebrow">Guild</div>
-      <h1>Role Assignments</h1>
-      <p id="officerIdentity" class="lede" style="margin:6px 0 0;text-align:left"></p>
-    </div>
-    <div class="portal-tools">
-      <a class="btn" href="structure.html" target="_blank" rel="noopener">View public page ↗</a>
-      <button id="logoutBtn" class="btn" type="button">Sign out</button>
-    </div>
-  </div>
-</section><section class="card structure-admin officer-module-panel" id="roles">
-  <h2>Role Assignments</h2>
-  <p class="help">Changes here update the public Guild Structure page for everyone.</p>
-  <div id="structureMessage" class="notice" style="margin:14px 0" hidden></div>
-
-  <div class="form-grid structure-fields">
-    <div class="field"><label>Raid Leader</label><input data-structure-owner="raid-leader"></div>
-    <div class="field"><label>Tank Lead</label><input data-structure-owner="tank-lead"></div>
-    <div class="field"><label>Healer Lead</label><input data-structure-owner="healer-lead"></div>
-    <div class="field"><label>Melee DPS Lead</label><input data-structure-owner="melee-dps-lead"></div>
-    <div class="field"><label>Ranged DPS Lead</label><input data-structure-owner="ranged-dps-lead"></div>
-    <div class="field"><label>Mythic+ Lead</label><input data-structure-owner="mplus-lead"></div>
-    <div class="field"><label>Recruitment & Roster Lead</label><input data-structure-owner="recruit-lead"></div>
-    <div class="field"><label>Community Lead</label><input data-structure-owner="community-lead"></div>
-  </div>
-
-  <div class="mentor-admin-head">
-    <div><h3>Class / Spec Mentors</h3><p class="help">Mentors appear on the public Guild Structure page.</p></div>
-    <button id="addStructureMentor" class="btn" type="button">+ Add mentor</button>
-  </div>
-  <div id="structureMentors" class="mentor-admin-list"></div>
-
-  <div class="actions" style="justify-content:flex-start">
-    <button id="saveGuildStructure" class="btn primary" type="button">Save guild structure</button>
-  </div>
-</section>
-    </div>
-  </div>
-</section>
+</div></div></section>
 </main>
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Officer access is restricted to authorised officers.</div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/supabase-config.js"></script>
 <script src="assets/site.js"></script>
 <script src="assets/officer-portal-shell.js"></script>
+<script src="assets/recruitment-spec-data.js"></script>
 <script src="assets/officer-roles.js"></script>
 </body>
 </html>

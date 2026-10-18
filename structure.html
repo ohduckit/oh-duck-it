@@ -1,50 +1,32 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Oh Duck It — Guild Structure</title>
-<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/tavern-v21.css">
-</head><body>
-
-<nav class="sitebar">
-  <div class="sitebar-inner">
-    <a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a>
-    <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
-    <div class="site-links">
-      <a href="index.html">Home</a>
-      <a href="progression.html">Progression</a>
-      <a class="active" href="structure.html">Guild Structure</a>
-      <a href="recruitment.html">Recruitment</a>
-      <a href="resources.html">Resources</a>
-    </div>
-  </div>
-</nav>
-
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/tavern-v21.css">
+<style>
+.council-member-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.structure-person{--class-color:#b88635;display:flex;align-items:center;gap:9px;min-width:0;color:inherit;text-decoration:none}
+.structure-person-avatar{width:42px;height:42px;border-radius:9px;object-fit:cover;flex:0 0 auto;border:1px solid var(--class-color);background:#0c0907}
+.structure-person-copy{min-width:0}.structure-person-copy b{display:block;color:#f1d17d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.structure-person-copy small{display:block;margin-top:2px;color:#a99a84;font-size:10px;line-height:1.35}
+.council-member-card{border:1px solid #5b4323;border-radius:10px;padding:11px;background:rgba(12,8,6,.58)}
+.owner .structure-person{margin-top:5px}.owner .structure-person-avatar{width:30px;height:30px;border-radius:7px}.owner .structure-person-copy b{font-size:11px}.owner .structure-person-copy small{font-size:9px}
+.mentor{display:flex;gap:10px;align-items:center}.mentor-spec-icon{width:34px;height:34px;border-radius:7px;object-fit:cover;border:1px solid #66502b;background:#0c0907;flex:0 0 auto}.mentor-main{min-width:0;flex:1}.mentor-main strong{display:block;color:#ecd07e}.mentor-main .structure-person{margin-top:6px}.mentor-main .structure-person-avatar{width:28px;height:28px;border-radius:6px}.structure-vacant{color:#8f816d;font-size:11px;margin-top:5px}
+@media(max-width:900px){.council-member-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.council-member-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="sitebar"><div class="sitebar-inner"><a class="sitebrand" href="index.html"><span class="duckmark">🦆</span><span>OH DUCK IT</span></a><button class="menu-toggle" type="button" aria-expanded="false">Menu</button><div class="site-links"><a href="index.html">Home</a><a href="progression.html">Progression</a><a class="active" href="structure.html">Guild Structure</a><a href="recruitment.html">Recruitment</a><a href="resources.html">Resources</a></div></div></nav>
 <header class="page-head wrap"><div class="page-sign"><h1>GUILD STRUCTURE</h1><p>The Tavern Council</p></div></header>
 <main class="wrap tavern-shell">
-<aside class="side-nav">
-<a href="#overview"><span class="ico">⌂</span>Overview</a>
-<a href="#council"><span class="ico">♛</span>Tavern Council</a>
-<a href="#roles"><span class="ico">⚒</span>Officer Roles</a>
-<a href="#ranks"><span class="ico">♜</span>Guild Ranks</a>
-<a href="#decisions"><span class="ico">⚖</span>Decision Making</a>
-<button id="expandBtn"><span class="ico">＋</span>Expand all</button>
-</aside>
+<aside class="side-nav"><a href="#overview"><span class="ico">⌂</span>Overview</a><a href="#council"><span class="ico">♛</span>Tavern Council</a><a href="#roles"><span class="ico">⚒</span>Officer Roles</a><a href="#ranks"><span class="ico">♜</span>Guild Ranks</a><a href="#decisions"><span class="ico">⚖</span>Decision Making</a><button id="expandBtn"><span class="ico">＋</span>Expand all</button></aside>
 <div>
-<section class="panel anchor-section" id="overview">
-<h2>Council-led. Clear responsibility.</h2>
-<p>Oh Duck It is governed collectively by the Tavern Council. Officers and activity leads own clearly defined areas so the people closest to a part of the guild can run it well without creating a top-heavy chain of command.</p>
-</section>
-
-<section class="panel anchor-section" id="council">
-<div class="council-box">
-<h2>🍻 TAVERN COUNCIL</h2>
-<p>Collective governance, equal vote, guild-wide direction and consequential decisions.</p>
-</div>
-</section>
-
-<section class="panel anchor-section" id="roles">
-<div class="section-title"><h2>Officer Roles</h2></div>
-<div class="role-grid">
+<section class="panel anchor-section" id="overview"><h2>Council-led. Clear responsibility.</h2><p>Oh Duck It is governed collectively by the Tavern Council. Officers and activity leads own clearly defined areas so the people closest to a part of the guild can run it well without creating a top-heavy chain of command.</p></section>
+<section class="panel anchor-section" id="council"><div class="council-box"><h2>🍻 TAVERN COUNCIL</h2><p>Collective governance, equal vote, guild-wide direction and consequential decisions.</p></div><div id="councilMembers" class="council-member-grid"><div class="note" style="grid-column:1/-1">Loading Council members…</div></div></section>
+<section class="panel anchor-section" id="roles"><div class="section-title"><h2>Officer Roles</h2></div><div class="role-grid">
 <article class="role"><div class="role-head"><div><div class="role-name">Raid Leader(s)</div><div class="owner" data-owner="raid-leader">Loading…</div></div><span>⚔</span></div><div class="summary">Raid planning, tactics and progression delivery.</div><div class="details"><ul><li>Owns raid-night calls and encounter execution.</li><li>Coordinates preparation and progression priorities.</li><li>Feeds consequential roster issues back to Council.</li></ul></div></article>
 <article class="role"><div class="role-head"><div><div class="role-name">Tank Officer</div><div class="owner" data-owner="tank-lead">Loading…</div></div><span>🛡</span></div><div class="summary">Tank community, standards and development.</div><div class="details"><ul><li>Supports tank recruitment and readiness.</li><li>Helps with encounters, logs and role improvement.</li></ul></div></article>
 <article class="role"><div class="role-head"><div><div class="role-name">Healer Officer</div><div class="owner" data-owner="healer-lead">Loading…</div></div><span>✚</span></div><div class="summary">Healing community, coverage and development.</div><div class="details"><ul><li>Supports healer recruitment and readiness.</li><li>Helps with healing plans and role improvement.</li></ul></div></article>
@@ -53,25 +35,11 @@
 <article class="role"><div class="role-head"><div><div class="role-name">Mythic+ Officer</div><div class="owner" data-owner="mplus-lead">Loading…</div></div><span>🗝</span></div><div class="summary">Mythic+ activity and Mythic Mondays.</div><div class="details"><ul><li>Encourages regular key activity.</li><li>Helps players form groups and progress.</li></ul></div></article>
 <article class="role"><div class="role-head"><div><div class="role-name">Recruitment Officer</div><div class="owner" data-owner="recruit-lead">Loading…</div></div><span>👥</span></div><div class="summary">Recruitment, trials and roster health.</div><div class="details"><ul><li>Tracks applications and trials.</li><li>Works with role officers on current needs.</li></ul></div></article>
 <article class="role"><div class="role-head"><div><div class="role-name">Community Officer</div><div class="owner" data-owner="community-lead">Loading…</div></div><span>🍻</span></div><div class="summary">Community, optional events and member voice.</div><div class="details"><ul><li>Champions the social side of the guild.</li><li>Supports optional events and inclusive participation.</li></ul></div></article>
-</div>
-<div class="gold-line"></div>
-<h3>Class / Spec Mentors</h3>
-<div class="mentor-list" id="mentorList"><div class="note" style="grid-column:1/-1">Loading mentors…</div></div>
-</section>
-
-<section class="panel anchor-section" id="ranks">
-<div class="section-title"><h2>Guild Ranks</h2></div>
-<p>Ranks exist to support access and responsibility, not status. Council and officers are accountable for defined work; members and trials should have a clear route to contribute without needing a title.</p>
-</section>
-
-<section class="panel anchor-section" id="decisions">
-<div class="section-title"><h2>Decision Making</h2></div>
-<div class="two-col">
-<div class="stat-card"><label>Guild-wide / consequential</label><b style="font-size:16px">Tavern Council</b><p>Direction, standards, major conduct or roster decisions.</p></div>
-<div class="stat-card"><label>Operational / activity</label><b style="font-size:16px">Relevant Lead</b><p>Raid calls, M+ activity, recruitment workflow and role development.</p></div>
-</div>
-</section>
+</div><div class="gold-line"></div><h3>Class / Spec Mentors</h3><div class="mentor-list" id="mentorList"><div class="note" style="grid-column:1/-1">Loading mentors…</div></div></section>
+<section class="panel anchor-section" id="ranks"><div class="section-title"><h2>Guild Ranks</h2></div><p>Ranks exist to support access and responsibility, not status. Council and officers are accountable for defined work; members and trials should have a clear route to contribute without needing a title.</p></section>
+<section class="panel anchor-section" id="decisions"><div class="section-title"><h2>Decision Making</h2></div><div class="two-col"><div class="stat-card"><label>Guild-wide / consequential</label><b style="font-size:16px">Tavern Council</b><p>Direction, standards, major conduct or roster decisions.</p></div><div class="stat-card"><label>Operational / activity</label><b style="font-size:16px">Relevant Lead</b><p>Raid calls, M+ activity, recruitment workflow and role development.</p></div></div></section>
 </div></main>
 <footer class="footer"><div class="wrap"><b>OH DUCK IT</b> • Council-led • Clear roles • Stronger together.</div></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/site.js"></script><script src="assets/structure-public.js"></script>
-</body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/supabase-config.js"></script><script src="assets/site.js"></script><script src="assets/recruitment-spec-data.js"></script><script src="assets/structure-public.js"></script>
+</body>
+</html>
